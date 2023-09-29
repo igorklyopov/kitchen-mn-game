@@ -9,6 +9,7 @@ import { assetsData } from './js/assetsData.js';
 import { loadAssets, findImgById } from './js/utils/loadAssets.js';
 import { GameMap } from './js/components/gameMap.js';
 import { Hero } from './js/components/hero.js';
+import { state } from './js/state/state.js';
 
 refs.gameCanvas.width = GAME_CANVAS_WIDTH;
 refs.gameCanvas.height = GAME_CANVAS_HEIGHT;
@@ -29,13 +30,14 @@ loadAssets(assetsData).then((assets) => {
     canvas: refs.gameCanvas,
     position: HERO_POSITION_DEFAULT,
   });
-
+console.log(state);
   function animate() {
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, refs.gameCanvas.width, refs.gameCanvas.height);
 
     gameMap.draw();
     hero.draw()
+    hero.makeAction(state.hero.currentAction)
   }
   animate();
 });

@@ -5,7 +5,7 @@ class Hero extends Sprite {
     super({ image, imageWidth, imageHeight, canvas, position });
   }
 
-  makeAction() {
+  makeAction(action) {
     switch (action) {
       case 'move_top':
         console.log(action);
