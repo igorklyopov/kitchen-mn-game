@@ -16,3 +16,6 @@ class Sprite {
     }
   }
 }
+
+
+export {Sprite}
