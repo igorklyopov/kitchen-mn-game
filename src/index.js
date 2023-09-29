@@ -3,10 +3,12 @@ import {
   GAME_CANVAS_HEIGHT,
   GAME_CANVAS_WIDTH,
   GAME_MAP_POSITION_DEFAULT,
+  HERO_POSITION_DEFAULT,
 } from './js/constants.js';
 import { assetsData } from './js/assetsData.js';
 import { loadAssets, findImgById } from './js/utils/loadAssets.js';
 import { GameMap } from './js/components/gameMap.js';
+import { Hero } from './js/components/hero.js';
 
 refs.gameCanvas.width = GAME_CANVAS_WIDTH;
 refs.gameCanvas.height = GAME_CANVAS_HEIGHT;
@@ -14,7 +16,7 @@ const ctx = refs.gameCanvas.getContext('2d');
 
 loadAssets(assetsData).then((assets) => {
   const gameMapImg = findImgById(assets, 'gameMap');
-  const playerImg = findImgById(assets, 'player');
+  const heroImg = findImgById(assets, 'hero');
 
   const gameMap = new GameMap({
     image: gameMapImg,
@@ -22,11 +24,18 @@ loadAssets(assetsData).then((assets) => {
     position: GAME_MAP_POSITION_DEFAULT,
   });
 
+  const hero = new Hero({
+    image: heroImg,
+    canvas: refs.gameCanvas,
+    position: HERO_POSITION_DEFAULT,
+  });
+
   function animate() {
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, refs.gameCanvas.width, refs.gameCanvas.height);
 
     gameMap.draw();
+    hero.draw()
   }
   animate();
 });
