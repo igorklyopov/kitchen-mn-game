@@ -30,14 +30,16 @@ loadAssets(assetsData).then((assets) => {
     canvas: refs.gameCanvas,
     position: HERO_POSITION_DEFAULT,
   });
-console.log(state);
+
   function animate() {
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, refs.gameCanvas.width, refs.gameCanvas.height);
 
     gameMap.draw();
-    hero.draw()
-    hero.makeAction(state.hero.currentAction)
+    gameMap.makeAction(state.hero.currentAction);
+    
+    hero.draw();
+    hero.makeAction(state.hero.currentAction);
   }
   animate();
 });

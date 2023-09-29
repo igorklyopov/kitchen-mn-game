@@ -1,4 +1,5 @@
 import { Sprite } from './sprite.js';
+import { HERO_ACTIONS } from '../constants.js';
 
 class GameMap extends Sprite {
   constructor({ image, imageWidth, imageHeight, canvas, position }) {
@@ -7,19 +8,19 @@ class GameMap extends Sprite {
 
   makeAction(action) {
     switch (action) {
-      case 'move_top':
+      case HERO_ACTIONS.move_top:
         this.position.y += 1;
         break;
 
-      case 'move_bottom':
+      case HERO_ACTIONS.move_bottom:
         this.position.y -= 1;
         break;
 
-      case 'move_left':
+      case HERO_ACTIONS.move_left:
         this.position.x += 1;
         break;
 
-      case 'move_right':
+      case HERO_ACTIONS.move_right:
         this.position.x -= 1;
         break;
 

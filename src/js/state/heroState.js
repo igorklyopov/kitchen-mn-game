@@ -3,4 +3,4 @@ const heroState = {
   currentAction: null,
 };
 
-export {heroState}
+export { heroState };

@@ -1,4 +1,5 @@
 import { Sprite } from './sprite.js';
+import { HERO_ACTIONS } from '../constants.js';
 
 class Hero extends Sprite {
   constructor({ image, imageWidth, imageHeight, canvas, position }) {
@@ -7,15 +8,15 @@ class Hero extends Sprite {
 
   makeAction(action) {
     switch (action) {
-      case 'move_top':
+      case HERO_ACTIONS.move_top:
         console.log(action);
         break;
 
-      case 'move_bottom':
+      case HERO_ACTIONS.move_bottom:
         console.log(action);
         break;
 
-      case 'move_left':
+      case HERO_ACTIONS.move_left:
         console.log(action);
         break;
 
@@ -23,19 +24,23 @@ class Hero extends Sprite {
         console.log(action);
         break;
 
-      case 'stand_bottom':
+      case HERO_ACTIONS.move_right:
         console.log(action);
         break;
 
-      case 'stand_top':
+      case HERO_ACTIONS.stand_top:
         console.log(action);
         break;
 
-      case 'stand_left':
+      case HERO_ACTIONS.stand_bottom:
         console.log(action);
         break;
 
-      case 'stand_right':
+      case HERO_ACTIONS.stand_left:
+        console.log(action);
+        break;
+
+      case HERO_ACTIONS.stand_right:
         console.log(action);
         break;
 
