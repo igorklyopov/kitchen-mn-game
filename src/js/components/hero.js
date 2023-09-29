@@ -8,40 +8,40 @@ class Hero extends Sprite {
 
   makeAction(action) {
     switch (action) {
-      case HERO_ACTIONS.move_top:
-        console.log(action);
+      case 'move_top':
+        // console.log(action);
         break;
 
-      case HERO_ACTIONS.move_bottom:
-        console.log(action);
+      case 'move_bottom':
+        // console.log(action);
         break;
 
-      case HERO_ACTIONS.move_left:
-        console.log(action);
+      case 'move_left':
+        // console.log(action);
         break;
 
       case 'move_right':
-        console.log(action);
+        // console.log(action);
         break;
 
-      case HERO_ACTIONS.move_right:
-        console.log(action);
+      case 'move_right':
+        // console.log(action);
         break;
 
-      case HERO_ACTIONS.stand_top:
-        console.log(action);
+      case 'stand_top':
+        // console.log(action);
         break;
 
-      case HERO_ACTIONS.stand_bottom:
-        console.log(action);
+      case 'stand_bottom':
+        // console.log(action);
         break;
 
-      case HERO_ACTIONS.stand_left:
-        console.log(action);
+      case 'stand_left':
+        // console.log(action);
         break;
 
-      case HERO_ACTIONS.stand_right:
-        console.log(action);
+      case 'stand_right':
+        // console.log(action);
         break;
 
       default:
