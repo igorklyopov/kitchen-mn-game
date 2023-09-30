@@ -1,1 +1,4 @@
 @import url(./css/css-reset.css);
+canvas{
+  outline: solid 2px grey;
+}

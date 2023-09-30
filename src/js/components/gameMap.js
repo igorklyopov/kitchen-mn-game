@@ -1,9 +1,26 @@
 import { Sprite } from './sprite.js';
-import { HERO_ACTIONS } from '../constants.js';
 
 class GameMap extends Sprite {
-  constructor({ image, imageWidth, imageHeight, canvas, position }) {
-    super({ image, imageWidth, imageHeight, canvas, position });
+  constructor({
+    image,
+    frameX,
+    frameY,
+    frameWidth,
+    frameHeight,
+    canvas,
+    position,
+    fps,
+  }) {
+    super({
+      image,
+      frameX,
+      frameY,
+      frameWidth,
+      frameHeight,
+      canvas,
+      position,
+      fps,
+    });
   }
 
   makeAction(action) {

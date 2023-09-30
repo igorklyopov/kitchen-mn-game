@@ -5,8 +5,8 @@ const GAME_MAP_POSITION_DEFAULT = {
   y: -985,
 };
 const HERO_POSITION_DEFAULT = {
-  x: 450,
-  y: 250,
+  x: 480,
+  y: 260,
 };
 const HERO_ACTIONS = [
   { name: 'move_top', keys: ['KeyW', 'Numpad8'] },

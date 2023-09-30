@@ -1,4 +1,4 @@
-import { HERO_ACTIONS } from './constants.js';
+import { HERO_ACTIONS } from './data/constants.js';
 import { state } from './state/state.js';
 
 function onKeyDown(e) {

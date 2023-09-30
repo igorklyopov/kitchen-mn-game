@@ -1,47 +1,92 @@
 import { Sprite } from './sprite.js';
-import { HERO_ACTIONS } from '../constants.js';
+import { heroAssetData } from '../data/heroAssetData.js';
+
+const {
+  move_top,
+  move_bottom,
+  move_right,
+  move_left,
+  stand_top,
+  stand_bottom,
+  stand_right,
+  stand_left,
+} = heroAssetData.actions;
 
 class Hero extends Sprite {
-  constructor({ image, imageWidth, imageHeight, canvas, position }) {
-    super({ image, imageWidth, imageHeight, canvas, position });
+  constructor({
+    image,
+    frameX,
+    frameY,
+    frameWidth,
+    frameHeight,
+    canvas,
+    position,
+    fps,
+  }) {
+    super({
+      image,
+      frameX,
+      frameY,
+      frameWidth,
+      frameHeight,
+      canvas,
+      position,
+      fps,
+    });
   }
 
-  makeAction(action) {
+  makeAction(action, deltaTime) {
     switch (action) {
       case 'move_top':
-        // console.log(action);
+        this.animateAction({
+          frameY: move_top.frameY,
+          maxFrame: move_top.maxFrame,
+          deltaTime,
+        });
         break;
 
       case 'move_bottom':
-        // console.log(action);
+        this.animateAction({
+          frameY: move_bottom.frameY,
+          maxFrame: move_bottom.maxFrame,
+          deltaTime,
+        });
         break;
 
       case 'move_left':
-        // console.log(action);
+        this.animateAction({
+          frameY: move_left.frameY,
+          maxFrame: move_left.maxFrame,
+          deltaTime,
+        });
         break;
 
       case 'move_right':
-        // console.log(action);
-        break;
-
-      case 'move_right':
-        // console.log(action);
+        this.animateAction({
+          frameY: move_right.frameY,
+          maxFrame: move_right.maxFrame,
+          deltaTime,
+        });
         break;
 
       case 'stand_top':
-        // console.log(action);
+        this.frameX = stand_top.frameX;
+        this.frameY = stand_top.frameY;
         break;
 
       case 'stand_bottom':
-        // console.log(action);
+        this.frameX = stand_bottom.frameX;
+        this.frameY = stand_bottom.frameY;
         break;
 
       case 'stand_left':
-        // console.log(action);
+        this.frameX = stand_left.frameX;
+        this.frameY = stand_left.frameY;
         break;
 
       case 'stand_right':
-        // console.log(action);
+        this.frameX = stand_right.frameX;
+        this.frameY = stand_right.frameY;
         break;
 
       default:
