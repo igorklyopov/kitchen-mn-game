@@ -1,4 +1,4 @@
-import { refs } from './js/refs.js';
+import { refs } from './js/data/refs.js';
 import {
   GAME_CANVAS_HEIGHT,
   GAME_CANVAS_WIDTH,

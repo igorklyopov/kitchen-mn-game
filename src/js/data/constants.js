@@ -2,7 +2,7 @@ const GAME_CANVAS_WIDTH = 1024;
 const GAME_CANVAS_HEIGHT = 576;
 const GAME_MAP_POSITION_DEFAULT = {
   x: 240,
-  y: -985,
+  y: -660,
 };
 const HERO_POSITION_DEFAULT = {
   x: 480,
