@@ -1,25 +1,33 @@
 class Sprite {
   constructor({
-    image,
-    frameX,
-    frameY,
-    frameWidth,
-    frameHeight,
-    canvas,
-    position,
-    fps,
+    imageSrc = '',
+    frameX = 0,
+    frameY = 0,
+    frameWidth = 0,
+    frameHeight = 0,
+    frameXCount = 1,
+    frameYCount = 1,
+    position = { x: 0, y: 0 },
+    fps = 10,
   }) {
-    this.image = image;
-    this.frameX = frameX || 0;
-    this.frameY = frameY || 0;
-    this.frameWidth = image ? frameWidth || this.image.width : 0;
-    this.frameHeight = image ? frameHeight || this.image.height : 0;
-    this.canvas = canvas || null;
-    this.gameWidth = canvas ? canvas.width : 0;
-    this.gameHeight = canvas ? canvas.height : 0;
-    this.context = canvas ? this.canvas.getContext('2d') : null;
-    this.position = position || { x: 0, y: 0 };
-    this.fps = fps || 10;
+    this.image = new Image();
+    this.image.onload = () => {
+      this.imgLoaded = true;
+
+      this.frameWidth = this.image.width / frameXCount || frameWidth;
+      this.frameHeight = this.image.height / frameYCount || frameHeight;
+    };
+    this.image.onerror = () => {
+      console.error(`image with src ${imageSrc} is not loaded`);
+    };
+    this.image.src = imageSrc;
+    this.imgLoaded = false;
+    this.frameX = frameX;
+    this.frameY = frameY;
+    this.frameXCount = frameXCount;
+    this.frameYCount = frameYCount;
+    this.position = position;
+    this.fps = fps;
     this.frameInterval = 1000 / this.fps;
     this.frameTimer = 0;
   }
@@ -35,9 +43,9 @@ class Sprite {
     }
   }
 
-  draw() {
-    if (this.image) {
-      this.context.drawImage(
+  draw(context) {
+    if (this.imgLoaded) {
+      context.drawImage(
         this.image,
         this.frameX * this.frameWidth,
         this.frameY * this.frameHeight,

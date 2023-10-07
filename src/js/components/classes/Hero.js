@@ -14,22 +14,24 @@ const {
 
 class Hero extends Sprite {
   constructor({
-    image,
+    imageSrc,
     frameX,
     frameY,
     frameWidth,
     frameHeight,
-    canvas,
+    frameXCount,
+    frameYCount,
     position,
     fps,
   }) {
     super({
-      image,
+      imageSrc,
       frameX,
       frameY,
       frameWidth,
       frameHeight,
-      canvas,
+      frameXCount,
+      frameYCount,
       position,
       fps,
     });
