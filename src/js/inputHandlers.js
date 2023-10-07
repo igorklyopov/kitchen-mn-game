@@ -1,5 +1,7 @@
 import { HERO_ACTIONS } from './data/constants.js';
 import { state } from './state/state.js';
+import { checkRectangleCollision } from './utils/checkRectangleCollision.js';
+
 
 function onKeyDown(e) {
   const key = e.code;
@@ -15,6 +17,8 @@ function onKeyDown(e) {
 function onKeyUp(e) {
   const key = e.code;
   state.hero.prevAction = state.hero.currentAction;
+
+  const stop=null
 
   for (const action of HERO_ACTIONS) {
     if (action.keys?.includes(key)) {

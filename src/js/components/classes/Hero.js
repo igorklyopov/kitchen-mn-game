@@ -1,5 +1,5 @@
-import { Sprite } from './sprite.js';
-import { heroAssetData } from '../data/heroAssetData.js';
+import { Sprite } from './Sprite.js';
+import { heroAssetData } from '../../data/heroAssetData.js';
 
 const {
   move_top,
