@@ -1,9 +1,9 @@
-const checkRectangleCollision = (rectA, rectB) => {
+const checkRectangleCollision = ({ rectA, rectB }) => {
   return (
-    rectA.x + rectA.width >= rectB.x &&
-    rectA.x <= rectB.x + rectB.width &&
-    rectA.y <= rectB.y + rectB.height &&
-    rectA.y + rectA.height >= rectB.y
+    rectA.position.x + rectA.width >= rectB.position.x &&
+    rectA.position.x <= rectB.position.x + rectB.width &&
+    rectA.position.y <= rectB.position.y + rectB.height &&
+    rectA.position.y + rectA.height >= rectB.position.y
   );
 };
 

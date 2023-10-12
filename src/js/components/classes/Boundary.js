@@ -3,6 +3,15 @@ class Boundary {
     this.position = position;
     this.width = width;
     this.height = height;
+    this.isActive = false;
+  }
+
+  setIsActive(value) {
+    this.isActive = value;
+  }
+
+  getIsActive() {
+    return this.isActive;
   }
 
   draw(context) {

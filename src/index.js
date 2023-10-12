@@ -1,16 +1,11 @@
 import { refs } from './js/data/refs.js';
-import {
-  GAME_CANVAS_HEIGHT,
-  GAME_CANVAS_WIDTH,
-  HERO_ACTIONS, //
-} from './js/data/constants.js';
-import { state } from './js/state/state.js';
+import { GAME_CANVAS_HEIGHT, GAME_CANVAS_WIDTH } from './js/data/constants.js';
+
 import { onKeyDown, onKeyUp } from './js/inputHandlers.js';
 import {
   collisionBoundaries,
   drawCollisionBoundaries,
 } from './js/collisions.js';
-import { checkRectangleCollision } from './js/utils/checkRectangleCollision.js';
 import { gameMap } from './js/components/gameMap.js';
 import { hero } from './js/components/hero.js';
 
@@ -18,10 +13,10 @@ refs.gameCanvas.width = GAME_CANVAS_WIDTH;
 refs.gameCanvas.height = GAME_CANVAS_HEIGHT;
 const ctx = refs.gameCanvas.getContext('2d');
 
-window.addEventListener('keydown', onKeyDown_1);
+window.addEventListener('keydown', onKeyDown);
 window.addEventListener('keyup', onKeyUp);
 
-// ========= collision ===========
+// ====== move objects for hero move simulation ======>
 
 const movableObjects = [gameMap, ...collisionBoundaries];
 
@@ -50,44 +45,7 @@ const moveObjects = (objects, action) => {
   });
 };
 
-function onKeyDown_1(e) {
-  const checkCollision = () => {
-    for (let i = 0; i < collisionBoundaries.length; i += 1) {
-      const boundary = collisionBoundaries[i];
-
-      const rectA = {
-        x: hero.position.x,
-        y: hero.position.y,
-        width: hero.frameWidth,
-        height: hero.frameHeight,
-      };
-
-      const rectB = {
-        x: boundary.position.x,
-        y: boundary.position.y,
-        width: boundary.width,
-        height: boundary.height,
-      };
-
-      const isColliding = checkRectangleCollision(rectA, rectB);
-
-      if (isColliding) {
-        console.log('isColliding');
-      }
-    }
-  };
-
-  const key = e.code;
-  for (const action of HERO_ACTIONS) {
-    if (action.keys?.includes(key)) {
-      if (action.name.includes('move')) checkCollision();
-      state.hero.currentAction = action.name;
-      return;
-    }
-  }
-}
-
-// ====================
+// <====== ======
 
 let lastTime = 0;
 
@@ -101,10 +59,8 @@ function animate(timeStamp) {
   gameMap.draw(ctx);
 
   drawCollisionBoundaries(ctx);
-  moveObjects(movableObjects, state.hero.currentAction);
 
   hero.draw(ctx);
-  hero.makeAction(state.hero.currentAction, deltaTime);
 }
 
 animate(0);
