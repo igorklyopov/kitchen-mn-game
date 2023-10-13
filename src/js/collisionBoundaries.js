@@ -7,14 +7,14 @@ const { map, width, tileSize } = collisionMainData;
 const collisionsMap = make2DArray(map, width);
 
 // for test ===>
-const testBoundary = new Boundary({
-  position: {
-    x: 480,
-    y: 200,
-  },
-  width: tileSize,
-  height: tileSize,
-});
+// const testBoundary = new Boundary({
+//   position: {
+//     x: 480,
+//     y: 200,
+//   },
+//   width: tileSize,
+//   height: tileSize,
+// });
 //<===
 
 const collisionBoundaries = [];

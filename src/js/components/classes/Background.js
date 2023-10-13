@@ -1,6 +1,6 @@
 import { Sprite } from './Sprite.js';
 
-class GameMap extends Sprite {
+class Background extends Sprite {
   constructor({
     imageSrc,
     frameX,
@@ -26,4 +26,4 @@ class GameMap extends Sprite {
   }
 }
 
-export { GameMap };
+export { Background };

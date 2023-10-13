@@ -1,29 +1,29 @@
 import { refs } from './js/data/refs.js';
 import {
-  GAME_CANVAS_HEIGHT,
   GAME_CANVAS_WIDTH,
+  GAME_CANVAS_HEIGHT,
+  GAME_MAP_POSITION_DEFAULT,
   MOVING_STEP,
 } from './js/data/constants.js';
-
 import { onKeyDown, onKeyUp } from './js/inputHandlers.js';
 import {
   collisionBoundaries,
   drawCollisionBoundaries,
-} from './js/collisions.js';
-import { gameMap } from './js/components/gameMap.js';
+} from './js/collisionBoundaries.js';
+import { background } from './js/components/background.js';
 import { hero } from './js/components/hero.js';
-import { keys, state } from './js/data/constants.js';
+// import { keys, state } from './js/data/constants.js';
 import { checkRectangleCollision } from './js/utils/checkRectangleCollision.js';
 
 refs.gameCanvas.width = GAME_CANVAS_WIDTH;
 refs.gameCanvas.height = GAME_CANVAS_HEIGHT;
 const ctx = refs.gameCanvas.getContext('2d');
 
-window.addEventListener('keydown', onKeyDown);
-window.addEventListener('keyup', onKeyUp);
+// window.addEventListener('keydown', onKeyDown);
+// window.addEventListener('keyup', onKeyUp);
 
 // ====== move objects for hero move simulation ======>
-const movableObjects = [gameMap, ...collisionBoundaries];
+const movableObjects = [background, ...collisionBoundaries];
 
 const moveObjects = (objects, action) => {
   objects.forEach((object) => {
@@ -51,20 +51,208 @@ const moveObjects = (objects, action) => {
 };
 // <====== ======
 
-let lastTime = 0;
+// let lastTime = 0;
 
-function animate(timeStamp) {
-  const deltaTime = timeStamp - lastTime;
-  lastTime = timeStamp;
+// function animate(timeStamp) {
+//   const deltaTime = timeStamp - lastTime;
+//   lastTime = timeStamp;
 
-  requestAnimationFrame(animate);
+//   requestAnimationFrame(animate);
+//   ctx.clearRect(0, 0, refs.gameCanvas.width, refs.gameCanvas.height);
+
+//   gameMap.draw(ctx);
+
+//   drawCollisionBoundaries(ctx);
+
+//   hero.draw(ctx);
+// }
+
+// animate(0);
+
+////////////////////////////////////////////////////////
+
+const boundaries = collisionBoundaries;
+
+const keys = {
+  w: {
+    pressed: false,
+  },
+  a: {
+    pressed: false,
+  },
+  s: {
+    pressed: false,
+  },
+  d: {
+    pressed: false,
+  },
+};
+
+const movables = [background, ...boundaries];
+const renderables = [background, ...boundaries, hero];
+
+function animate() {
+  const animationId = window.requestAnimationFrame(animate);
   ctx.clearRect(0, 0, refs.gameCanvas.width, refs.gameCanvas.height);
+  renderables.forEach((renderable) => {
+    renderable.draw(ctx);
+  });
 
-  gameMap.draw(ctx);
+  let moving = true;
+  hero.animate = false;
 
-  drawCollisionBoundaries(ctx);
+  const rectA = {
+    width: hero.frameWidth,
+    height: hero.frameHeight,
+    position: hero.position,
+  };
+  if (keys.w.pressed && lastKey === 'w') {
+    for (let i = 0; i < boundaries.length; i++) {
+      const boundary = boundaries[i];
 
-  hero.draw(ctx);
+      if (
+        checkRectangleCollision({
+          rectA,
+          rectB: {
+            ...boundary,
+            position: {
+              x: boundary.position.x,
+              y: boundary.position.y + 3,
+            },
+          },
+        })
+      ) {
+        moving = false;
+
+        break;
+      }
+    }
+
+    if (moving)
+      movables.forEach((movable) => {
+        movable.position.y += 3;
+      });
+  } else if (keys.a.pressed && lastKey === 'a') {
+    
+
+    for (let i = 0; i < boundaries.length; i++) {
+      const boundary = boundaries[i];
+      if (
+        checkRectangleCollision({
+          rectA,
+          rectB: {
+            ...boundary,
+            position: {
+              x: boundary.position.x + 3,
+              y: boundary.position.y,
+            },
+          },
+        })
+      ) {
+        moving = false;
+
+        break;
+      }
+    }
+
+    if (moving)
+      movables.forEach((movable) => {
+        movable.position.x += 3;
+      });
+  } else if (keys.s.pressed && lastKey === 's') {
+    
+
+    for (let i = 0; i < boundaries.length; i++) {
+      const boundary = boundaries[i];
+      if (
+        checkRectangleCollision({
+          rectA,
+          rectB: {
+            ...boundary,
+            position: {
+              x: boundary.position.x,
+              y: boundary.position.y - 3,
+            },
+          },
+        })
+      ) {
+        moving = false;
+
+        break;
+      }
+    }
+
+    if (moving)
+      movables.forEach((movable) => {
+        movable.position.y -= 3;
+      });
+  } else if (keys.d.pressed && lastKey === 'd') {
+    
+    for (let i = 0; i < boundaries.length; i++) {
+      const boundary = boundaries[i];
+      if (
+        checkRectangleCollision({
+          rectA,
+          rectB: {
+            ...boundary,
+            position: {
+              x: boundary.position.x - 3,
+              y: boundary.position.y,
+            },
+          },
+        })
+      ) {
+        moving = false;
+
+        break;
+      }
+    }
+
+    if (moving)
+      movables.forEach((movable) => {
+        movable.position.x -= 3;
+      });
+  }
 }
+animate();
 
-animate(0);
+let lastKey = '';
+window.addEventListener('keydown', (e) => {
+  switch (e.key) {
+    case 'w':
+      keys.w.pressed = true;
+      lastKey = 'w';
+      break;
+    case 'a':
+      keys.a.pressed = true;
+      lastKey = 'a';
+      break;
+
+    case 's':
+      keys.s.pressed = true;
+      lastKey = 's';
+      break;
+
+    case 'd':
+      keys.d.pressed = true;
+      lastKey = 'd';
+      break;
+  }
+});
+
+window.addEventListener('keyup', (e) => {
+  switch (e.key) {
+    case 'w':
+      keys.w.pressed = false;
+      break;
+    case 'a':
+      keys.a.pressed = false;
+      break;
+    case 's':
+      keys.s.pressed = false;
+      break;
+    case 'd':
+      keys.d.pressed = false;
+      break;
+  }
+});
