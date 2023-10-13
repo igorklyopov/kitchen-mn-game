@@ -1,4 +1,5 @@
 const checkRectangleCollision = ({ rectA, rectB }) => {
+  
   return (
     rectA.position.x + rectA.width >= rectB.position.x &&
     rectA.position.x <= rectB.position.x + rectB.width &&
@@ -6,5 +7,6 @@ const checkRectangleCollision = ({ rectA, rectB }) => {
     rectA.position.y + rectA.height >= rectB.position.y
   );
 };
+
 
 export { checkRectangleCollision };
