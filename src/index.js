@@ -47,9 +47,12 @@ const boundaries = collisionBoundaries;
 const movables = [background, ...boundaries];
 const renderables = [background, ...boundaries, hero];
 
+let lastTime = 0;
 
+function animate(moving, timeStamp) {
+  const deltaTime = timeStamp - lastTime;
+  lastTime = timeStamp;
 
-function animate(moving) {
   const animationId = window.requestAnimationFrame(animate);
   ctx.clearRect(0, 0, refs.gameCanvas.width, refs.gameCanvas.height);
   renderables.forEach((renderable) => {
@@ -177,4 +180,4 @@ function makeHeroMovement(moving) {
       });
   }
 }
-animate(state.background.moving);
+animate(state.background.moving, 0);
