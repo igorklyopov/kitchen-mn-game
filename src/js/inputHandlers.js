@@ -1,10 +1,9 @@
-import { keys, state } from './data/constants.js';
-
-
+import { keys } from './data/constants.js';
+import { state } from './state/state.js';
+import { HERO_ACTIONS } from './data/constants.js';
 
 function onKeyDown(e) {
   const key = e.code;
-  
 
   switch (key) {
     case 'Numpad8':

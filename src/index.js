@@ -12,15 +12,16 @@ import {
 } from './js/collisionBoundaries.js';
 import { background } from './js/components/background.js';
 import { hero } from './js/components/hero.js';
-// import { keys, state } from './js/data/constants.js';
+// import { keys} from './js/data/constants.js';
+import { state } from './js/state/state.js';
 import { checkRectangleCollision } from './js/utils/checkRectangleCollision.js';
 
 refs.gameCanvas.width = GAME_CANVAS_WIDTH;
 refs.gameCanvas.height = GAME_CANVAS_HEIGHT;
 const ctx = refs.gameCanvas.getContext('2d');
 
-// window.addEventListener('keydown', onKeyDown);
-// window.addEventListener('keyup', onKeyUp);
+window.addEventListener('keydown', onKeyDown);
+window.addEventListener('keyup', onKeyUp);
 
 // ====== move objects for hero move simulation ======>
 const movableObjects = [background, ...collisionBoundaries];
@@ -91,22 +92,24 @@ const keys = {
 const movables = [background, ...boundaries];
 const renderables = [background, ...boundaries, hero];
 
-function animate() {
+function animate(moving) {
   const animationId = window.requestAnimationFrame(animate);
   ctx.clearRect(0, 0, refs.gameCanvas.width, refs.gameCanvas.height);
   renderables.forEach((renderable) => {
     renderable.draw(ctx);
   });
 
-  let moving = true;
-  hero.animate = false;
+  makeHeroMovement(moving);
+}
 
+function makeHeroMovement(moving) {
   const rectA = {
     width: hero.frameWidth,
     height: hero.frameHeight,
     position: hero.position,
   };
-  if (keys.w.pressed && lastKey === 'w') {
+
+  if (keys.w.pressed && state.lastKey === 'w') {
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i];
 
@@ -132,9 +135,7 @@ function animate() {
       movables.forEach((movable) => {
         movable.position.y += 3;
       });
-  } else if (keys.a.pressed && lastKey === 'a') {
-    
-
+  } else if (keys.a.pressed && state.lastKey === 'a') {
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i];
       if (
@@ -159,9 +160,7 @@ function animate() {
       movables.forEach((movable) => {
         movable.position.x += 3;
       });
-  } else if (keys.s.pressed && lastKey === 's') {
-    
-
+  } else if (keys.s.pressed && state.lastKey === 's') {
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i];
       if (
@@ -186,8 +185,7 @@ function animate() {
       movables.forEach((movable) => {
         movable.position.y -= 3;
       });
-  } else if (keys.d.pressed && lastKey === 'd') {
-    
+  } else if (keys.d.pressed && state.lastKey === 'd') {
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i];
       if (
@@ -214,28 +212,29 @@ function animate() {
       });
   }
 }
-animate();
+animate(state.moving);
 
-let lastKey = '';
 window.addEventListener('keydown', (e) => {
+  console.log(state);
   switch (e.key) {
     case 'w':
       keys.w.pressed = true;
-      lastKey = 'w';
+      state.lastKey = 'w';
+
       break;
     case 'a':
       keys.a.pressed = true;
-      lastKey = 'a';
+      state.lastKey = 'a';
       break;
 
     case 's':
       keys.s.pressed = true;
-      lastKey = 's';
+      state.lastKey = 's';
       break;
 
     case 'd':
       keys.d.pressed = true;
-      lastKey = 'd';
+      state.lastKey = 'd';
       break;
   }
 });

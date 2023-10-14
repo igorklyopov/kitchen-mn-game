@@ -9,15 +9,25 @@ const HERO_POSITION_DEFAULT = {
   y: 250,
 };
 const MOVING_STEP = 1;
+const ACTIONS_NAMES = {
+  move_top: 'move_top',
+  move_bottom: 'move_bottom',
+  move_left: 'move_left',
+  move_right: 'move_right',
+  stand_top: 'stand_top',
+  stand_bottom: 'stand_bottom',
+  stand_left: 'stand_left',
+  stand_right: 'stand_right',
+};
 const HERO_ACTIONS = [
-  { name: 'move_top', keys: ['KeyW', 'Numpad8'] },
-  { name: 'move_bottom', keys: ['KeyS', 'Numpad2'] },
-  { name: 'move_left', keys: ['KeyA', 'Numpad4'] },
-  { name: 'move_right', keys: ['KeyD', 'Numpad6'] },
-  { name: 'stand_top' },
-  { name: 'stand_bottom' },
-  { name: 'stand_left' },
-  { name: 'stand_right' },
+  { name: ACTIONS_NAMES.move_top, keys: ['KeyW', 'Numpad8'] },
+  { name: ACTIONS_NAMES.stand_bottom, keys: ['KeyS', 'Numpad2'] },
+  { name: ACTIONS_NAMES.move_left, keys: ['KeyA', 'Numpad4'] },
+  { name: ACTIONS_NAMES.move_right, keys: ['KeyD', 'Numpad6'] },
+  { name: ACTIONS_NAMES.stand_top },
+  { name: ACTIONS_NAMES.stand_bottom },
+  { name: ACTIONS_NAMES.stand_left },
+  { name: ACTIONS_NAMES.stand_right },
 ];
 
 const keys = {
@@ -35,8 +45,6 @@ const keys = {
   },
 };
 
-const state = { lastKey: '', move: true };
-
 export {
   GAME_CANVAS_WIDTH,
   GAME_CANVAS_HEIGHT,
@@ -45,5 +53,4 @@ export {
   MOVING_STEP,
   HERO_ACTIONS,
   keys,
-  state,
 };
