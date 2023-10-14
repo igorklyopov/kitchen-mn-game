@@ -22,26 +22,6 @@ const ctx = refs.gameCanvas.getContext('2d');
 window.addEventListener('keydown', onKeyDown);
 window.addEventListener('keyup', onKeyUp);
 
-// let lastTime = 0;
-
-// function animate(timeStamp) {
-//   const deltaTime = timeStamp - lastTime;
-//   lastTime = timeStamp;
-
-//   requestAnimationFrame(animate);
-//   ctx.clearRect(0, 0, refs.gameCanvas.width, refs.gameCanvas.height);
-
-//   gameMap.draw(ctx);
-
-//   drawCollisionBoundaries(ctx);
-
-//   hero.draw(ctx);
-// }
-
-// animate(0);
-
-////////////////////////////////////////////////////////
-
 const boundaries = collisionBoundaries;
 
 const movables = [background, ...boundaries];
