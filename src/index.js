@@ -22,35 +22,6 @@ const ctx = refs.gameCanvas.getContext('2d');
 window.addEventListener('keydown', onKeyDown);
 window.addEventListener('keyup', onKeyUp);
 
-// ====== move objects for hero move simulation ======>
-const movableObjects = [background, ...collisionBoundaries];
-
-const moveObjects = (objects, action) => {
-  objects.forEach((object) => {
-    switch (action) {
-      case 'move_top':
-        object.position.y += MOVING_STEP;
-        break;
-
-      case 'move_bottom':
-        object.position.y -= MOVING_STEP;
-        break;
-
-      case 'move_left':
-        object.position.x += MOVING_STEP;
-        break;
-
-      case 'move_right':
-        object.position.x -= MOVING_STEP;
-        break;
-
-      default:
-        break;
-    }
-  });
-};
-// <====== ======
-
 // let lastTime = 0;
 
 // function animate(timeStamp) {
@@ -76,6 +47,8 @@ const boundaries = collisionBoundaries;
 const movables = [background, ...boundaries];
 const renderables = [background, ...boundaries, hero];
 
+
+
 function animate(moving) {
   const animationId = window.requestAnimationFrame(animate);
   ctx.clearRect(0, 0, refs.gameCanvas.width, refs.gameCanvas.height);
@@ -96,19 +69,18 @@ function makeHeroMovement(moving) {
   if (state.hero.move_top && state.hero.prevAction === ACTIONS_NAMES.move_top) {
     for (let i = 0; i < boundaries.length; i += 1) {
       const boundary = boundaries[i];
-
-      if (
-        checkRectangleCollision({
-          rectA,
-          rectB: {
-            ...boundary,
-            position: {
-              x: boundary.position.x,
-              y: boundary.position.y + MOVING_STEP,
-            },
+      const isColliding = checkRectangleCollision({
+        rectA,
+        rectB: {
+          ...boundary,
+          position: {
+            x: boundary.position.x,
+            y: boundary.position.y + MOVING_STEP,
           },
-        })
-      ) {
+        },
+      });
+
+      if (isColliding) {
         moving = false;
 
         break;
@@ -125,18 +97,18 @@ function makeHeroMovement(moving) {
   ) {
     for (let i = 0; i < boundaries.length; i += 1) {
       const boundary = boundaries[i];
-      if (
-        checkRectangleCollision({
-          rectA,
-          rectB: {
-            ...boundary,
-            position: {
-              x: boundary.position.x + MOVING_STEP,
-              y: boundary.position.y,
-            },
+      const isColliding = checkRectangleCollision({
+        rectA,
+        rectB: {
+          ...boundary,
+          position: {
+            x: boundary.position.x + MOVING_STEP,
+            y: boundary.position.y,
           },
-        })
-      ) {
+        },
+      });
+
+      if (isColliding) {
         moving = false;
 
         break;
@@ -153,18 +125,18 @@ function makeHeroMovement(moving) {
   ) {
     for (let i = 0; i < boundaries.length; i += 1) {
       const boundary = boundaries[i];
-      if (
-        checkRectangleCollision({
-          rectA,
-          rectB: {
-            ...boundary,
-            position: {
-              x: boundary.position.x,
-              y: boundary.position.y - MOVING_STEP,
-            },
+      const isColliding = checkRectangleCollision({
+        rectA,
+        rectB: {
+          ...boundary,
+          position: {
+            x: boundary.position.x,
+            y: boundary.position.y - MOVING_STEP,
           },
-        })
-      ) {
+        },
+      });
+
+      if (isColliding) {
         moving = false;
 
         break;
@@ -181,18 +153,18 @@ function makeHeroMovement(moving) {
   ) {
     for (let i = 0; i < boundaries.length; i += 1) {
       const boundary = boundaries[i];
-      if (
-        checkRectangleCollision({
-          rectA,
-          rectB: {
-            ...boundary,
-            position: {
-              x: boundary.position.x - MOVING_STEP,
-              y: boundary.position.y,
-            },
+      const isColliding = checkRectangleCollision({
+        rectA,
+        rectB: {
+          ...boundary,
+          position: {
+            x: boundary.position.x - MOVING_STEP,
+            y: boundary.position.y,
           },
-        })
-      ) {
+        },
+      });
+
+      if (isColliding) {
         moving = false;
 
         break;

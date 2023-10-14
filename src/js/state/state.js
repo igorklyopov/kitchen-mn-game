@@ -4,7 +4,7 @@ const state = {
   background: { moving: true },
   hero: {
     prevAction: '',
-    currentAction: '',
+    // currentAction: '',
     [ACTIONS_NAMES.move_top]: false,
     [ACTIONS_NAMES.move_bottom]: false,
     [ACTIONS_NAMES.move_left]: false,
