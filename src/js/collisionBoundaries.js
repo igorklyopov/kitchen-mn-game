@@ -35,10 +35,4 @@ collisionsMap.forEach((row, i) => {
   });
 });
 
-const drawCollisionBoundaries = (context) => {
-  collisionBoundaries.forEach((boundary) => {
-    boundary.draw(context);
-  });
-};
-
-export { collisionBoundaries, drawCollisionBoundaries };
+export { collisionBoundaries };

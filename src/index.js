@@ -8,7 +8,6 @@ import {
 import { onKeyDown, onKeyUp } from './js/inputHandlers.js';
 import {
   collisionBoundaries,
-  drawCollisionBoundaries,
 } from './js/collisionBoundaries.js';
 import { background } from './js/components/background.js';
 import { hero } from './js/components/hero.js';
