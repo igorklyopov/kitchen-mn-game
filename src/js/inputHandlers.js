@@ -1,55 +1,31 @@
-import { keys } from './data/constants.js';
 import { state } from './state/state.js';
 import { HERO_ACTIONS } from './data/constants.js';
 
 function onKeyDown(e) {
   const key = e.code;
 
-  switch (key) {
-    case 'Numpad8':
-      keys.Numpad8.pressed = true;
-      state.lastKey = 'Numpad8';
-      break;
+  for (let i = 0; i < HERO_ACTIONS.length; i += 1) {
+    const action = HERO_ACTIONS[i];
+    if (action.keys?.includes(key)) {
+      state.hero[action.name] = true;
+      state.hero.currentAction = action.name;
+      state.hero.prevAction = action.name;
 
-    case 'Numpad4':
-      keys.Numpad4.pressed = true;
-      state.lastKey = 'Numpad4';
-      break;
-
-    case 'Numpad2':
-      keys.Numpad2.pressed = true;
-      state.lastKey = 'Numpad2';
-      break;
-
-    case 'Numpad6':
-      keys.Numpad6.pressed = true;
-      state.lastKey = 'Numpad6';
-      break;
+      return;
+    }
   }
 }
 
 function onKeyUp(e) {
   const key = e.code;
 
-  switch (key) {
-    case 'Numpad8':
-      keys.Numpad8.pressed = false;
-      break;
+  for (let i = 0; i < HERO_ACTIONS.length; i += 1) {
+    const action = HERO_ACTIONS[i];
 
-    case 'Numpad4':
-      keys.Numpad4.pressed = false;
-      break;
-
-    case 'Numpad2':
-      keys.Numpad2.pressed = false;
-      break;
-
-    case 'Numpad6':
-      keys.Numpad6.pressed = false;
-      break;
-
-    default:
-      break;
+    if (action.keys?.includes(key)) {
+      state.hero[action.name] = false;
+      return;
+    }
   }
 }
 

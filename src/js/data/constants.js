@@ -21,29 +21,12 @@ const ACTIONS_NAMES = {
 };
 const HERO_ACTIONS = [
   { name: ACTIONS_NAMES.move_top, keys: ['KeyW', 'Numpad8'] },
-  { name: ACTIONS_NAMES.stand_bottom, keys: ['KeyS', 'Numpad2'] },
+  { name: ACTIONS_NAMES.move_bottom, keys: ['KeyS', 'Numpad2'] },
   { name: ACTIONS_NAMES.move_left, keys: ['KeyA', 'Numpad4'] },
   { name: ACTIONS_NAMES.move_right, keys: ['KeyD', 'Numpad6'] },
-  { name: ACTIONS_NAMES.stand_top },
-  { name: ACTIONS_NAMES.stand_bottom },
-  { name: ACTIONS_NAMES.stand_left },
-  { name: ACTIONS_NAMES.stand_right },
 ];
 
-const keys = {
-  Numpad8: {
-    pressed: false,
-  },
-  Numpad4: {
-    pressed: false,
-  },
-  Numpad2: {
-    pressed: false,
-  },
-  Numpad6: {
-    pressed: false,
-  },
-};
+
 
 export {
   GAME_CANVAS_WIDTH,
@@ -51,6 +34,7 @@ export {
   GAME_MAP_POSITION_DEFAULT,
   HERO_POSITION_DEFAULT,
   MOVING_STEP,
+  ACTIONS_NAMES,
   HERO_ACTIONS,
-  keys,
+  
 };

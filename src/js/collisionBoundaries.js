@@ -28,6 +28,7 @@ collisionsMap.forEach((row, i) => {
       },
       width: tileSize,
       height: tileSize,
+      color: 'rgba(244,8,222,0.5)',
     });
 
     if (item === 1) collisionBoundaries.push(collisionBoundary);
