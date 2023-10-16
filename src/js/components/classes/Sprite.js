@@ -33,14 +33,12 @@ class Sprite {
     this.frameTimer = 0;
   }
 
-  animateAction({ frameY, maxFrame, deltaTime }) {
+  animateAction({ frameY = 0, deltaTime = this.fps }) {
     if (this.frameTimer > this.frameInterval) {
       this.frameTimer = 0;
 
       this.frameY = frameY;
-      this.frameX < maxFrame /*this.maxFrame*/
-        ? (this.frameX += 1)
-        : (this.frameX = 0);
+      this.frameX < this.maxFrame ? (this.frameX += 1) : (this.frameX = 0);
     } else {
       this.frameTimer += deltaTime;
     }

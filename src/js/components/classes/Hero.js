@@ -1,5 +1,6 @@
 import { Sprite } from './Sprite.js';
 import { heroAssetData } from '../../data/heroAssetData.js';
+import { ACTIONS_NAMES } from '../../data/constants.js';
 
 const {
   move_top,
@@ -39,54 +40,50 @@ class Hero extends Sprite {
 
   makeAction(action, deltaTime) {
     switch (action) {
-      case 'move_top':
+      case ACTIONS_NAMES.move_top:
         this.animateAction({
           frameY: move_top.frameY,
-          maxFrame: move_top.maxFrame,
           deltaTime,
         });
         break;
 
-      case 'move_bottom':
+      case ACTIONS_NAMES.move_bottom:
         this.animateAction({
           frameY: move_bottom.frameY,
-          maxFrame: move_bottom.maxFrame,
           deltaTime,
         });
         break;
 
-      case 'move_left':
+      case ACTIONS_NAMES.move_left:
         this.animateAction({
           frameY: move_left.frameY,
-          maxFrame: move_left.maxFrame,
           deltaTime,
         });
         break;
 
-      case 'move_right':
+      case ACTIONS_NAMES.move_right:
         this.animateAction({
           frameY: move_right.frameY,
-          maxFrame: move_right.maxFrame,
           deltaTime,
         });
         break;
 
-      case 'stand_top':
+      case ACTIONS_NAMES.stand_top:
         this.frameX = stand_top.frameX;
         this.frameY = stand_top.frameY;
         break;
 
-      case 'stand_bottom':
+      case ACTIONS_NAMES.stand_bottom:
         this.frameX = stand_bottom.frameX;
         this.frameY = stand_bottom.frameY;
         break;
 
-      case 'stand_left':
+      case ACTIONS_NAMES.stand_left:
         this.frameX = stand_left.frameX;
         this.frameY = stand_left.frameY;
         break;
 
-      case 'stand_right':
+      case ACTIONS_NAMES.stand_right:
         this.frameX = stand_right.frameX;
         this.frameY = stand_right.frameY;
         break;

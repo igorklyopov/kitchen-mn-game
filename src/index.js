@@ -5,10 +5,8 @@ import {
   MOVING_STEP,
   ACTIONS_NAMES,
 } from './js/data/constants.js';
-import { onKeyDown, onKeyUp } from './js/inputHandlers.js';
-import {
-  collisionBoundaries,
-} from './js/collisionBoundaries.js';
+import { onKeyDown, setHeroIdleAction, onKeyUp } from './js/inputHandlers.js';
+import { collisionBoundaries } from './js/collisionBoundaries.js';
 import { background } from './js/components/background.js';
 import { hero } from './js/components/hero.js';
 import { state } from './js/state/state.js';
@@ -28,17 +26,18 @@ const renderables = [background, ...boundaries, hero];
 
 let lastTime = 0;
 
-function animate(moving, timeStamp) {
+function animate(timeStamp) {
   const deltaTime = timeStamp - lastTime;
   lastTime = timeStamp;
 
-  const animationId = window.requestAnimationFrame(animate);
+  const animationId = requestAnimationFrame(animate);
   ctx.clearRect(0, 0, refs.gameCanvas.width, refs.gameCanvas.height);
   renderables.forEach((renderable) => {
     renderable.draw(ctx);
   });
 
-  makeHeroMovement(moving);
+  makeHeroMovement(state.background.moving);
+  hero.makeAction(state.hero.currentAction, deltaTime);
 }
 
 function makeHeroMovement(moving) {
@@ -64,7 +63,7 @@ function makeHeroMovement(moving) {
 
       if (isColliding) {
         moving = false;
-
+        setHeroIdleAction(state.hero.prevAction);
         break;
       }
     }
@@ -92,7 +91,7 @@ function makeHeroMovement(moving) {
 
       if (isColliding) {
         moving = false;
-
+        setHeroIdleAction(state.hero.prevAction);
         break;
       }
     }
@@ -120,7 +119,7 @@ function makeHeroMovement(moving) {
 
       if (isColliding) {
         moving = false;
-
+        setHeroIdleAction(state.hero.prevAction);
         break;
       }
     }
@@ -148,7 +147,7 @@ function makeHeroMovement(moving) {
 
       if (isColliding) {
         moving = false;
-
+        setHeroIdleAction(state.hero.prevAction);
         break;
       }
     }
@@ -159,4 +158,4 @@ function makeHeroMovement(moving) {
       });
   }
 }
-animate(state.background.moving, 0);
+animate(0);

@@ -26,8 +26,6 @@ const HERO_ACTIONS = [
   { name: ACTIONS_NAMES.move_right, keys: ['KeyD', 'Numpad6'] },
 ];
 
-
-
 export {
   GAME_CANVAS_WIDTH,
   GAME_CANVAS_HEIGHT,
@@ -36,5 +34,4 @@ export {
   MOVING_STEP,
   ACTIONS_NAMES,
   HERO_ACTIONS,
-  
 };
