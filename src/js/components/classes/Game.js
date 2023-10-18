@@ -5,6 +5,7 @@ import {
 } from '../../data/constants.js';
 import { checkRectangleCollision } from '../../utils/checkRectangleCollision.js';
 
+
 class Game {
   constructor({
     canvas = null,

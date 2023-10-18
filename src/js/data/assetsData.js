@@ -17,4 +17,21 @@ export const assetsData = [
       stand_right: { frameX: 1, frameY: 2 },
     },
   },
+  {
+    name: 'lida',
+    src: '../../../public/assets/img/characters/female/lida.png',
+    frameXCount: 3,
+    frameYCount: 4,
+    fps: 10,
+    actions: {
+      move_top: { frameX: 0, frameY: 3, maxFrame: 2 },
+      move_bottom: { frameX: 0, frameY: 0 },
+      move_right: { frameX: 0, frameY: 2 },
+      move_left: { frameX: 0, frameY: 1 },
+      stand_top: { frameX: 1, frameY: 3 },
+      stand_bottom: { frameX: 1, frameY: 0 },
+      stand_left: { frameX: 1, frameY: 1 },
+      stand_right: { frameX: 1, frameY: 2 },
+    },
+  },
 ];
