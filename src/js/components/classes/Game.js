@@ -4,12 +4,14 @@ import {
   MOVING_STEP,
 } from '../../data/constants.js';
 import { checkRectangleCollision } from '../../utils/checkRectangleCollision.js';
+import { lidaPath } from '../../data/characters/lidaData.js';
 
 
 class Game {
   constructor({
     canvas = null,
     hero = null,
+    characters=[],
     boundaries = [],
     renderables = [],
     movables = [],
@@ -17,6 +19,7 @@ class Game {
     this.canvas = canvas;
     this.ctx = this.canvas.getContext('2d');
     this.hero = hero;
+    this.characters = characters;
     this.boundaries = boundaries;
     this.renderables = renderables;
     this.movables = movables;
@@ -231,6 +234,9 @@ class Game {
       this.render();
       this.move(this.state.background.moving);
       this.hero.makeAction(this.state.hero.currentAction, deltaTime);
+
+      const [lida] = this.characters;
+      lida.update(lidaPath);
     };
 
     animationLoop(0);

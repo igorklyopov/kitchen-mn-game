@@ -15,9 +15,10 @@ const lida = new Character({
   frameXCount: lidaAssetData.frameXCount,
   frameYCount: lidaAssetData.frameYCount,
   position: {
-    x: lidaPath[0].x + GAME_MAP_POSITION_DEFAULT.x,
-    y: lidaPath[0].y + GAME_MAP_POSITION_DEFAULT.y,
+    x: lidaPath[0].position.x,
+    y: lidaPath[0].position.y,
   },
+  
 });
 
 
