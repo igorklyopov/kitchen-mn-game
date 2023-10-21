@@ -38,7 +38,7 @@ class Hero extends Sprite {
     });
   }
 
-  makeAction(action, deltaTime) {
+  makeAction(action = '', deltaTime = this.fps) {
     switch (action) {
       case ACTIONS_NAMES.move_top:
         this.animateAction({
