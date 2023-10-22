@@ -4,14 +4,12 @@ import {
   MOVING_STEP,
 } from '../../data/constants.js';
 import { checkRectangleCollision } from '../../utils/checkRectangleCollision.js';
-import { lidaPath } from '../../data/characters/lidaData.js';
-
 
 class Game {
   constructor({
     canvas = null,
     hero = null,
-    characters=[],
+    characters = [],
     boundaries = [],
     renderables = [],
     movables = [],
@@ -131,6 +129,29 @@ class Game {
         }
       }
 
+      for (let i = 0; i < this.characters.length; i += 1) {
+        const character = this.characters[i];
+        const isColliding = checkRectangleCollision({
+          rectA,
+          rectB: {
+            width: character.frameWidth,
+            height: character.frameHeight,
+            position: {
+              x: character.position.x,
+              y: character.position.y + MOVING_STEP,
+            },
+          },
+        });
+
+        if (isColliding) {
+          character.isActive = true;
+
+          moving = false;
+          this.setHeroIdleAction(this.state.hero.prevAction);
+          break;
+        }
+      }
+
       if (moving)
         this.movables.forEach((movable) => {
           movable.position.y += MOVING_STEP;
@@ -153,6 +174,29 @@ class Game {
         });
 
         if (isColliding) {
+          moving = false;
+          this.setHeroIdleAction(this.state.hero.prevAction);
+          break;
+        }
+      }
+
+      for (let i = 0; i < this.characters.length; i += 1) {
+        const character = this.characters[i];
+        const isColliding = checkRectangleCollision({
+          rectA,
+          rectB: {
+            width: character.frameWidth,
+            height: character.frameHeight,
+            position: {
+              x: character.position.x + MOVING_STEP,
+              y: character.position.y,
+            },
+          },
+        });
+
+        if (isColliding) {
+          character.isActive = true;
+
           moving = false;
           this.setHeroIdleAction(this.state.hero.prevAction);
           break;
@@ -187,6 +231,29 @@ class Game {
         }
       }
 
+      for (let i = 0; i < this.characters.length; i += 1) {
+        const character = this.characters[i];
+        const isColliding = checkRectangleCollision({
+          rectA,
+          rectB: {
+            width: character.frameWidth,
+            height: character.frameHeight,
+            position: {
+              x: character.position.x,
+              y: character.position.y - MOVING_STEP,
+            },
+          },
+        });
+
+        if (isColliding) {
+          character.isActive = true;
+
+          moving = false;
+          this.setHeroIdleAction(this.state.hero.prevAction);
+          break;
+        }
+      }
+
       if (moving)
         this.movables.forEach((movable) => {
           movable.position.y -= MOVING_STEP;
@@ -215,11 +282,40 @@ class Game {
         }
       }
 
+      for (let i = 0; i < this.characters.length; i += 1) {
+        const character = this.characters[i];
+        const isColliding = checkRectangleCollision({
+          rectA,
+          rectB: {
+            width: character.frameWidth,
+            height: character.frameHeight,
+            position: {
+              x: character.position.x - MOVING_STEP,
+              y: character.position.y,
+            },
+          },
+        });
+
+        if (isColliding) {
+          character.isActive = true;
+
+          moving = false;
+          this.setHeroIdleAction(this.state.hero.prevAction);
+          break;
+        }
+      }
+
       if (moving)
         this.movables.forEach((movable) => {
           movable.position.x -= MOVING_STEP;
         });
     }
+  }
+
+  updateCharacters(deltaTime) {
+    this.characters.forEach((character) =>
+      character.update(this.state, deltaTime)
+    );
   }
 
   animate() {
@@ -232,11 +328,11 @@ class Game {
 
       this.clearCanvas();
       this.render();
+
       this.move(this.state.background.moving);
       this.hero.makeAction(this.state.hero.currentAction, deltaTime);
 
-      const [lida] = this.characters;
-      lida.update(lidaPath);
+      this.updateCharacters(deltaTime);
     };
 
     animationLoop(0);

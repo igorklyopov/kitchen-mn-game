@@ -8,7 +8,7 @@ const HERO_POSITION_DEFAULT = {
   x: 480,
   y: 250,
 };
-const MOVING_STEP = 1;
+const MOVING_STEP = 2;
 const ACTIONS_NAMES = {
   move_top: 'move_top',
   move_bottom: 'move_bottom',

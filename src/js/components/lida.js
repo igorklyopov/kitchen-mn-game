@@ -2,7 +2,6 @@ import { Character } from './classes/Character.js';
 import { findAssetByName } from '../utils/findAssetByName.js';
 import { assetsData } from '../data/assetsData.js';
 import { lidaPath } from '../data/characters/lidaData.js';
-import { GAME_MAP_POSITION_DEFAULT } from '../data/constants.js';
 
 const lidaAssetData = findAssetByName(assetsData, 'lida');
 const lidaImg = lidaAssetData.src;
@@ -18,8 +17,7 @@ const lida = new Character({
     x: lidaPath[0].position.x,
     y: lidaPath[0].position.y,
   },
-  
+  path: lidaPath,
 });
-
 
 export { lida };
