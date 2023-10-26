@@ -4,6 +4,75 @@ import {
   MOVING_STEP,
 } from '../../data/constants.js';
 import { checkRectangleCollision } from '../../utils/checkRectangleCollision.js';
+import { Dialog } from './dialog.js';
+
+// ====== dialog ======>
+import { refs } from '../../data/refs.js';
+
+const dialog = new Dialog();
+
+const lidaMessage =
+  'Ходят здесь, мусорят - покусаю, ё-моё!!! Почему я за вами должна убирать?! Мне что больше всех надо? Идите на своё рабочее место! Нечего здесь ходить!!!... Вечно придут, наср*т, и не убирают! А я потом получаю! Оце ж и дома такэ!.. Я в следующий раз загорожу всё и ходите через улицу - мне всё равно!!! Что это такое??? Разве можно так?! Нина! Нина-а-а!!! Нина Григорьевна! Только мешают работать и всё! Никакой пользы от них... не нравится - я пойду на овощи! Становитесь и сами работайте здесь! В этом свинюшнике. Что это такое?! Вот что это???  Вы что не знаете где оно должно лежать?!! Как так можно? - не понимаю!.. Как в таких условиях можно работать? А потом - Лида то, Лида сё!.. Убирайте сейчас же!!! И не ходите здесь! Что не понятного??? Сто раз говорила уже!!! Не доходит что-ли? Что за люди...';
+
+const buttons = [
+  {
+    text: 'дать шоколадку',
+    id: 'give_chocolate',
+    onClick: () => {
+      console.log('дать шоколадку');
+      dialog.buttonsRefs.forEach((button) => {
+        if (button.dataset.id === 'continue') {
+          button.removeAttribute('disabled');
+        } else {
+          button.setAttribute('disabled', 'true');
+        }
+      });
+    },
+  },
+  {
+    text: 'позвать Богдана',
+    id: 'call_bohdan',
+    onClick: () => {
+      console.log('позвать Богдана');
+     
+      dialog.buttonsRefs.forEach((button) => {
+        if (button.dataset.id === 'continue') {
+          button.removeAttribute('disabled');
+        } else {
+          button.setAttribute('disabled','true');
+        }
+      });
+    },
+  },
+  {
+    text: 'продолжить',
+    id: 'continue',
+    onClick: () => {
+      console.log('продолжить');
+      dialog.close();
+    },
+  },
+];
+
+const lidaMessageHtml = `<p>${lidaMessage}</p>`;
+
+dialog.create({
+  rootEl: refs.dialog,
+  content: lidaMessageHtml,
+  buttons,
+});
+dialog.buttonsRefs.forEach((button) => {
+  if (button.dataset.id === 'continue') {
+    button.setAttribute('disabled', 'true');
+  }
+});
+dialog.open();
+// dialog.addContent('<p>test</p>');
+// dialog.close();
+
+console.log(dialog.buttonsRefs);
+
+// <====== END dialog ======
 
 class Game {
   constructor({

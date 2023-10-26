@@ -29,8 +29,16 @@ class Character extends Sprite {
 
     this.path = path;
     this.waypointIndex = 0;
-    this.isActive = false;
+    this.active = false;
     this.timeToAction = 2000; // in ms
+  }
+
+  set isActive(value) {
+    this.active = value;
+  }
+
+  get isActive() {
+    return this.active;
   }
 
   update(state = {}, deltaTime) {
@@ -66,13 +74,13 @@ class Character extends Sprite {
        */
       if (this.frameTimer > this.timeToAction) {
         this.frameTimer = 0;
-        this.isActive = false;
+        this.active = false;
       } else {
         this.frameTimer += deltaTime;
       }
     }
 
-    if (this.isActive) return;
+    if (this.active) return;
     // <====== END check hero collision ======
 
     /**

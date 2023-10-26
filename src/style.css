@@ -1,4 +1,7 @@
 @import url(./css/css-reset.css);
-canvas{
+@import url(./css/variables.css);
+@import url(./css/dialog.css);
+
+canvas {
   outline: solid 2px grey;
 }
