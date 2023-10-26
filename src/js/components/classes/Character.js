@@ -1,8 +1,9 @@
-import { Sprite } from './Sprite.js';
+import { Hero } from './Hero.js';
 import { checkRectangleCollision } from '../../utils/checkRectangleCollision.js';
 import { hero } from '../hero.js';
+import { ACTIONS_NAMES } from '../../data/constants.js';
 
-class Character extends Sprite {
+class Character extends Hero {
   constructor({
     imageSrc,
     frameX,
@@ -30,7 +31,7 @@ class Character extends Sprite {
     this.path = path;
     this.waypointIndex = 0;
     this.active = false;
-    this.timeToAction = 2000; // in ms
+    this.timeToAction = 1000; // in ms
   }
 
   set isActive(value) {
@@ -70,7 +71,7 @@ class Character extends Sprite {
       }
     } else {
       /**
-       * make holdback before start moving
+       * make holdback before start moving (after hero collision)
        */
       if (this.frameTimer > this.timeToAction) {
         this.frameTimer = 0;
@@ -93,6 +94,31 @@ class Character extends Sprite {
 
     this.position.x += Math.cos(angle);
     this.position.y += Math.sin(angle);
+    /**
+     * movement animation
+     */
+    const getMoveDirection = () => {
+      const deltaX = Math.round(this.position.x) - Math.round(waypoint.x);
+      const deltaY = Math.round(this.position.y) - Math.round(waypoint.y);
+
+      let direction = '';
+
+      if (deltaX < 0) return (direction = ACTIONS_NAMES.move_right);
+
+      if (deltaX > 0) return (direction = ACTIONS_NAMES.move_left);
+
+      if (deltaY > 0) direction = ACTIONS_NAMES.move_top;
+
+      if (deltaY < 0) direction = ACTIONS_NAMES.move_bottom;
+
+      return direction;
+    };
+
+    const action = getMoveDirection();
+    this.makeAction(action, deltaTime );
+    /**
+     * END movement animation
+     */
 
     if (
       Math.round(this.position.x) === Math.round(waypoint.x) &&

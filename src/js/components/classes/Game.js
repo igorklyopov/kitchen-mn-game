@@ -34,12 +34,12 @@ const buttons = [
     id: 'call_bohdan',
     onClick: () => {
       console.log('позвать Богдана');
-     
+
       dialog.buttonsRefs.forEach((button) => {
         if (button.dataset.id === 'continue') {
           button.removeAttribute('disabled');
         } else {
-          button.setAttribute('disabled','true');
+          button.setAttribute('disabled', 'true');
         }
       });
     },
@@ -66,11 +66,9 @@ dialog.buttonsRefs.forEach((button) => {
     button.setAttribute('disabled', 'true');
   }
 });
-dialog.open();
+// dialog.open();
 // dialog.addContent('<p>test</p>');
 // dialog.close();
-
-console.log(dialog.buttonsRefs);
 
 // <====== END dialog ======
 
