@@ -1,21 +1,23 @@
 let dialogInstance = null;
 
 class Dialog {
-  #rootEl;
-  #content;
-  #contentEl = null;
+  #rootElRef;
+  #contentContainerEl = null;
   #buttonsData;
-  #buttonsEls = [];
-  #isInit = false;
+  #buttonsWrapEl = null;
+  #opened = false;
 
-  constructor() {
+  constructor({ rootElRef = null }) {
     /**
      * make Singleton
      */
     if (dialogInstance) return dialogInstance;
     dialogInstance = this;
+    /** */
 
-    this.buttonsRefs;
+    this.#rootElRef = rootElRef;
+    this.#create();
+    this.buttonsRefs = [];
   }
 
   #makeOverlayEl() {
@@ -25,113 +27,74 @@ class Dialog {
     return overlayEl;
   }
 
-  #makeContentEl() {
-    const contentEl = document.createElement('div');
-    contentEl.classList.add('dialog_content');
-    this.#contentEl = contentEl;
+  #makeContentContainerEl() {
+    const contentContainerEl = document.createElement('div');
+    contentContainerEl.classList.add('dialog_content_wrap');
+    this.#contentContainerEl = contentContainerEl;
 
-    this.addContent(this.#content);
-
-    return contentEl;
+    return contentContainerEl;
   }
 
-  #makeButtonsEls() {
-    return this.#buttonsData.map((buttonData) => {
-      const buttonEl = document.createElement('button');
+  #makeButtonsEls(buttonsData = []) {
+    const buttonElements = [];
 
-      buttonEl.setAttribute('type', 'button');
-      buttonEl.setAttribute('data-name', 'dialogButton');
-      buttonEl.setAttribute('data-id', buttonData.id);
-      buttonEl.classList.add('button');
-      buttonEl.classList.add('dialog_button');
-      buttonEl.innerHTML = buttonData.text;
-
-      return buttonEl;
-    });
-  }
-
-  create({
-    rootEl = null,
-    content = '',
-    buttons = [{ text: '', id: '', onClick: () => {} }],
-  }) {
-    this.#rootEl = rootEl;
-    this.#content = content;
-    this.#buttonsData = buttons;
-
-    this.#isInit = document.querySelector('[data-name = "dialogRootEl"]');
-
-    if (this.#isInit) {
-      const buttonsWrapRef = this.#rootEl.querySelector(
-        '[data-name = "buttonsWrap"]'
-      );
-
-      if (this.buttonsRefs?.length === this.#buttonsData.length) {
-        const isEqualButtons = () => {
-          const result = [];
-
-          for (const buttonRef of this.buttonsRefs) {
-            for (const buttonData of this.#buttonsData) {
-              const isEqual =
-                buttonRef.dataset.id === buttonData.id &&
-                buttonRef.innerText === buttonData.text;
-
-              result.push(isEqual);
-            }
-          }
-
-          if (result.includes(false)) {
-            return false;
-          } else {
-            return true;
-          }
-        };
-
-        if (!isEqualButtons()) {
-          this.#buttonsEls = this.#makeButtonsEls();
-          buttonsWrapRef.innerHTML = '';
-          buttonsWrapRef.append(...this.#buttonsEls);
-        }
+    buttonsData.forEach(({ key, content }) => {
+      if (!key || String(key).trim().length < 1) {
+        throw new Error('add unique key attribute to each button');
       }
-    } else {
-      this.#rootEl.setAttribute('data-name', 'dialogRootEl');
-      this.#rootEl.classList.add('dialog');
-      this.#rootEl.classList.add('is_hidden');
 
-      const overlayEl = this.#makeOverlayEl();
-      const contentEl = this.#makeContentEl();
+      const buttonEl = document.createElement('button');
+      buttonEl.setAttribute('type', 'button');
+      buttonEl.setAttribute('data-key', key);
+      buttonEl.setAttribute('data-name', 'dialogButton');
 
-      overlayEl.append(contentEl);
+      if (content) buttonEl.innerHTML = content;
 
-      const buttonsWrapEl = document.createElement('div');
-      buttonsWrapEl.setAttribute('data-name', 'buttonsWrap');
-      buttonsWrapEl.classList.add('dialog_buttons_wrap');
+      buttonElements.push(buttonEl);
+    });
 
-      this.#buttonsEls = this.#makeButtonsEls();
+    return buttonElements;
+  }
 
-      buttonsWrapEl.append(...this.#buttonsEls);
+  #create() {
+    this.#rootElRef.classList.add('dialog');
+    this.#rootElRef.classList.add('is_hidden');
 
-      const dialogElements = [overlayEl, buttonsWrapEl];
+    const overlayEl = this.#makeOverlayEl();
+    const contentEl = this.#makeContentContainerEl();
 
-      this.#rootEl.append(...dialogElements);
-    }
+    overlayEl.append(contentEl);
 
-    this.buttonsRefs = this.#rootEl.querySelectorAll(
-      '[data-name = "dialogButton"]'
-    );
+    const buttonsWrapEl = document.createElement('div');
+    buttonsWrapEl.setAttribute('data-name', 'buttonsWrap');
+    buttonsWrapEl.classList.add('dialog_buttons_wrap');
+    this.#buttonsWrapEl = buttonsWrapEl;
 
-    this.#addActionToButtons();
+    const dialogElements = [overlayEl, buttonsWrapEl];
+
+    this.#rootElRef.append(...dialogElements);
   }
 
   addContent(contentHtml = '') {
-    this.#contentEl.innerHTML = contentHtml;
+    this.#contentContainerEl.innerHTML = contentHtml;
+  }
+
+  addButtons(buttonsData = []) {
+    const buttonsEls = this.#makeButtonsEls(buttonsData);
+    this.#buttonsWrapEl.innerHTML = '';
+    this.#buttonsWrapEl.append(...buttonsEls);
+    this.#buttonsData = buttonsData;
+    this.buttonsRefs =
+      this.#rootElRef.querySelectorAll('[data-name = "dialogButton"]') || [];
+
+    this.#addActionToButtons();
   }
 
   #addActionToButtons() {
     this.buttonsRefs.forEach((buttonEl) => {
       this.#buttonsData.forEach((buttonData) => {
-        if (buttonEl.dataset.id === buttonData.id) {
-          buttonEl.addEventListener('click', buttonData.onClick);
+        if (buttonEl.dataset.key === buttonData.key) {
+          buttonEl.addEventListener('click', buttonData.onClick.bind(this));
         }
       });
     });
@@ -147,13 +110,22 @@ class Dialog {
     });
   }
 
+  set isOpen(value) {
+    this.#opened = value;
+  }
+
+  get isOpen() {
+    return this.#opened;
+  }
+
   open() {
-    this.#rootEl.classList.remove('is_hidden');
+    this.#rootElRef.classList.remove('is_hidden');
+    this.isOpen = true;
   }
 
   close() {
-    this.#rootEl.classList.add('is_hidden');
-
+    this.#rootElRef.classList.add('is_hidden');
+    this.isOpen = false;
     this.#removeButtonActions();
   }
 }

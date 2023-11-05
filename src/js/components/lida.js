@@ -19,6 +19,7 @@ const lida = new Character({
   },
   path: lidaPath,
   fps: lidaAssetData.fps / 2,
+  name: 'lida',
 });
 
 export { lida };

@@ -15,6 +15,7 @@ class Character extends Hero {
     position,
     fps,
     path,
+    name,
   }) {
     super({
       imageSrc,
@@ -28,6 +29,7 @@ class Character extends Hero {
       fps,
     });
 
+    this.name = name;
     this.path = path;
     this.waypointIndex = 0;
     this.active = false;
@@ -40,6 +42,10 @@ class Character extends Hero {
 
   get isActive() {
     return this.active;
+  }
+
+  get id() {
+    return this.name;
   }
 
   update(state = {}, deltaTime) {
@@ -66,8 +72,11 @@ class Character extends Hero {
       if (state.hero.currentAction.includes('stand')) {
         this.isActive = true;
         state.background.moving = false;
+        state.characters.curActiveId = this.id; // for dialog
       } else {
         state.background.moving = true;
+        state.characters.curActiveId = ''; // for dialog
+        state.characters.prevActiveId = '';
       }
     } else {
       /**
@@ -115,7 +124,7 @@ class Character extends Hero {
     };
 
     const action = getMoveDirection();
-    this.makeAction(action, deltaTime );
+    this.makeAction(action, deltaTime);
     /**
      * END movement animation
      */
