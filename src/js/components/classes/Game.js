@@ -1,12 +1,8 @@
-import {
-  ACTIONS_NAMES,
-  HERO_ACTIONS,
-  MOVING_STEP,
-} from '../../data/constants.js';
-import { checkRectangleCollision } from '../../utils/checkRectangleCollision.js';
-import { Dialog } from '../classes/Dialog.js';
-import { charactersDialogSettings } from '../../data/characters/charactersDialogSettings.js';
-import { refs } from '../../data/refs.js';
+import { ACTIONS_NAMES, HERO_ACTIONS, MOVING_STEP } from '../../data/constants';
+import { checkRectangleCollision } from '../../utils/checkRectangleCollision';
+// import { Dialog } from '../classes/Dialog';
+import { charactersDialogSettings } from '../../data/characters/charactersDialogSettings';
+// import { refs } from '../../data/refs';
 
 class Game {
   constructor({
@@ -29,17 +25,17 @@ class Game {
       hero: {
         prevAction: '',
         currentAction: '',
-        [ACTIONS_NAMES.move_top]: false,
-        [ACTIONS_NAMES.move_bottom]: false,
-        [ACTIONS_NAMES.move_left]: false,
-        [ACTIONS_NAMES.move_right]: false,
+        [ACTIONS_NAMES.moveTop]: false,
+        [ACTIONS_NAMES.moveBottom]: false,
+        [ACTIONS_NAMES.moveLeft]: false,
+        [ACTIONS_NAMES.moveRight]: false,
       },
       characters: {
         prevActiveId: '',
         curActiveId: '',
       },
     };
-    this.dialog = new Dialog({ rootElRef: refs.dialog });
+    // this.dialog = new Dialog({ rootElRef: refs.dialog });
   }
 
   clearCanvas() {
@@ -70,20 +66,20 @@ class Game {
 
   setHeroIdleAction(prevAction) {
     switch (prevAction) {
-      case ACTIONS_NAMES.move_top:
-        this.state.hero.currentAction = ACTIONS_NAMES.stand_top;
+      case ACTIONS_NAMES.moveTop:
+        this.state.hero.currentAction = ACTIONS_NAMES.standTop;
         break;
 
-      case ACTIONS_NAMES.move_bottom:
-        this.state.hero.currentAction = ACTIONS_NAMES.stand_bottom;
+      case ACTIONS_NAMES.moveBottom:
+        this.state.hero.currentAction = ACTIONS_NAMES.standBottom;
         break;
 
-      case ACTIONS_NAMES.move_left:
-        this.state.hero.currentAction = ACTIONS_NAMES.stand_left;
+      case ACTIONS_NAMES.moveLeft:
+        this.state.hero.currentAction = ACTIONS_NAMES.standLeft;
         break;
 
-      case ACTIONS_NAMES.move_right:
-        this.state.hero.currentAction = ACTIONS_NAMES.stand_right;
+      case ACTIONS_NAMES.moveRight:
+        this.state.hero.currentAction = ACTIONS_NAMES.standRight;
         break;
 
       default:
@@ -114,8 +110,8 @@ class Game {
     };
 
     if (
-      this.state.hero.move_top &&
-      this.state.hero.prevAction === ACTIONS_NAMES.move_top
+      this.state.hero.moveTop &&
+      this.state.hero.prevAction === ACTIONS_NAMES.moveTop
     ) {
       for (let i = 0; i < this.boundaries.length; i += 1) {
         const boundary = this.boundaries[i];
@@ -165,8 +161,8 @@ class Game {
           movable.position.y += MOVING_STEP;
         });
     } else if (
-      this.state.hero.move_left &&
-      this.state.hero.prevAction === ACTIONS_NAMES.move_left
+      this.state.hero.moveLeft &&
+      this.state.hero.prevAction === ACTIONS_NAMES.moveLeft
     ) {
       for (let i = 0; i < this.boundaries.length; i += 1) {
         const boundary = this.boundaries[i];
@@ -216,8 +212,8 @@ class Game {
           movable.position.x += MOVING_STEP;
         });
     } else if (
-      this.state.hero.move_bottom &&
-      this.state.hero.prevAction === ACTIONS_NAMES.move_bottom
+      this.state.hero.moveBottom &&
+      this.state.hero.prevAction === ACTIONS_NAMES.moveBottom
     ) {
       for (let i = 0; i < this.boundaries.length; i += 1) {
         const boundary = this.boundaries[i];
@@ -267,8 +263,8 @@ class Game {
           movable.position.y -= MOVING_STEP;
         });
     } else if (
-      this.state.hero.move_right &&
-      this.state.hero.prevAction === ACTIONS_NAMES.move_right
+      this.state.hero.moveRight &&
+      this.state.hero.prevAction === ACTIONS_NAMES.moveRight
     ) {
       for (let i = 0; i < this.boundaries.length; i += 1) {
         const boundary = this.boundaries[i];
@@ -322,7 +318,7 @@ class Game {
 
   updateCharacters(deltaTime) {
     this.characters.forEach((character) =>
-      character.update(this.state, deltaTime)
+      character.update(this.state, deltaTime),
     );
   }
 
@@ -332,7 +328,7 @@ class Game {
       const deltaTime = timeStamp - lastTime;
       lastTime = timeStamp;
 
-      const animationId = requestAnimationFrame(animationLoop);
+      // const animationId = requestAnimationFrame(animationLoop);
 
       this.clearCanvas();
       this.render();
@@ -350,9 +346,9 @@ class Game {
 
         for (const dialogData of charactersDialogSettings) {
           if (dialogData.name === this.state.characters.curActiveId) {
-            this.dialog.addContent('lida message');
-            this.dialog.addButtons(dialogData.buttons);
-            this.dialog.open();
+            // this.dialog.addContent('lida message');
+            // this.dialog.addButtons(dialogData.buttons);
+            // this.dialog.open();
 
             break;
           }

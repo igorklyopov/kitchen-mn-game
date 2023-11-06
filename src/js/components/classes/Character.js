@@ -1,7 +1,7 @@
-import { Hero } from './Hero.js';
-import { checkRectangleCollision } from '../../utils/checkRectangleCollision.js';
-import { hero } from '../hero.js';
-import { ACTIONS_NAMES } from '../../data/constants.js';
+import { Hero } from './Hero';
+import { checkRectangleCollision } from '../../utils/checkRectangleCollision';
+import { hero } from '../hero';
+import { ACTIONS_NAMES } from '../../data/constants';
 
 class Character extends Hero {
   constructor({
@@ -112,13 +112,13 @@ class Character extends Hero {
 
       let direction = '';
 
-      if (deltaX < 0) return (direction = ACTIONS_NAMES.move_right);
+      if (deltaX < 0) return (direction = ACTIONS_NAMES.moveRight);
 
-      if (deltaX > 0) return (direction = ACTIONS_NAMES.move_left);
+      if (deltaX > 0) return (direction = ACTIONS_NAMES.moveLeft);
 
-      if (deltaY > 0) direction = ACTIONS_NAMES.move_top;
+      if (deltaY > 0) direction = ACTIONS_NAMES.moveTop;
 
-      if (deltaY < 0) direction = ACTIONS_NAMES.move_bottom;
+      if (deltaY < 0) direction = ACTIONS_NAMES.moveBottom;
 
       return direction;
     };

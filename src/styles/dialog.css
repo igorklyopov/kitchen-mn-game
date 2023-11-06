@@ -40,7 +40,6 @@
 }
 
 .dialog_content_wrap {
-  
   max-width: 70%;
 
   background-color: azure;
@@ -53,10 +52,9 @@
   position: relative;
 }
 
-.dialog_button{
-
+.dialog_button {
 }
 
-.dialog_button:disabled{
+.dialog_button:disabled {
   background-color: coral;
 }

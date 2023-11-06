@@ -55,7 +55,7 @@ class Sprite {
         this.position.x,
         this.position.y,
         this.frameWidth,
-        this.frameHeight
+        this.frameHeight,
       );
     }
   }

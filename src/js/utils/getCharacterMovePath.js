@@ -1,4 +1,4 @@
-import { GAME_MAP_POSITION_DEFAULT } from '../data/constants.js';
+import { GAME_MAP_POSITION_DEFAULT } from '../data/constants';
 
 const getCharacterMovePath = (pathData = []) => {
   const result = [];
@@ -14,6 +14,5 @@ const getCharacterMovePath = (pathData = []) => {
 
   return result;
 };
-
 
 export { getCharacterMovePath };

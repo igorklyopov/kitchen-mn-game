@@ -1,4 +1,4 @@
-import { game } from './components/game.js';
+import { game } from './components/game';
 
 function onKeyDown(e) {
   game.onKeyDown.bind(game);

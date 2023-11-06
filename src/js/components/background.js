@@ -1,7 +1,7 @@
-import { Background } from './classes/Background.js';
-import { findAssetByName } from '../utils/findAssetByName.js';
-import { assetsData } from '../data/assetsData.js';
-import { GAME_MAP_POSITION_DEFAULT } from '../data/constants.js';
+import { Background } from './classes/Background';
+import { findAssetByName } from '../utils/findAssetByName';
+import { assetsData } from '../data/assetsData';
+import { GAME_MAP_POSITION_DEFAULT } from '../data/constants';
 
 const gameMapAssetData = findAssetByName(assetsData, 'gameMap');
 

@@ -1,16 +1,16 @@
-import { Character } from './classes/Character.js';
-import { findAssetByName } from '../utils/findAssetByName.js';
-import { assetsData } from '../data/assetsData.js';
-import { lidaPath } from '../data/characters/lidaData.js';
+import { Character } from './classes/Character';
+import { findAssetByName } from '../utils/findAssetByName';
+import { assetsData } from '../data/assetsData';
+import { lidaPath } from '../data/characters/lidaData';
 
 const lidaAssetData = findAssetByName(assetsData, 'lida');
 const lidaImg = lidaAssetData.src;
-const { stand_right } = lidaAssetData.actions;
+const { standRight } = lidaAssetData.actions;
 
 const lida = new Character({
   imageSrc: lidaImg,
-  frameX: stand_right.frameX,
-  frameY: stand_right.frameY,
+  frameX: standRight.frameX,
+  frameY: standRight.frameY,
   frameXCount: lidaAssetData.frameXCount,
   frameYCount: lidaAssetData.frameYCount,
   position: {

@@ -1,16 +1,16 @@
-import { Sprite } from './Sprite.js';
-import { heroAssetData } from '../../data/heroAssetData.js';
-import { ACTIONS_NAMES } from '../../data/constants.js';
+import { Sprite } from './Sprite';
+import { heroAssetData } from '../../data/heroAssetData';
+import { ACTIONS_NAMES } from '../../data/constants';
 
 const {
-  move_top,
-  move_bottom,
-  move_right,
-  move_left,
-  stand_top,
-  stand_bottom,
-  stand_right,
-  stand_left,
+  moveTop,
+  moveBottom,
+  moveRight,
+  moveLeft,
+  standTop,
+  standBottom,
+  standRight,
+  standLeft,
 } = heroAssetData.actions;
 
 class Hero extends Sprite {
@@ -40,52 +40,52 @@ class Hero extends Sprite {
 
   makeAction(action = '', deltaTime = this.fps) {
     switch (action) {
-      case ACTIONS_NAMES.move_top:
+      case ACTIONS_NAMES.moveTop:
         this.animateAction({
-          frameY: move_top.frameY,
+          frameY: moveTop.frameY,
           deltaTime,
         });
         break;
 
-      case ACTIONS_NAMES.move_bottom:
+      case ACTIONS_NAMES.moveBottom:
         this.animateAction({
-          frameY: move_bottom.frameY,
+          frameY: moveBottom.frameY,
           deltaTime,
         });
         break;
 
-      case ACTIONS_NAMES.move_left:
+      case ACTIONS_NAMES.moveLeft:
         this.animateAction({
-          frameY: move_left.frameY,
+          frameY: moveLeft.frameY,
           deltaTime,
         });
         break;
 
-      case ACTIONS_NAMES.move_right:
+      case ACTIONS_NAMES.moveRight:
         this.animateAction({
-          frameY: move_right.frameY,
+          frameY: moveRight.frameY,
           deltaTime,
         });
         break;
 
-      case ACTIONS_NAMES.stand_top:
-        this.frameX = stand_top.frameX;
-        this.frameY = stand_top.frameY;
+      case ACTIONS_NAMES.standTop:
+        this.frameX = standTop.frameX;
+        this.frameY = standTop.frameY;
         break;
 
-      case ACTIONS_NAMES.stand_bottom:
-        this.frameX = stand_bottom.frameX;
-        this.frameY = stand_bottom.frameY;
+      case ACTIONS_NAMES.standBottom:
+        this.frameX = standBottom.frameX;
+        this.frameY = standBottom.frameY;
         break;
 
-      case ACTIONS_NAMES.stand_left:
-        this.frameX = stand_left.frameX;
-        this.frameY = stand_left.frameY;
+      case ACTIONS_NAMES.standLeft:
+        this.frameX = standLeft.frameX;
+        this.frameY = standLeft.frameY;
         break;
 
-      case ACTIONS_NAMES.stand_right:
-        this.frameX = stand_right.frameX;
-        this.frameY = stand_right.frameY;
+      case ACTIONS_NAMES.standRight:
+        this.frameX = standRight.frameX;
+        this.frameY = standRight.frameY;
         break;
 
       default:

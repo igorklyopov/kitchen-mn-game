@@ -1,4 +1,4 @@
-import { getCharacterMovePath } from '../../utils/getCharacterMovePath.js';
+import { getCharacterMovePath } from '../../utils/getCharacterMovePath';
 
 const lidaPathData = [
   {

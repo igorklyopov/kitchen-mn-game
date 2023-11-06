@@ -1,7 +1,7 @@
-import { Boundary } from './components/classes/Boundary.js';
-import { make2DArray } from './utils/make2DArray.js';
-import { collisionMainData } from './data/collisions/collisionMain.js';
-import { GAME_MAP_POSITION_DEFAULT } from './data/constants.js';
+import { Boundary } from './components/classes/Boundary';
+import { make2DArray } from './utils/make2DArray';
+import { collisionMainData } from './data/collisions/collisionMain';
+import { GAME_MAP_POSITION_DEFAULT } from './data/constants';
 
 const { map, width, tileSize } = collisionMainData;
 const collisionsMap = make2DArray(map, width);

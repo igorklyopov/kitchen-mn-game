@@ -1,10 +1,10 @@
-import { Game } from './classes/Game.js';
-import { hero } from './hero.js';
-import { background } from './background.js';
-import { refs } from '../data/refs.js';
-import { collisionBoundaries } from '../collisionBoundaries.js';
-import { lida } from './lida.js';
-import { lidaPath } from '../data/characters/lidaData.js';
+import { Game } from './classes/Game';
+import { hero } from './hero';
+import { background } from './background';
+import { refs } from '../data/refs';
+import { collisionBoundaries } from '../collisionBoundaries';
+import { lida } from './lida';
+import { lidaPath } from '../data/characters/lidaData';
 
 const characters = [lida];
 
