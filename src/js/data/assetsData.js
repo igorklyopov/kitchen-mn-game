@@ -3,18 +3,17 @@ export const assetsData = [
   {
     name: 'hero',
     src: '../../assets/img/hero.png',
-    frameXCount: 3,
     frameYCount: 4,
     fps: 10,
-    actions: {
-      moveTop: { frameX: 0, frameY: 3, maxFrame: 2 },
-      moveBottom: { frameX: 0, frameY: 0 },
-      moveRight: { frameX: 0, frameY: 2 },
-      moveLeft: { frameX: 0, frameY: 1 },
-      standTop: { frameX: 1, frameY: 3 },
-      standBottom: { frameX: 1, frameY: 0 },
-      standLeft: { frameX: 1, frameY: 1 },
-      standRight: { frameX: 1, frameY: 2 },
+    animations: {
+      moveTop: { frameX: 0, frameY: 3, frameXCount: 3 },
+      moveBottom: { frameX: 0, frameY: 0, frameXCount: 3 },
+      moveRight: { frameX: 0, frameY: 2, frameXCount: 3 },
+      moveLeft: { frameX: 0, frameY: 1, frameXCount: 3 },
+      standTop: { frameX: 1, frameY: 3, frameXCount: 3 },
+      standBottom: { frameX: 1, frameY: 0, frameXCount: 3 },
+      standLeft: { frameX: 1, frameY: 1, frameXCount: 3 },
+      standRight: { frameX: 1, frameY: 2, frameXCount: 3 },
     },
   },
   {

@@ -328,7 +328,7 @@ class Game {
       const deltaTime = timeStamp - lastTime;
       lastTime = timeStamp;
 
-      // const animationId = requestAnimationFrame(animationLoop);
+      const animationId = requestAnimationFrame(animationLoop);
 
       this.clearCanvas();
       this.render();
