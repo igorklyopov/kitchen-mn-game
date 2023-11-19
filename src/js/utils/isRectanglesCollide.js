@@ -1,4 +1,7 @@
-const checkRectangleCollision = ({ rectA, rectB }) => {
+const isRectanglesCollide = (
+  rectA = { position: { x: 0, y: 0 }, width: 0, height: 0 },
+  rectB = { position: { x: 0, y: 0 }, width: 0, height: 0 },
+) => {
   return (
     rectA.position.x + rectA.width >= rectB.position.x &&
     rectA.position.x <= rectB.position.x + rectB.width &&
@@ -7,4 +10,4 @@ const checkRectangleCollision = ({ rectA, rectB }) => {
   );
 };
 
-export { checkRectangleCollision };
+export { isRectanglesCollide };
