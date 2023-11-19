@@ -16,11 +16,11 @@
   },
  */
 
-export const assetsData = [
-  { name: 'gameMap', src: '../../assets/img/kitchen_mn_map.png' },
+const assetsData = [
+  { name: 'gameMap', src: '/assets/images/kitchen_mn_map.png' },
   {
     name: 'hero',
-    src: '../../assets/img/hero.png',
+    src: '/assets/images/sprites/hero.png',
     frameSize: { width: 32, height: 32 },
     maxNumberOfFramesAlongX: 3,
     numberOfFramesAlongY: 4,
@@ -83,21 +83,6 @@ export const assetsData = [
       },
     },
   },
-  {
-    name: 'lida',
-    src: '../../../assets/img/characters/female/lida.png',
-    frameXCount: 3,
-    frameYCount: 4,
-    fps: 10,
-    actions: {
-      moveTop: { frameX: 0, frameY: 3, maxFrame: 2 },
-      moveBottom: { frameX: 0, frameY: 0 },
-      moveRight: { frameX: 0, frameY: 2 },
-      moveLeft: { frameX: 0, frameY: 1 },
-      standTop: { frameX: 1, frameY: 3 },
-      standBottom: { frameX: 1, frameY: 0 },
-      standLeft: { frameX: 1, frameY: 1 },
-      standRight: { frameX: 1, frameY: 2 },
-    },
-  },
 ];
+
+export { assetsData };
