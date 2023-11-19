@@ -1,7 +1,7 @@
 import { Hero } from './Hero';
-import { checkRectangleCollision } from '../../utils/checkRectangleCollision';
+import { checkRectangleCollision } from '../utils/checkRectangleCollision';
 import { hero } from '../hero';
-import { ACTIONS_NAMES } from '../../data/constants';
+import { ACTIONS_NAMES } from '../data/constants';
 
 class Character extends Hero {
   constructor({
