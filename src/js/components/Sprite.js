@@ -77,7 +77,7 @@ class Sprite extends GameObject {
       return;
     }
 
-    this.frameInterval = 1000 / this.animations[this.animationName].fps;
+    this.frameInterval = 1000 / this.animations[this.animationName].fps; // 1000 ms
 
     if (this.frameTimer > this.frameInterval) {
       this.frameTimer = 0;
