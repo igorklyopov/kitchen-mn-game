@@ -1,3 +1,4 @@
+import { DEV_MODE } from '../data/constants.js';
 import { GameObject } from './GameObject.js';
 
 class Sprite extends GameObject {
@@ -94,7 +95,7 @@ class Sprite extends GameObject {
   }
 
   draw(context) {
-    this.drawRect(context); // for test
+    if (DEV_MODE) this.drawRect(context); // for test
 
     if (this.imgLoaded) {
       context.drawImage(

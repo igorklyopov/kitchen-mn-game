@@ -1,3 +1,5 @@
+const DEV_MODE = false; // for test
+
 const GAME_CANVAS_WIDTH = 320;
 const GAME_CANVAS_HEIGHT = 180;
 const GAME_MAP_WIDTH = 1440;
@@ -33,6 +35,7 @@ const COLLISION_OBJECTS_TYPES = {
 };
 
 export {
+  DEV_MODE,
   GAME_CANVAS_WIDTH,
   GAME_CANVAS_HEIGHT,
   GAME_MAP_WIDTH,

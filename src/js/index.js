@@ -15,6 +15,7 @@ import {
   GAME_MAP_WIDTH,
   GAME_MAP_HEIGHT,
   HERO_POSITION_DEFAULT,
+  DEV_MODE,
 } from '../js/data/constants.js';
 import { findAssetByName } from './utils/findAssetByName.js';
 import { assetsData } from './data/assetsData.js';
@@ -51,8 +52,9 @@ mainScene.addChild(hero);
 const camera = new Camera();
 mainScene.addChild(camera);
 
-// add boundaries
-collisionBoundaries.forEach((boundary) => mainScene.addChild(boundary));
+// add boundaries (for test)
+if (DEV_MODE)
+  collisionBoundaries.forEach((boundary) => mainScene.addChild(boundary));
 
 // Add an InputHandler class to the main scene
 mainScene.input = new InputHandler();
