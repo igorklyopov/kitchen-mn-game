@@ -22,8 +22,8 @@ const {
 
 const heroSpriteData = findAssetByName(assetsData, 'hero');
 
-export class Hero extends GameObject {
-  constructor({ name = 'hero', x = 0, y = 0 }) {
+class Hero extends GameObject {
+  constructor({ name = 'hero', x = 0, y = 0, isPlayerControlled = false }) {
     super({
       name,
       position: new Vector2(x, y),
@@ -41,18 +41,21 @@ export class Hero extends GameObject {
     });
     this.addChild(this.body);
 
-    this.action = STAND_UP;
+    this.isPlayerControlled = isPlayerControlled;
     this.destinationPosition = this.position.duplicate();
     this.speed = MOVING_STEP; // the number of squares the hero moves at one time
-    this.itemPickupTime = 0;
-    this.itemPickupShell = null;
   }
 
   step(delta, root) {
     const distance = moveTowards(this, this.destinationPosition, this.speed);
     const hasArrived = distance <= 1;
 
-    if (hasArrived) this.tryMove(root, delta);
+    if (hasArrived) {
+      const { input } = root;
+
+      this.move(input.action);
+      this.animateAction(input.action, delta);
+    }
     this.tryEmitPosition();
   }
 
@@ -65,14 +68,8 @@ export class Hero extends GameObject {
     events.emit('HERO_POSITION', this.position);
   }
 
-  tryMove(root, delta) {
-    const { input } = root;
-
-    let nextX = this.destinationPosition.x;
-    let nextY = this.destinationPosition.y;
-    let isSpaceFree = true;
-
-    switch (input.action) {
+  animateAction(action = '', delta) {
+    switch (action) {
       case STAND_LEFT:
         this.body.playAnimation({ animationName: 'standLeft' });
         return;
@@ -90,7 +87,6 @@ export class Hero extends GameObject {
         return;
 
       case WALK_DOWN:
-        nextY += GRID_SIZE;
         this.body.playAnimation({
           animationName: 'walkDown',
           deltaTime: delta,
@@ -98,12 +94,10 @@ export class Hero extends GameObject {
         break;
 
       case WALK_UP:
-        nextY -= GRID_SIZE;
         this.body.playAnimation({ animationName: 'walkUp', deltaTime: delta });
         break;
 
       case WALK_LEFT:
-        nextX -= GRID_SIZE;
         this.body.playAnimation({
           animationName: 'walkLeft',
           deltaTime: delta,
@@ -111,7 +105,6 @@ export class Hero extends GameObject {
         break;
 
       case WALK_RIGHT:
-        nextX += GRID_SIZE;
         this.body.playAnimation({
           animationName: 'walkRight',
           deltaTime: delta,
@@ -119,10 +112,36 @@ export class Hero extends GameObject {
         break;
 
       default:
+        // eslint-disable-next-line no-useless-return
         return;
     }
+  }
 
-    this.action = input.action ?? this.action;
+  move(action = '') {
+    let nextX = this.destinationPosition.x;
+    let nextY = this.destinationPosition.y;
+    let isSpaceFree = true;
+
+    switch (action) {
+      case WALK_DOWN:
+        nextY += GRID_SIZE;
+        break;
+
+      case WALK_UP:
+        nextY -= GRID_SIZE;
+        break;
+
+      case WALK_LEFT:
+        nextX -= GRID_SIZE;
+        break;
+
+      case WALK_RIGHT:
+        nextX += GRID_SIZE;
+        break;
+
+      default:
+        return;
+    }
 
     // Validating that the next destination is free
     const rectA = {
@@ -131,7 +150,7 @@ export class Hero extends GameObject {
       height: this.body.frameSize.height / 2,
     };
 
-    for (let i = 0; i < collisionBoundaries.length; i++) {
+    for (let i = 0; i < collisionBoundaries.length; i += 1) {
       const boundary = collisionBoundaries[i];
       const rectB = {
         position: boundary.position,
@@ -151,3 +170,5 @@ export class Hero extends GameObject {
     }
   }
 }
+
+export { Hero };
