@@ -23,7 +23,7 @@ const {
 const heroSpriteData = findAssetByName(assetsData, 'hero');
 
 class Hero extends GameObject {
-  constructor({ name = 'hero', x = 0, y = 0, isPlayerControlled = false }) {
+  constructor({ name = 'hero', x = 0, y = 0, isPlayerControlled = true }) {
     super({
       name,
       position: new Vector2(x, y),
@@ -41,22 +41,14 @@ class Hero extends GameObject {
     });
     this.addChild(this.body);
 
-    this.isPlayerControlled = isPlayerControlled;
+    this.isPlayerControlled = isPlayerControlled; // flag for hero role
     this.destinationPosition = this.position.duplicate();
     this.speed = MOVING_STEP; // the number of squares the hero moves at one time
+    this.isCollide = false;
   }
 
   step(delta, root) {
-    const distance = moveTowards(this, this.destinationPosition, this.speed);
-    const hasArrived = distance <= 1;
-
-    if (hasArrived) {
-      const { input } = root;
-
-      this.move(input.action);
-      this.animateAction(input.action, delta);
-    }
-    this.tryEmitPosition();
+    this.updateMove(delta, root);
   }
 
   tryEmitPosition() {
@@ -65,7 +57,7 @@ class Hero extends GameObject {
     }
     this.lastX = this.position.x;
     this.lastY = this.position.y;
-    events.emit('HERO_POSITION', this.position);
+    if (this.isPlayerControlled) events.emit('HERO_POSITION', this.position);
   }
 
   animateAction(action = '', delta) {
@@ -117,12 +109,39 @@ class Hero extends GameObject {
     }
   }
 
-  move(action = '') {
+  checkIsSpaceFree(nextX, nextY, collisionBoundaries) {
+    // Validating that the next destination is free
+    this.isSpaceFree = true;
+
+    const rectA = {
+      position: { x: nextX, y: nextY },
+      width: this.body.frameSize.width / 2,
+      height: this.body.frameSize.height / 2,
+    };
+
+    for (let i = 0; i < collisionBoundaries.length; i += 1) {
+      const boundary = collisionBoundaries[i];
+      const rectB = {
+        position: boundary.position,
+        width: boundary.width / 2,
+        height: boundary.height / 2,
+      };
+
+      if (isRectanglesCollide(rectA, rectB)) {
+        this.isSpaceFree = false;
+
+        break;
+      }
+    }
+
+    return this.isSpaceFree;
+  }
+
+  move(moveAction = '') {
     let nextX = this.destinationPosition.x;
     let nextY = this.destinationPosition.y;
-    let isSpaceFree = true;
 
-    switch (action) {
+    switch (moveAction) {
       case WALK_DOWN:
         nextY += GRID_SIZE;
         break;
@@ -143,30 +162,60 @@ class Hero extends GameObject {
         return;
     }
 
-    // Validating that the next destination is free
-    const rectA = {
-      position: { x: nextX, y: nextY },
-      width: this.body.frameSize.width / 2,
-      height: this.body.frameSize.height / 2,
-    };
-
-    for (let i = 0; i < collisionBoundaries.length; i += 1) {
-      const boundary = collisionBoundaries[i];
-      const rectB = {
-        position: boundary.position,
-        width: boundary.width / 2,
-        height: boundary.height / 2,
-      };
-
-      if (isRectanglesCollide(rectA, rectB)) {
-        isSpaceFree = false;
-        break;
-      }
-    }
+    const isSpaceFree = this.checkIsSpaceFree(
+      nextX,
+      nextY,
+      collisionBoundaries,
+    );
 
     if (isSpaceFree) {
+      this.isCollide = false;
       this.destinationPosition.x = nextX;
       this.destinationPosition.y = nextY;
+    } else {
+      this.isCollide = true;
+    }
+  }
+
+  checkIsArrived() {
+    const distance = moveTowards(this, this.destinationPosition, this.speed);
+    return distance <= 1;
+  }
+
+  updateMove(delta, root) {
+    const hasArrived = this.checkIsArrived();
+
+    if (hasArrived) {
+      const { input } = root;
+
+      this.move(input.action);
+      this.isCollide
+        ? this.stop(input.action, delta)
+        : this.animateAction(input.action, delta);
+    }
+    this.tryEmitPosition();
+  }
+
+  stop(action = '', delta) {
+    switch (action) {
+      case WALK_LEFT:
+        this.body.playAnimation({ animationName: 'standLeft' });
+        break;
+
+      case WALK_RIGHT:
+        this.body.playAnimation({ animationName: 'standRight' });
+        break;
+
+      case WALK_UP:
+        this.body.playAnimation({ animationName: 'standUp' });
+        break;
+
+      case WALK_DOWN:
+        this.body.playAnimation({ animationName: 'standDown' });
+        break;
+
+      default:
+        break;
     }
   }
 }

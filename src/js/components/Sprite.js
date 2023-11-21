@@ -52,14 +52,19 @@ class Sprite extends GameObject {
 
   playAnimation({ animationName = '', deltaTime }) {
     const makeFramesIndexesList = () => {
+      if (!this.animations[this.animationName]) {
+        console.error('animation with this name not found');
+        return;
+      }
+
+      const frames = [];
       const currentFrameXNumber =
         this.animations[this.animationName].frameXNumber;
       const currentFrameStartIndex =
         this.animations[this.animationName].startFrameIndex;
-      const frames = [];
 
-      for (let i = 0; i < currentFrameXNumber; i += 1) {
-        frames.push(i);
+      for (let frame = 0; frame < currentFrameXNumber; frame += 1) {
+        frames.push(frame);
       }
 
       if (frames[frames.length - 1] !== currentFrameStartIndex)
@@ -70,6 +75,7 @@ class Sprite extends GameObject {
     this.animationName = animationName;
 
     const framesIndexesList = makeFramesIndexesList();
+    if (!framesIndexesList) return;
 
     this.frameY = this.animations[this.animationName].frameY;
 
