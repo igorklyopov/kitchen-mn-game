@@ -1,4 +1,4 @@
-function moveTowards(object, destinationPosition, speed) {
+function paveWayForward(object, destinationPosition, speed) {
   let distanceToTravelX = destinationPosition.x - object.position.x;
   let distanceToTravelY = destinationPosition.y - object.position.y;
 
@@ -25,4 +25,4 @@ function moveTowards(object, destinationPosition, speed) {
   return distance;
 }
 
-export { moveTowards };
+export { paveWayForward };

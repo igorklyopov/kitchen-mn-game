@@ -5,7 +5,7 @@ import { Vector2 } from './components/Vector2.js';
 import { GameLoop } from './components/GameLoop.js';
 import { InputHandler } from './components/InputHandler.js';
 import { GameObject } from './components/GameObject.js';
-import { Hero } from './components/Hero.js';
+import { Character } from './components/Character.js';
 import { Camera } from './components/Camera.js';
 import { gridCells } from './utils/gridCells.js';
 import { refs } from './data/refs.js';
@@ -42,7 +42,9 @@ const gameMapSprite = new Sprite({
 });
 mainScene.addChild(gameMapSprite);
 
-const hero = new Hero({
+const hero = new Character({
+  name: 'hero',
+  isPlayerControlled: true,
   x: gridCells(HERO_POSITION_DEFAULT.x),
   y: gridCells(HERO_POSITION_DEFAULT.y),
 });
