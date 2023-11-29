@@ -2,13 +2,11 @@ import { GameObject } from './GameObject.js';
 import { Vector2 } from './Vector2.js';
 import { Sprite } from './Sprite.js';
 import { events } from './Events.js';
+import { FrameTimer } from './FrameTimer.js';
 import { ACTIONS_NAMES, MOVING_STEP, GRID_SIZE } from '../data/constants.js';
-import { assetsData } from '../data/assetsData.js';
 import { paveWayForward } from '../helpers/paveWayForward.js';
 import { collisionBoundaries } from '../helpers/collisionBoundaries.js';
-import { findAssetByName } from '../utils/findAssetByName.js';
 import { isRectanglesCollide } from '../utils/isRectanglesCollide.js';
-import { FrameTimer } from './FrameTimer.js';
 
 const {
   WALK_UP,
@@ -21,51 +19,37 @@ const {
   STAND_RIGHT,
 } = ACTIONS_NAMES;
 
-const heroSpriteData = findAssetByName(assetsData, 'hero');
 const standActionsList = [STAND_UP, STAND_DOWN, STAND_LEFT, STAND_RIGHT];
 const walkActionsList = [WALK_UP, WALK_DOWN, WALK_LEFT, WALK_RIGHT];
-
-/// ////////// data for test ///////////////
-const data1 = [
-  { action: 'STAND_UP', time: 3000 },
-  { action: 'WALK_UP', distance: 3 },
-  { action: 'STAND_UP', time: 3000 },
-  { action: 'WALK_UP', distance: 15 },
-  { action: 'STAND_UP', time: 5000 },
-  { action: 'WALK_RIGHT', distance: 6 },
-  { action: 'WALK_DOWN', distance: 3 },
-  { action: 'STAND_DOWN', time: 3000 },
-];
-// const data2 = [
-//   { action: 'STAND_UP', time: 3000 },
-//   { action: 'WALK_UP', distance: 3 },
-//   { action: 'WALK_RIGHT', distance: 6 },
-//   { action: 'WALK_DOWN', distance: 3 },
-//   { action: 'WALK_LEFT', distance: 6 },
-//   { action: 'WALK_UP', distance: 3 },
-// ];
-/// ///////////////////////////////////////
 
 class Character extends GameObject {
   constructor({
     name = 'character',
-    x = 0,
-    y = 0,
+    position = { x: 0, y: 0 },
     isPlayerControlled = false,
+
+    // sprite options
+    imageSrc,
+    frameX,
+    frameY,
+    frameSize,
+    frameXMaxNumber,
+    frameYNumber,
+    animations,
   }) {
     super({
       name,
-      position: new Vector2(x, y),
+      position: new Vector2(position.x, position.y),
     });
 
     this.body = new Sprite({
-      imageSrc: heroSpriteData.src,
-      frameX: heroSpriteData.animations.standUp.frameX,
-      frameY: heroSpriteData.animations.standUp.frameY,
-      frameSize: heroSpriteData.frameSize,
-      frameXMaxNumber: heroSpriteData.maxNumberOfFramesAlongX,
-      frameYNumber: heroSpriteData.numberOfFramesAlongY,
-      animations: heroSpriteData.animations,
+      imageSrc,
+      frameX,
+      frameY,
+      frameSize,
+      frameXMaxNumber,
+      frameYNumber,
+      animations,
       position: this.position,
       name: this.name,
     });
@@ -79,7 +63,7 @@ class Character extends GameObject {
     this.isAutoActionPlay = false;
     this.actions = {
       repeat: false,
-      data: data1,
+      data: [],
     };
     this.actionDataIndex = 0;
     this.frameTimer = new FrameTimer();
@@ -98,12 +82,20 @@ class Character extends GameObject {
     if (this.isPlayerControlled) events.emit('HERO_POSITION', this.position);
   }
 
-  set autoActions(actionsData = { repeat: false, data: [] }) {
+  set autoActions(actionsData) {
     this.actions = actionsData;
   }
 
   get autoActions() {
     return this.actions;
+  }
+
+  set autoActionsPlay(value) {
+    this.actions = value;
+  }
+
+  get autoActionsPlay() {
+    return this.isAutoActionPlay;
   }
 
   incrementActionDataIndex() {
@@ -281,10 +273,13 @@ class Character extends GameObject {
   updateMove(delta, root) {
     const { input } = root;
     const isWayForwardPaved = this.checkWayForwardIsPaved();
+    let action = '';
 
-    const action = this.isAutoActionPlay
-      ? this.generateAction(delta)
-      : input.action;
+    if (this.isAutoActionPlay) {
+      action = this.generateAction(delta);
+    } else if (this.isPlayerControlled) {
+      action = input.action;
+    }
 
     if (isWayForwardPaved) {
       this.move(action);

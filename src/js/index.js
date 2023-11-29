@@ -17,8 +17,8 @@ import {
   HERO_POSITION_DEFAULT,
   DEV_MODE,
 } from '../js/data/constants.js';
-import { findAssetByName } from './utils/findAssetByName.js';
 import { assetsData } from './data/assetsData.js';
+import { findAssetByName } from './utils/findAssetByName.js';
 import { collisionBoundaries } from './helpers/collisionBoundaries.js';
 
 // Grabbing the canvas to draw to
@@ -41,15 +41,60 @@ const gameMapSprite = new Sprite({
   frameSize: { width: GAME_MAP_WIDTH, height: GAME_MAP_HEIGHT },
 });
 mainScene.addChild(gameMapSprite);
+/// ///////////////////////////////
+// for test
+const data2 = {
+  repeat: true,
+  data: [
+    { action: 'STAND_UP', time: 3000 },
+    { action: 'WALK_UP', distance: 3 },
+    { action: 'WALK_RIGHT', distance: 6 },
+    { action: 'WALK_DOWN', distance: 3 },
+    { action: 'WALK_LEFT', distance: 6 },
+    { action: 'WALK_UP', distance: 3 },
+  ],
+};
+/// //////////////////////////////
+const heroSpriteData = findAssetByName(assetsData, 'hero');
 
 const hero = new Character({
   name: 'hero',
   isPlayerControlled: true,
-  x: gridCells(HERO_POSITION_DEFAULT.x),
-  y: gridCells(HERO_POSITION_DEFAULT.y),
+  imageSrc: heroSpriteData.src,
+  frameX: heroSpriteData.animations.standUp.frameX,
+  frameY: heroSpriteData.animations.standUp.frameY,
+  frameSize: heroSpriteData.frameSize,
+  frameXMaxNumber: heroSpriteData.maxNumberOfFramesAlongX,
+  frameYNumber: heroSpriteData.numberOfFramesAlongY,
+  animations: heroSpriteData.animations,
+  position: {
+    x: gridCells(HERO_POSITION_DEFAULT.x),
+    y: gridCells(HERO_POSITION_DEFAULT.y),
+  },
 });
+// hero.autoActions = data2;
+// hero.isAutoActionPlay = true;
 mainScene.addChild(hero);
-// console.log(hero);
+
+const lidaSpriteData = findAssetByName(assetsData, 'lida');
+
+const lida = new Character({
+  name: 'lida',
+  imageSrc: lidaSpriteData.src,
+  frameX: lidaSpriteData.animations.standUp.frameX,
+  frameY: lidaSpriteData.animations.standUp.frameY,
+  frameSize: lidaSpriteData.frameSize,
+  frameXMaxNumber: lidaSpriteData.maxNumberOfFramesAlongX,
+  frameYNumber: lidaSpriteData.numberOfFramesAlongY,
+  animations: lidaSpriteData.animations,
+  position: {
+    x: gridCells(15),
+    y: gridCells(55),
+  },
+});
+lida.autoActions = data2;
+// lida.isAutoActionPlay = true;
+mainScene.addChild(lida);
 
 const camera = new Camera();
 mainScene.addChild(camera);
@@ -60,8 +105,6 @@ if (DEV_MODE)
 
 // Add an InputHandler class to the main scene
 mainScene.input = new InputHandler();
-
-// console.log(mainScene);
 
 // Establish update and draw loops
 const update = (delta) => {

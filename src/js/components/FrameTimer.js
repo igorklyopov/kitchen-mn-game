@@ -32,6 +32,5 @@ class FrameTimer {
     }
   }
 }
-const timer = new FrameTimer();
-console.log(timer);
-export { FrameTimer, timer };
+
+export { FrameTimer };
