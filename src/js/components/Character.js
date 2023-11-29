@@ -8,7 +8,7 @@ import { paveWayForward } from '../helpers/paveWayForward.js';
 import { collisionBoundaries } from '../helpers/collisionBoundaries.js';
 import { findAssetByName } from '../utils/findAssetByName.js';
 import { isRectanglesCollide } from '../utils/isRectanglesCollide.js';
-// import { checkIsAtDestinationPosition } from '../helpers/checkIsAtDestinationPosition.js';
+import { FrameTimer } from './FrameTimer.js';
 
 const {
   WALK_UP,
@@ -82,7 +82,7 @@ class Character extends GameObject {
       data: data1,
     };
     this.actionDataIndex = 0;
-    this.frameTimer = 0;
+    this.frameTimer = new FrameTimer();
   }
 
   step(delta, root) {
@@ -130,12 +130,9 @@ class Character extends GameObject {
     }
 
     if (timeToNextAction) {
-      if (this.frameTimer > timeToNextAction) {
-        this.frameTimer = 0;
-        this.incrementActionDataIndex();
-      } else {
-        this.frameTimer = Math.floor(this.frameTimer + delta);
-      }
+      this.frameTimer.setTime(timeToNextAction);
+      this.frameTimer.setCallback(() => this.incrementActionDataIndex());
+      this.frameTimer.start(delta);
     } else if (standActionsList.includes(currentAction)) {
       this.incrementActionDataIndex();
     }

@@ -1,4 +1,5 @@
 import { DEV_MODE } from '../data/constants.js';
+import { FrameTimer } from './FrameTimer.js';
 import { GameObject } from './GameObject.js';
 
 class Sprite extends GameObject {
@@ -38,7 +39,7 @@ class Sprite extends GameObject {
     this.animations = animations;
     this.currentAnimationFrameIndex = 0;
     this.frameInterval = 0;
-    this.frameTimer = 0;
+    this.frameTimer = new FrameTimer();
     this.animationName = '';
   }
 
@@ -72,6 +73,13 @@ class Sprite extends GameObject {
 
       return frames;
     };
+    const changeFrame = () => {
+      if (!framesIndexesList[this.currentAnimationFrameIndex])
+        this.currentAnimationFrameIndex = 0;
+
+      this.frameX = framesIndexesList[this.currentAnimationFrameIndex];
+      this.currentAnimationFrameIndex += 1;
+    };
     this.animationName = animationName;
 
     const framesIndexesList = makeFramesIndexesList();
@@ -85,19 +93,9 @@ class Sprite extends GameObject {
     }
 
     this.frameInterval = 1000 / this.animations[this.animationName].fps; // 1000 - it is 1000 ms
-
-    if (this.frameTimer > this.frameInterval) {
-      this.frameTimer = 0;
-
-      if (!framesIndexesList[this.currentAnimationFrameIndex])
-        this.currentAnimationFrameIndex = 0;
-
-      this.frameX = framesIndexesList[this.currentAnimationFrameIndex];
-
-      this.currentAnimationFrameIndex += 1;
-    } else {
-      this.frameTimer += deltaTime;
-    }
+    this.frameTimer.setTime(this.frameInterval);
+    this.frameTimer.setCallback(changeFrame);
+    this.frameTimer.start(deltaTime);
   }
 
   draw(context) {
