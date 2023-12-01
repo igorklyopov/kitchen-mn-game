@@ -69,19 +69,6 @@ class Character extends GameObject {
     this.frameTimer = new FrameTimer();
   }
 
-  step(delta, root) {
-    this.updateMove(delta, root);
-  }
-
-  tryEmitPosition() {
-    if (this.lastX === this.position.x && this.lastY === this.position.y) {
-      return;
-    }
-    this.lastX = this.position.x;
-    this.lastY = this.position.y;
-    if (this.isPlayerControlled) events.emit('HERO_POSITION', this.position);
-  }
-
   set autoActions(actionsData) {
     this.actions = actionsData;
   }
@@ -98,6 +85,19 @@ class Character extends GameObject {
     return this.isAutoActionPlay;
   }
 
+  step(delta, root) {
+    this.updateMove(delta, root);
+  }
+
+  tryEmitPosition() {
+    if (this.lastX === this.position.x && this.lastY === this.position.y) {
+      return;
+    }
+    this.lastX = this.position.x;
+    this.lastY = this.position.y;
+    if (this.isPlayerControlled) events.emit('HERO_POSITION', this.position);
+  }
+
   incrementActionDataIndex() {
     if (this.actionDataIndex < this.actions.data.length - 1)
       this.actionDataIndex += 1;
@@ -108,9 +108,10 @@ class Character extends GameObject {
   }
 
   generateAction(delta) {
-    const currentAction = this.actions.data[this.actionDataIndex].action;
-    const currentDistance = this.actions.data[this.actionDataIndex].distance;
-    const timeToNextAction = this.actions.data[this.actionDataIndex].time;
+    const { data } = this.actions;
+    const currentAction = data[this.actionDataIndex].action;
+    const currentDistance = data[this.actionDataIndex].distance;
+    const timeToNextAction = data[this.actionDataIndex].time;
     const isWayForwardPaved = this.checkWayForwardIsPaved();
 
     const isArrived =

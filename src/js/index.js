@@ -93,7 +93,7 @@ const lida = new Character({
   },
 });
 lida.autoActions = data2;
-// lida.isAutoActionPlay = true;
+lida.isAutoActionPlay = true;
 mainScene.addChild(lida);
 
 const camera = new Camera();
