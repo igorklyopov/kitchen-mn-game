@@ -1,4 +1,4 @@
-const DEV_MODE = false; // for test
+const DEV_MODE = true; // for test
 
 const GAME_CANVAS_WIDTH = 320;
 const GAME_CANVAS_HEIGHT = 180;

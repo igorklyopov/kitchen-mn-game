@@ -13,6 +13,7 @@ class Sprite extends GameObject {
     frameXMaxNumber = 1,
     frameYNumber = 1,
     animations = {},
+    scale = 1,
   }) {
     super({ name });
 
@@ -35,6 +36,7 @@ class Sprite extends GameObject {
     this.frameY = frameY;
     this.frameXMaxNumber = frameXMaxNumber;
     this.frameYNumber = frameYNumber;
+    this.scale = scale;
 
     this.animations = animations;
     this.currentAnimationFrameIndex = 0;
@@ -99,8 +101,6 @@ class Sprite extends GameObject {
   }
 
   draw(context) {
-    if (DEV_MODE) this.drawRect(context); // for test
-
     if (this.imgLoaded) {
       context.drawImage(
         this.image,
@@ -110,14 +110,16 @@ class Sprite extends GameObject {
         this.frameSize.height, // How much to crop from the sprite sheet (Y)
         this.position.x, // Where to place this on canvas tag X (0)
         this.position.y, // Where to place this on canvas tag Y (0)
-        this.frameSize.width, // How large to scale it (X)
-        this.frameSize.height, // How large to scale it (Y)
+        this.frameSize.width * this.scale, // How large to scale it (X)
+        this.frameSize.height * this.scale, // How large to scale it (Y)
       );
     }
+
+    if (DEV_MODE) this.drawRectBorder(context); // for test
   }
 
   // for test
-  drawRect(ctx) {
+  drawRectBorder(ctx) {
     ctx.strokeStyle = 'rgba(16,193,16,1)';
     ctx.strokeRect(
       this.position.x,
@@ -125,6 +127,10 @@ class Sprite extends GameObject {
       this.frameSize.width,
       this.frameSize.height,
     );
+
+    // origin
+    ctx.strokeStyle = 'red';
+    ctx.strokeRect(this.position.x, this.position.y, 2, 2);
   }
 }
 

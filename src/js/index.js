@@ -20,6 +20,7 @@ import {
 import { assetsData } from './data/assetsData.js';
 import { findAssetByName } from './utils/findAssetByName.js';
 import { collisionBoundaries } from './helpers/collisionBoundaries.js';
+import { GridHelper } from './helpers/GridHelper.js';
 
 // Grabbing the canvas to draw to
 const canvas = refs.gameCanvas;
@@ -93,18 +94,22 @@ const lida = new Character({
   },
 });
 lida.autoActions = data2;
-lida.isAutoActionPlay = true;
-mainScene.addChild(lida);
+// lida.isAutoActionPlay = true;
+// mainScene.addChild(lida);
 
 const camera = new Camera();
 mainScene.addChild(camera);
 
-// add boundaries (for test)
-if (DEV_MODE)
-  collisionBoundaries.forEach((boundary) => mainScene.addChild(boundary));
-
 // Add an InputHandler class to the main scene
 mainScene.input = new InputHandler();
+
+// Add gridHelper for test
+const gridHelper = new GridHelper({
+  size: { width: GAME_MAP_WIDTH, height: GAME_MAP_HEIGHT },
+  cellSize: { width: 16, height: 16 },
+  color: 'rgba(244,8,222,1)',
+  canvas,
+});
 
 // Establish update and draw loops
 const update = (delta) => {
@@ -122,6 +127,12 @@ const draw = () => {
 
   // Draw objects in the mounted scene
   mainScene.draw(ctx, 0, 0);
+
+  // for test
+  if (DEV_MODE) {
+    gridHelper.draw();
+    collisionBoundaries.forEach((boundary) => boundary.draw(ctx));
+  }
 
   // Restore to original state
   ctx.restore();

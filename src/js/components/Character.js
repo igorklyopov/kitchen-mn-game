@@ -5,8 +5,8 @@ import { events } from './Events.js';
 import { FrameTimer } from './FrameTimer.js';
 import { ACTIONS_NAMES, MOVING_STEP, GRID_SIZE } from '../data/constants.js';
 import { paveWayForward } from '../helpers/paveWayForward.js';
-import { collisionBoundaries } from '../helpers/collisionBoundaries.js';
-import { isRectanglesCollide } from '../utils/isRectanglesCollide.js';
+import { gameMap } from '../helpers/collisionBoundaries.js';
+// import { isRectanglesCollide } from '../utils/isRectanglesCollide.js';
 
 const {
   WALK_UP,
@@ -36,6 +36,7 @@ class Character extends GameObject {
     frameXMaxNumber,
     frameYNumber,
     animations,
+    scale,
   }) {
     super({
       name,
@@ -50,6 +51,7 @@ class Character extends GameObject {
       frameXMaxNumber,
       frameYNumber,
       animations,
+      scale,
       position: this.position,
       name: this.name,
     });
@@ -198,30 +200,25 @@ class Character extends GameObject {
     }
   }
 
-  checkIsSpaceFree(nextX, nextY, collisionBoundaries) {
-    // Validating that the next destination is free
+  // Validating that the next destination is free
+  checkIsSpaceFree(nextX, nextY) {
     this.isSpaceFree = true;
 
-    const rectA = {
-      position: { x: nextX, y: nextY },
-      width: this.body.frameSize.width / 2,
-      height: this.body.frameSize.height / 2,
-    };
+    const numberSquareX = nextX / this.moveDistance;
+    const numberSquareY = nextY / this.moveDistance;
 
-    for (let i = 0; i < collisionBoundaries.length; i += 1) {
-      const boundary = collisionBoundaries[i];
-      const rectB = {
-        position: boundary.position,
-        width: boundary.width / 2,
-        height: boundary.height / 2,
-      };
+    const square1 = `${numberSquareX},${numberSquareY}`;
+    const square2 = `${numberSquareX + 1},${numberSquareY}`;
+    const square3 = `${numberSquareX},${numberSquareY + 1}`;
+    const square4 = `${numberSquareX + 1},${numberSquareY + 1}`;
 
-      if (isRectanglesCollide(rectA, rectB)) {
-        this.isSpaceFree = false;
+    const spaceNotFree =
+      gameMap.has(square1) ||
+      gameMap.has(square2) ||
+      gameMap.has(square3) ||
+      gameMap.has(square4);
 
-        break;
-      }
-    }
+    this.isSpaceFree = !spaceNotFree;
 
     return this.isSpaceFree;
   }
@@ -250,11 +247,7 @@ class Character extends GameObject {
       default:
     }
 
-    const isSpaceFree = this.checkIsSpaceFree(
-      nextX,
-      nextY,
-      collisionBoundaries,
-    );
+    const isSpaceFree = this.checkIsSpaceFree(nextX, nextY);
 
     if (isSpaceFree) {
       this.isCollide = false;

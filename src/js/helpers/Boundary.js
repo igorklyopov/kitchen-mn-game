@@ -1,6 +1,4 @@
-import { GameObject } from './GameObject';
-
-class Boundary extends GameObject {
+class Boundary {
   constructor({
     name = 'boundary',
     position = { x: 0, y: 0 },
@@ -8,8 +6,6 @@ class Boundary extends GameObject {
     height = 0,
     color = 'red',
   }) {
-    super({ name });
-
     this.name = name;
     this.position = position;
     this.width = width;
@@ -17,7 +13,7 @@ class Boundary extends GameObject {
     this.color = color;
   }
 
-  draw(context, x = 0, y = 0) {
+  draw(context) {
     context.fillStyle = this.color;
     context.fillRect(this.position.x, this.position.y, this.width, this.height);
   }
