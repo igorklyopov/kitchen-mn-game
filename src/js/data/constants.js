@@ -1,16 +1,16 @@
-const DEV_MODE = true; // for test
+const DEV_MODE = false; // for test
 
 const GAME_CANVAS_WIDTH = 320;
 const GAME_CANVAS_HEIGHT = 180;
 const GAME_MAP_WIDTH = 1440;
 const GAME_MAP_HEIGHT = 960;
-const GRID_SIZE = 16;
+const GAME_GRID_CELL_SIZE = 16;
 
 const HERO_POSITION_DEFAULT = {
   x: 15,
   y: 57,
 };
-const MOVING_STEP = 1; // the number of squares the hero moves at one time
+const MOVEMENT_STEPS_NUMBER = 1; // the number of squares (grid cells, tiles of map grid) the character moves at one time
 const ACTIONS_NAMES = {
   WALK_UP: 'WALK_UP',
   WALK_DOWN: 'WALK_DOWN',
@@ -40,9 +40,9 @@ export {
   GAME_CANVAS_HEIGHT,
   GAME_MAP_WIDTH,
   GAME_MAP_HEIGHT,
-  GRID_SIZE,
+  GAME_GRID_CELL_SIZE,
   HERO_POSITION_DEFAULT,
-  MOVING_STEP,
+  MOVEMENT_STEPS_NUMBER,
   ACTIONS_NAMES,
   HERO_ACTIONS_KEYS,
   COLLISION_OBJECTS_TYPES,

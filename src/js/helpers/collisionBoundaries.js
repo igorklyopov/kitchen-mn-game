@@ -37,6 +37,5 @@ collisionsMap.forEach((row, y) => {
     }
   });
 });
-console.log(gameMap);
 
 export { gameMap, collisionBoundaries };

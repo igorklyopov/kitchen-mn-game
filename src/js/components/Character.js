@@ -3,7 +3,11 @@ import { Vector2 } from './Vector2.js';
 import { Sprite } from './Sprite.js';
 import { events } from './Events.js';
 import { FrameTimer } from './FrameTimer.js';
-import { ACTIONS_NAMES, MOVING_STEP, GRID_SIZE } from '../data/constants.js';
+import {
+  ACTIONS_NAMES,
+  MOVEMENT_STEPS_NUMBER,
+  GAME_GRID_CELL_SIZE,
+} from '../data/constants.js';
 import { paveWayForward } from '../helpers/paveWayForward.js';
 import { gameMap } from '../helpers/collisionBoundaries.js';
 // import { isRectanglesCollide } from '../utils/isRectanglesCollide.js';
@@ -57,10 +61,10 @@ class Character extends GameObject {
     });
     this.addChild(this.body);
 
-    this.isPlayerControlled = isPlayerControlled; // flag for hero role
+    this.isPlayerControlled = isPlayerControlled; // flag for character role
     this.destinationPosition = this.position.duplicate();
-    this.speed = MOVING_STEP; // the number of squares the hero moves at one time
-    this.moveDistance = GRID_SIZE; // the size of square (distance) the hero moves at one time
+    this.movementStepsNumber = MOVEMENT_STEPS_NUMBER; // the number of squares (grid cells, tiles of map grid) the character moves at one time
+    this.movingStepSize = GAME_GRID_CELL_SIZE; // the size of square (distance) the character moves at one time
     this.isCollide = false;
     this.isAutoActionPlay = false;
     this.actions = {
@@ -69,6 +73,15 @@ class Character extends GameObject {
     };
     this.actionDataIndex = 0;
     this.frameTimer = new FrameTimer();
+    this.movingStepsCounter = 0;
+  }
+
+  set movementSteps(stepsNumber) {
+    this.movementStepsNumber = stepsNumber;
+  }
+
+  get movementSteps() {
+    return this.movementStepsNumber;
   }
 
   set autoActions(actionsData) {
@@ -120,10 +133,6 @@ class Character extends GameObject {
       this.destinationPosition.x === this.position.x &&
       this.destinationPosition.y === this.position.y;
 
-    if (currentDistance) {
-      this.moveDistance *= currentDistance;
-    }
-
     if (timeToNextAction) {
       this.frameTimer.setTime(timeToNextAction);
       this.frameTimer.setCallback(() => this.incrementActionDataIndex());
@@ -137,9 +146,14 @@ class Character extends GameObject {
       isArrived &&
       isWayForwardPaved
     ) {
-      this.incrementActionDataIndex();
-    } else {
-      this.moveDistance = GRID_SIZE;
+      if (currentDistance && this.movingStepsCounter < currentDistance) {
+        this.movingStepsCounter += 1;
+      }
+
+      if (this.movingStepsCounter === currentDistance) {
+        this.incrementActionDataIndex();
+        this.movingStepsCounter = 0;
+      }
     }
 
     const isEndOfAutoActionsList =
@@ -204,8 +218,8 @@ class Character extends GameObject {
   checkIsSpaceFree(nextX, nextY) {
     this.isSpaceFree = true;
 
-    const numberSquareX = nextX / this.moveDistance;
-    const numberSquareY = nextY / this.moveDistance;
+    const numberSquareX = nextX / this.movingStepSize;
+    const numberSquareY = nextY / this.movingStepSize;
 
     const square1 = `${numberSquareX},${numberSquareY}`;
     const square2 = `${numberSquareX + 1},${numberSquareY}`;
@@ -224,42 +238,53 @@ class Character extends GameObject {
   }
 
   move(moveAction = '') {
-    let nextX = this.destinationPosition.x;
-    let nextY = this.destinationPosition.y;
+    for (
+      let stepsCounter = 0;
+      stepsCounter < this.movementStepsNumber;
+      stepsCounter += 1
+    ) {
+      let nextX = this.destinationPosition.x;
+      let nextY = this.destinationPosition.y;
 
-    switch (moveAction) {
-      case WALK_DOWN:
-        nextY += this.moveDistance * this.speed;
-        break;
+      switch (moveAction) {
+        case WALK_DOWN:
+          nextY += this.movingStepSize;
+          break;
 
-      case WALK_UP:
-        nextY -= this.moveDistance * this.speed;
-        break;
+        case WALK_UP:
+          nextY -= this.movingStepSize;
+          break;
 
-      case WALK_LEFT:
-        nextX -= this.moveDistance * this.speed;
-        break;
+        case WALK_LEFT:
+          nextX -= this.movingStepSize;
+          break;
 
-      case WALK_RIGHT:
-        nextX += this.moveDistance * this.speed;
-        break;
+        case WALK_RIGHT:
+          nextX += this.movingStepSize;
+          break;
 
-      default:
-    }
+        default:
+          break;
+      }
 
-    const isSpaceFree = this.checkIsSpaceFree(nextX, nextY);
+      const isSpaceFree = this.checkIsSpaceFree(nextX, nextY);
 
-    if (isSpaceFree) {
-      this.isCollide = false;
-      this.destinationPosition.x = nextX;
-      this.destinationPosition.y = nextY;
-    } else {
-      this.isCollide = true;
+      if (isSpaceFree) {
+        this.isCollide = false;
+        this.destinationPosition.x = nextX;
+        this.destinationPosition.y = nextY;
+      } else {
+        this.isCollide = true;
+      }
     }
   }
 
   checkWayForwardIsPaved() {
-    const distance = paveWayForward(this, this.destinationPosition, this.speed);
+    const distance = paveWayForward(
+      this,
+      this.destinationPosition,
+      this.movementStepsNumber,
+    );
 
     return distance <= 1;
   }
