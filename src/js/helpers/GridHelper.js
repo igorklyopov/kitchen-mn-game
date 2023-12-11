@@ -1,5 +1,3 @@
-import { isRectanglesCollide } from '../utils/isRectanglesCollide';
-
 class Cell {
   constructor({
     position = { x: 0, y: 0 },
@@ -89,25 +87,25 @@ class GridHelper {
       this.mouse.position.x = e.x - this.canvasPosition.left;
       this.mouse.position.y = e.y - this.canvasPosition.top;
 
-      for (let i = 0; i < this.cells.length; i++) {
-        const item = this.cells[i];
+      // for (let i = 0; i < this.cells.length; i++) {
+      //   const item = this.cells[i];
 
-        if (
-          isRectanglesCollide(
-            {
-              position: item.position,
-              width: item.size.width,
-              height: item.size.height,
-            },
-            this.mouse,
-          )
-        ) {
-          item.active = !item.active;
-          // console.log(this.mouse.position, item.position, item.text);
+      //   if (
+      //     isRectanglesCollide(
+      //       {
+      //         position: item.position,
+      //         width: item.size.width,
+      //         height: item.size.height,
+      //       },
+      //       this.mouse,
+      //     )
+      //   ) {
+      //     item.active = !item.active;
+      //     // console.log(this.mouse.position, item.position, item.text);
 
-          break;
-        }
-      }
+      //     break;
+      //   }
+      // }
     });
   }
 

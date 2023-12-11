@@ -45,6 +45,10 @@ class Sprite extends GameObject {
     this.animationName = '';
   }
 
+  get size() {
+    return this.frameSize;
+  }
+
   step(delta) {
     if (Object.keys(this.animations).length < 1 || this.animationName === '') {
       return;

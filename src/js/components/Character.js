@@ -10,7 +10,6 @@ import {
 } from '../data/constants.js';
 import { paveWayForward } from '../helpers/paveWayForward.js';
 import { gameMap } from '../helpers/collisionBoundaries.js';
-// import { isRectanglesCollide } from '../utils/isRectanglesCollide.js';
 
 const {
   WALK_UP,
@@ -23,8 +22,13 @@ const {
   STAND_RIGHT,
 } = ACTIONS_NAMES;
 
-const standActionsList = [STAND_UP, STAND_DOWN, STAND_LEFT, STAND_RIGHT];
-const walkActionsList = [WALK_UP, WALK_DOWN, WALK_LEFT, WALK_RIGHT];
+const standActionsList = new Set([
+  STAND_UP,
+  STAND_DOWN,
+  STAND_LEFT,
+  STAND_RIGHT,
+]);
+const walkActionsList = new Set([WALK_UP, WALK_DOWN, WALK_LEFT, WALK_RIGHT]);
 
 class Character extends GameObject {
   constructor({
@@ -137,15 +141,11 @@ class Character extends GameObject {
       this.frameTimer.setTime(timeToNextAction);
       this.frameTimer.setCallback(() => this.incrementActionDataIndex());
       this.frameTimer.start(delta);
-    } else if (standActionsList.includes(currentAction)) {
+    } else if (standActionsList.has(currentAction)) {
       this.incrementActionDataIndex();
     }
 
-    if (
-      walkActionsList.includes(currentAction) &&
-      isArrived &&
-      isWayForwardPaved
-    ) {
+    if (walkActionsList.has(currentAction) && isArrived && isWayForwardPaved) {
       if (currentDistance && this.movingStepsCounter < currentDistance) {
         this.movingStepsCounter += 1;
       }
@@ -214,25 +214,40 @@ class Character extends GameObject {
     }
   }
 
+  // разделяет тело персонажа на квадраты равные ячейке сетки карты и превращает их координаты в номера ячеек сетки карты по оси икс и игрек для проверки по карте свободно ли место
+  normalizeCoordinates(nextX, nextY) {
+    const squareX = nextX / this.movingStepSize;
+    const squareY = nextY / this.movingStepSize;
+    const squaresXNumber = this.body.size.width / this.movingStepSize;
+    const squaresYNumber = this.body.size.height / this.movingStepSize;
+
+    const squares = [];
+
+    for (let x = 0; x < squaresXNumber; x += 1) {
+      let square;
+
+      for (let y = 0; y < squaresYNumber; y += 1) {
+        square = `${squareX + y},${squareY + x}`;
+
+        squares.push(square);
+      }
+    }
+
+    return squares;
+  }
+
   // Validating that the next destination is free
   checkIsSpaceFree(nextX, nextY) {
     this.isSpaceFree = true;
 
-    const numberSquareX = nextX / this.movingStepSize;
-    const numberSquareY = nextY / this.movingStepSize;
+    const coordinatesList = this.normalizeCoordinates(nextX, nextY);
 
-    const square1 = `${numberSquareX},${numberSquareY}`;
-    const square2 = `${numberSquareX + 1},${numberSquareY}`;
-    const square3 = `${numberSquareX},${numberSquareY + 1}`;
-    const square4 = `${numberSquareX + 1},${numberSquareY + 1}`;
-
-    const spaceNotFree =
-      gameMap.has(square1) ||
-      gameMap.has(square2) ||
-      gameMap.has(square3) ||
-      gameMap.has(square4);
-
-    this.isSpaceFree = !spaceNotFree;
+    for (const coordinate of coordinatesList) {
+      if (gameMap.has(coordinate)) {
+        this.isSpaceFree = false;
+        break;
+      }
+    }
 
     return this.isSpaceFree;
   }
