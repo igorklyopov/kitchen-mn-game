@@ -215,7 +215,7 @@ class Character extends GameObject {
     }
   }
 
-  // разделяет тело персонажа на квадраты равные ячейке сетки карты и превращает их координаты в номера ячеек сетки карты по оси икс и игрек для проверки по карте свободно ли место
+  // divides the character`s body into squares equal to the map grid cell and turns their coordinates into map grid cell numbers along the x- and y-axis (for checking on the map whether the space is free)
   normalizeCoordinates(nextX, nextY) {
     const squareX = nextX / this.movingStepSize;
     const squareY = nextY / this.movingStepSize;
