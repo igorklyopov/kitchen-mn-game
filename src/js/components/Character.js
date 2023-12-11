@@ -118,7 +118,7 @@ class Character extends GameObject {
   }
 
   incrementActionDataIndex() {
-    if (this.actionDataIndex < this.actions.data.length - 1)
+    if (this.actionDataIndex < this.actions.data.length)
       this.actionDataIndex += 1;
   }
 
@@ -151,16 +151,17 @@ class Character extends GameObject {
       }
 
       if (this.movingStepsCounter === currentDistance) {
-        this.incrementActionDataIndex();
         this.movingStepsCounter = 0;
+        this.incrementActionDataIndex();
       }
     }
 
     const isEndOfAutoActionsList =
-      this.actionDataIndex === this.actions.data.length - 1;
+      this.actionDataIndex === this.actions.data.length;
 
-    if (this.actions.repeat && isEndOfAutoActionsList)
+    if (this.actions.repeat && isEndOfAutoActionsList) {
       this.resetActionDataIndex();
+    }
 
     return currentAction;
   }

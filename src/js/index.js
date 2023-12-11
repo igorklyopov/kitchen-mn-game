@@ -48,11 +48,9 @@ const data2 = {
   repeat: true,
   data: [
     { action: 'STAND_UP', time: 3000 },
-    { action: 'WALK_UP', distance: 3 },
-    { action: 'WALK_RIGHT', distance: 6 },
-    { action: 'WALK_DOWN', distance: 3 },
-    { action: 'WALK_LEFT', distance: 6 },
-    { action: 'WALK_UP', distance: 3 },
+    { action: 'WALK_UP', distance: 4 },
+    { action: 'STAND_DOWN', time: 2000 },
+    { action: 'WALK_DOWN', distance: 4 },
   ],
 };
 /// //////////////////////////////
@@ -90,12 +88,12 @@ const lida = new Character({
   animations: lidaSpriteData.animations,
   position: {
     x: gridCells(15),
-    y: gridCells(55),
+    y: gridCells(53),
   },
 });
 lida.autoActions = data2;
-// lida.isAutoActionPlay = true;
-// mainScene.addChild(lida);
+lida.isAutoActionPlay = true;
+mainScene.addChild(lida);
 
 const camera = new Camera();
 mainScene.addChild(camera);
