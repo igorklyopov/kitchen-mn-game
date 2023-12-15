@@ -10,6 +10,7 @@ import {
 } from '../data/constants.js';
 import { paveWayForward } from '../helpers/paveWayForward.js';
 import { gameMap } from '../helpers/collisionBoundaries.js';
+import { isRectanglesCollide } from '../utils/isRectanglesCollide .js';
 
 const {
   WALK_UP,
@@ -78,6 +79,17 @@ class Character extends GameObject {
     this.actionDataIndex = 0;
     this.frameTimer = new FrameTimer();
     this.movingStepsCounter = 0;
+
+    this.heroPosition = null;
+    if (!this.isPlayerControlled) {
+      events.on(
+        'HERO_POSITION',
+        this,
+        (heroPosition) => (this.heroPosition = heroPosition),
+      );
+    }
+
+    this.text = 'Hello everyone!';
   }
 
   set movementSteps(stepsNumber) {
@@ -102,6 +114,14 @@ class Character extends GameObject {
 
   get autoActionsPlay() {
     return this.isAutoActionPlay;
+  }
+
+  set message(text) {
+    this.text = text;
+  }
+
+  get message() {
+    return this.text;
   }
 
   step(delta, root) {
@@ -240,6 +260,29 @@ class Character extends GameObject {
   // Validating that the next destination is free
   checkIsSpaceFree(nextX, nextY) {
     this.isSpaceFree = true;
+
+    if (!this.isPlayerControlled) {
+      const isCollideWithHero = isRectanglesCollide(
+        {
+          position: { x: this.position.x, y: this.position.y },
+          width: this.body.size.width,
+          height: this.body.size.height,
+        },
+        {
+          position: { x: this.heroPosition.x, y: this.heroPosition.y },
+          width: this.body.size.width,
+          height: this.body.size.height,
+        },
+      );
+
+      this.isSpaceFree = !isCollideWithHero;
+
+      if (isCollideWithHero) {
+        events.emit('CHARACTER_ACTIVE', this.message);
+
+        return;
+      }
+    }
 
     const coordinatesList = this.normalizeCoordinates(nextX, nextY);
 

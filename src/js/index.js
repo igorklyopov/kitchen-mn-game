@@ -20,7 +20,9 @@ import {
 import { assetsData } from './data/assetsData.js';
 import { findAssetByName } from './utils/findAssetByName.js';
 import { collisionBoundaries } from './helpers/collisionBoundaries.js';
-import { GridHelper } from './helpers/GridHelper.js';
+// import { GridHelper } from './helpers/GridHelper.js';
+import { events } from './components/Events.js';
+import { TextMessage } from './components/Message/TextMessage.js';
 
 // Grabbing the canvas to draw to
 const canvas = refs.gameCanvas;
@@ -49,6 +51,8 @@ const data2 = {
   data: [
     { action: 'STAND_UP', time: 3000 },
     { action: 'WALK_UP', distance: 4 },
+    { action: 'WALK_LEFT', distance: 4 },
+    { action: 'WALK_RIGHT', distance: 4 },
     { action: 'STAND_DOWN', time: 2000 },
     { action: 'WALK_DOWN', distance: 4 },
   ],
@@ -102,12 +106,29 @@ mainScene.addChild(camera);
 mainScene.input = new InputHandler();
 
 // Add gridHelper for test
-const gridHelper = new GridHelper({
-  size: { width: GAME_MAP_WIDTH, height: GAME_MAP_HEIGHT },
-  cellSize: { width: 16, height: 16 },
-  color: 'rgba(244,8,222,1)',
-  canvas,
+// const gridHelper = new GridHelper({
+//   size: { width: GAME_MAP_WIDTH, height: GAME_MAP_HEIGHT },
+//   cellSize: { width: 16, height: 16 },
+//   color: 'rgba(244,8,222,1)',
+//   canvas,
+// });
+
+// show message
+let isMessageOpen = false;
+
+events.on('CHARACTER_ACTIVE', 'game', (message) => {
+  if (isMessageOpen) return;
+
+  isMessageOpen = true;
+
+  const characterMessage = new TextMessage({
+    text: message,
+    onComplete: () => console.log('onComplete'),
+  });
+  characterMessage.init(document.querySelector('.js_game'));
 });
+
+// console.log(events);
 
 // Establish update and draw loops
 const update = (delta) => {
@@ -128,7 +149,7 @@ const draw = () => {
 
   // for test
   if (DEV_MODE) {
-    gridHelper.draw();
+    // gridHelper.draw();
     collisionBoundaries.forEach((boundary) => boundary.draw(ctx));
   }
 

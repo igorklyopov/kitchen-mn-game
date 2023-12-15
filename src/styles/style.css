@@ -1,6 +1,7 @@
 @import url(./css-reset.css);
 @import url(./variables.css);
 @import url(./dialog.css);
+@import url(./text-message.css);
 
 html,
 body {

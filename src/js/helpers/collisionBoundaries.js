@@ -5,7 +5,7 @@ import { COLLISION_OBJECTS_TYPES } from '../data/constants.js';
 
 const { map, width, tileSize } = collisionMainData;
 const collisionsMap = make2DArray(map, width);
-let gameMap = new Map();
+const gameMap = new Map();
 const collisionBoundaries = [];
 
 collisionsMap.forEach((row, y) => {
@@ -37,5 +37,5 @@ collisionsMap.forEach((row, y) => {
     }
   });
 });
-gameMap = new Map();
+
 export { gameMap, collisionBoundaries };
