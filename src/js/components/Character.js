@@ -3,6 +3,7 @@ import { Vector2 } from './Vector2.js';
 import { Sprite } from './Sprite.js';
 import { events } from './Events.js';
 import { FrameTimer } from './FrameTimer.js';
+import { Dialog } from './Message/Dialog.js';
 import {
   ACTIONS_NAMES,
   MOVEMENT_STEPS_NUMBER,
@@ -80,16 +81,20 @@ class Character extends GameObject {
     this.frameTimer = new FrameTimer();
     this.movingStepsCounter = 0;
 
-    this.heroPosition = null;
     if (!this.isPlayerControlled) {
+      this.heroPosition = new Vector2(0, 0);
+
       events.on(
         'HERO_POSITION',
         this,
         (heroPosition) => (this.heroPosition = heroPosition),
       );
+
+      this.isActive = false;
     }
 
-    this.text = 'Hello everyone!';
+    this.messageData = {};
+    this.conversation = null;
   }
 
   set movementSteps(stepsNumber) {
@@ -100,14 +105,6 @@ class Character extends GameObject {
     return this.movementStepsNumber;
   }
 
-  set autoActions(actionsData) {
-    this.actions = actionsData;
-  }
-
-  get autoActions() {
-    return this.actions;
-  }
-
   set autoActionsPlay(value) {
     this.actions = value;
   }
@@ -116,25 +113,8 @@ class Character extends GameObject {
     return this.isAutoActionPlay;
   }
 
-  set message(text) {
-    this.text = text;
-  }
-
-  get message() {
-    return this.text;
-  }
-
   step(delta, root) {
     this.updateMove(delta, root);
-  }
-
-  tryEmitPosition() {
-    if (this.lastX === this.position.x && this.lastY === this.position.y) {
-      return;
-    }
-    this.lastX = this.position.x;
-    this.lastY = this.position.y;
-    if (this.isPlayerControlled) events.emit('HERO_POSITION', this.position);
   }
 
   incrementActionDataIndex() {
@@ -146,7 +126,13 @@ class Character extends GameObject {
     this.actionDataIndex = 0;
   }
 
+  setActions(actionsData) {
+    this.actions = actionsData;
+  }
+
   generateAction(delta) {
+    if (this.isCollide) return;
+
     const { data } = this.actions;
     const currentAction = data[this.actionDataIndex].action;
     const currentDistance = data[this.actionDataIndex].distance;
@@ -275,10 +261,9 @@ class Character extends GameObject {
         },
       );
 
-      this.isSpaceFree = !isCollideWithHero;
-
       if (isCollideWithHero) {
-        events.emit('CHARACTER_ACTIVE', this.message);
+        this.isSpaceFree = false;
+        if (!this.isCollide) this.showMessage();
 
         return;
       }
@@ -294,6 +279,27 @@ class Character extends GameObject {
     }
 
     return this.isSpaceFree;
+  }
+
+  setMessage(
+    messageData = {
+      text: '',
+      buttons: [{ key: '', content: null, onClick: () => {} }],
+    },
+  ) {
+    this.messageData = messageData;
+  }
+
+  showMessage() {
+    this.conversation = new Dialog({
+      container: document.querySelector('.js_game'),
+      text: this.messageData.text,
+      buttons: this.messageData.buttons,
+      onComplete: () => {
+        console.log('onComplete');
+      },
+    });
+    this.conversation.open();
   }
 
   move(moveAction = '') {
@@ -357,6 +363,8 @@ class Character extends GameObject {
       action = this.generateAction(delta);
     } else if (this.isPlayerControlled) {
       action = input.action;
+
+      events.emit('HERO_POSITION', this.position);
     }
 
     if (isWayForwardPaved) {
@@ -368,8 +376,6 @@ class Character extends GameObject {
 
       this.animateAction(actionForAnimation, delta);
     }
-
-    this.tryEmitPosition();
   }
 
   getStopAction(moveAction = '', delta) {

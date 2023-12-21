@@ -4,6 +4,7 @@ class FrameTimer {
     this.callback = null;
     this.timer = 0;
     this.isStopped = false;
+    this.timer2 = 0;
   }
 
   get timeIsUp() {
@@ -28,7 +29,7 @@ class FrameTimer {
       this.isStopped = true;
       this.callback();
     } else {
-      Math.floor((this.timer += deltaTime));
+      this.timer += Math.round(deltaTime);
     }
   }
 }

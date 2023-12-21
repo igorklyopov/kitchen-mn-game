@@ -21,8 +21,6 @@ import { assetsData } from './data/assetsData.js';
 import { findAssetByName } from './utils/findAssetByName.js';
 import { collisionBoundaries } from './helpers/collisionBoundaries.js';
 // import { GridHelper } from './helpers/GridHelper.js';
-import { events } from './components/Events.js';
-import { TextMessage } from './components/Message/TextMessage.js';
 
 // Grabbing the canvas to draw to
 const canvas = refs.gameCanvas;
@@ -75,9 +73,9 @@ const hero = new Character({
     y: gridCells(HERO_POSITION_DEFAULT.y),
   },
 });
-// hero.autoActions = data2;
-// hero.isAutoActionPlay = true;
+
 mainScene.addChild(hero);
+console.log(hero);
 
 const lidaSpriteData = findAssetByName(assetsData, 'lida');
 
@@ -95,9 +93,11 @@ const lida = new Character({
     y: gridCells(53),
   },
 });
-lida.autoActions = data2;
+lida.setActions(data2);
 lida.isAutoActionPlay = true;
+lida.setMessage({ text: 'Hello everyone!' });
 mainScene.addChild(lida);
+console.log(lida);
 
 const camera = new Camera();
 mainScene.addChild(camera);
@@ -112,23 +112,6 @@ mainScene.input = new InputHandler();
 //   color: 'rgba(244,8,222,1)',
 //   canvas,
 // });
-
-// show message
-let isMessageOpen = false;
-
-events.on('CHARACTER_ACTIVE', 'game', (message) => {
-  if (isMessageOpen) return;
-
-  isMessageOpen = true;
-
-  const characterMessage = new TextMessage({
-    text: message,
-    onComplete: () => console.log('onComplete'),
-  });
-  characterMessage.init(document.querySelector('.js_game'));
-});
-
-// console.log(events);
 
 // Establish update and draw loops
 const update = (delta) => {

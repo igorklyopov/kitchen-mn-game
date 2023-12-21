@@ -1,8 +1,8 @@
 class RevealingText {
-  constructor(config) {
-    this.element = config.element;
-    this.text = config.text;
-    this.speed = config.speed || 80;
+  constructor({ element = null, text = '', speed = 80 }) {
+    this.element = element;
+    this.text = text;
+    this.speed = speed;
 
     this.timeout = null;
     this.isDone = false;
@@ -44,7 +44,7 @@ class RevealingText {
       });
     });
 
-    this.revealOneSymbol(symbols);
+    if (symbols.length > 0) this.revealOneSymbol(symbols);
   }
 }
 

@@ -130,4 +130,8 @@ class Dialog {
   }
 }
 
+const dialog = new Dialog({ rootElRef: document.querySelector('.js_game') });
+
+console.log(dialog);
+
 export { Dialog };
