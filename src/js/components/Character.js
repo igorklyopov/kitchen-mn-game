@@ -300,6 +300,7 @@ class Character extends GameObject {
       },
     });
     this.conversation.open();
+    events.emit('INTERACTION_START', this.name);
   }
 
   move(moveAction = '') {

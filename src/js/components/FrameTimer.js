@@ -4,7 +4,6 @@ class FrameTimer {
     this.callback = null;
     this.timer = 0;
     this.isStopped = false;
-    this.timer2 = 0;
   }
 
   get timeIsUp() {
