@@ -15,6 +15,7 @@ import {
   GAME_MAP_WIDTH,
   GAME_MAP_HEIGHT,
   HERO_POSITION_DEFAULT,
+  GAME_LOOP_FPS_DEFAULT,
   DEV_MODE,
 } from '../js/data/constants.js';
 import { assetsData } from './data/assetsData.js';
@@ -144,5 +145,13 @@ const draw = () => {
 };
 
 // Start the game!
-const gameLoop = new GameLoop(update, draw);
+const gameLoop = new GameLoop({
+  update,
+  render: draw,
+  fps: GAME_LOOP_FPS_DEFAULT,
+});
 gameLoop.start();
+// gameLoop.setFps(60);
+// gameLoop.pause();
+// gameLoop.stop();
+console.log(gameLoop);

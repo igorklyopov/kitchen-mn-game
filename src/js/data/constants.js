@@ -27,7 +27,7 @@ const HERO_ACTIONS_KEYS = {
   WALK_LEFT: ['KeyA', 'Numpad4'],
   WALK_RIGHT: ['KeyD', 'Numpad6'],
 };
-const GAME_LOOP_FPS_DEFAULT = 60; // number frames per second, speed
+const GAME_LOOP_FPS_DEFAULT = 30; // number frames per second, speed
 
 const COLLISION_OBJECTS_TYPES = {
   1: 'wall',
