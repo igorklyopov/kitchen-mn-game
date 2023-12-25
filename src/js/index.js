@@ -31,7 +31,7 @@ const ctx = canvas.getContext('2d');
 // Establish the root scene
 const mainScene = new GameObject({
   name: 'mainScene',
-  position: new Vector2(0, 0),
+  position: new Vector2({ x: 0, y: 0 }),
 });
 
 // Build up the scene by adding a, ground, and hero

@@ -50,7 +50,7 @@ class Character extends GameObject {
   }) {
     super({
       name,
-      position: new Vector2(position.x, position.y),
+      position: new Vector2({ x: position.x, y: position.y }),
     });
 
     this.body = new Sprite({
