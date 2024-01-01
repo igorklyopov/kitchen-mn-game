@@ -5,6 +5,7 @@ import { events } from './Events.js';
 import { FrameTimer } from './FrameTimer.js';
 import { Dialog } from './Message/Dialog.js';
 import {
+  DIRECTIONS_NAMES,
   ACTIONS_NAMES,
   MOVEMENT_STEPS_NUMBER,
   GAME_GRID_CELL_SIZE,
@@ -13,24 +14,16 @@ import { paveWayForward } from '../helpers/paveWayForward.js';
 import { gameMap } from '../helpers/collisionBoundaries.js';
 import { isRectanglesCollide } from '../utils/isRectanglesCollide .js';
 
-const {
-  WALK_UP,
-  WALK_DOWN,
-  WALK_LEFT,
-  WALK_RIGHT,
-  STAND_UP,
-  STAND_DOWN,
-  STAND_LEFT,
-  STAND_RIGHT,
-} = ACTIONS_NAMES;
+const { UP, DOWN, LEFT, RIGHT } = DIRECTIONS_NAMES;
+const { STAND, WALK, SHOOT } = ACTIONS_NAMES;
 
-const standActionsList = new Set([
-  STAND_UP,
-  STAND_DOWN,
-  STAND_LEFT,
-  STAND_RIGHT,
-]);
-const walkActionsList = new Set([WALK_UP, WALK_DOWN, WALK_LEFT, WALK_RIGHT]);
+// const standActionsList = new Set([
+//   STAND_UP,
+//   STAND_DOWN,
+//   STAND_LEFT,
+//   STAND_RIGHT,
+// ]);
+// const walkActionsList = new Set([WALK_UP, WALK_DOWN, WALK_LEFT, WALK_RIGHT]);
 
 class Character extends GameObject {
   constructor({
@@ -80,6 +73,9 @@ class Character extends GameObject {
     this.actionDataIndex = 0;
     this.frameTimer = new FrameTimer();
     this.movingStepsCounter = 0;
+    this.lastAction = '';
+    this.currentAction = '';
+    this.currentDirection = '';
 
     if (!this.isPlayerControlled) {
       this.heroPosition = new Vector2(0, 0);
@@ -135,32 +131,33 @@ class Character extends GameObject {
 
     const { data } = this.actions;
     const currentAction = data[this.actionDataIndex].action;
-    const currentDistance = data[this.actionDataIndex].distance;
+    // const currentDistance = data[this.actionDataIndex].distance;
     const timeToNextAction = data[this.actionDataIndex].time;
-    const isWayForwardPaved = this.checkWayForwardIsPaved();
+    // const isWayForwardPaved = this.checkWayForwardIsPaved();
 
-    const isArrived =
-      this.destinationPosition.x === this.position.x &&
-      this.destinationPosition.y === this.position.y;
+    // const isArrived =
+    //   this.destinationPosition.x === this.position.x &&
+    //   this.destinationPosition.y === this.position.y;
 
     if (timeToNextAction) {
       this.frameTimer.setTime(timeToNextAction);
       this.frameTimer.setCallback(() => this.incrementActionDataIndex());
       this.frameTimer.start(delta);
-    } else if (standActionsList.has(currentAction)) {
-      this.incrementActionDataIndex();
     }
+    // else if (standActionsList.has(currentAction)) {
+    //   this.incrementActionDataIndex();
+    // }
 
-    if (walkActionsList.has(currentAction) && isArrived && isWayForwardPaved) {
-      if (currentDistance && this.movingStepsCounter < currentDistance) {
-        this.movingStepsCounter += 1;
-      }
+    // if (walkActionsList.has(currentAction) && isArrived && isWayForwardPaved) {
+    //   if (currentDistance && this.movingStepsCounter < currentDistance) {
+    //     this.movingStepsCounter += 1;
+    //   }
 
-      if (this.movingStepsCounter === currentDistance) {
-        this.movingStepsCounter = 0;
-        this.incrementActionDataIndex();
-      }
-    }
+    //   if (this.movingStepsCounter === currentDistance) {
+    //     this.movingStepsCounter = 0;
+    //     this.incrementActionDataIndex();
+    //   }
+    // }
 
     const isEndOfAutoActionsList =
       this.actionDataIndex === this.actions.data.length;
@@ -172,52 +169,107 @@ class Character extends GameObject {
     return currentAction;
   }
 
-  animateAction(action = '', delta) {
-    switch (action) {
-      case STAND_LEFT:
-        this.body.playAnimation({ animationName: 'standLeft' });
-        return;
+  animateAction(action = '', direction = '', delta) {
+    // if (!action) {
+    //   switch (this.currentDirection) {
+    //     case UP:
+    //       break;
 
-      case STAND_RIGHT:
-        this.body.playAnimation({ animationName: 'standRight' });
-        return;
+    //     case DOWN:
+    //       break;
 
-      case STAND_UP:
-        this.body.playAnimation({ animationName: 'standUp' });
-        return;
+    //     case RIGHT:
+    //       break;
 
-      case STAND_DOWN:
-        this.body.playAnimation({ animationName: 'standDown' });
-        return;
+    //     case LEFT:
+    //       break;
 
-      case WALK_DOWN:
-        this.body.playAnimation({
-          animationName: 'walkDown',
-          deltaTime: delta,
-        });
-        break;
+    //     default:
+    //       break;
+    //   }
+    // }
+    // console.log(action, direction);
 
-      case WALK_UP:
-        this.body.playAnimation({ animationName: 'walkUp', deltaTime: delta });
-        break;
+    if (action === STAND) {
+      switch (direction) {
+        case UP:
+          this.body.playAnimation({ animationName: 'standUp' });
+          return;
 
-      case WALK_LEFT:
-        this.body.playAnimation({
-          animationName: 'walkLeft',
-          deltaTime: delta,
-        });
-        break;
+        case DOWN:
+          this.body.playAnimation({ animationName: 'standDown' });
+          return;
 
-      case WALK_RIGHT:
-        this.body.playAnimation({
-          animationName: 'walkRight',
-          deltaTime: delta,
-        });
-        break;
+        case RIGHT:
+          this.body.playAnimation({ animationName: 'standRight' });
+          return;
 
-      default:
-        // eslint-disable-next-line no-useless-return
-        return;
+        case LEFT:
+          this.body.playAnimation({ animationName: 'standLeft' });
+          return;
+
+        default:
+          return;
+      }
+    }
+
+    if (action === WALK) {
+      switch (direction) {
+        case UP:
+          this.body.playAnimation({
+            animationName: 'walkUp',
+            deltaTime: delta,
+          });
+          return;
+
+        case DOWN:
+          this.body.playAnimation({
+            animationName: 'walkDown',
+            deltaTime: delta,
+          });
+          return;
+
+        case RIGHT:
+          this.body.playAnimation({
+            animationName: 'walkRight',
+            deltaTime: delta,
+          });
+          return;
+
+        case LEFT:
+          this.body.playAnimation({
+            animationName: 'walkLeft',
+            deltaTime: delta,
+          });
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    // for test
+    if (action === SHOOT) {
+      switch (direction) {
+        case UP:
+          console.log('shoot up');
+          return;
+
+        case DOWN:
+          console.log('shoot down');
+          return;
+
+        case RIGHT:
+          console.log('shoot right');
+          return;
+
+        case LEFT:
+          console.log('shoot left');
+          break;
+
+        default:
+          break;
+      }
     }
   }
 
@@ -303,46 +355,39 @@ class Character extends GameObject {
     events.emit('INTERACTION_START', this.name);
   }
 
-  move(moveAction = '') {
-    for (
-      let stepsCounter = 0;
-      stepsCounter < this.movementStepsNumber;
-      stepsCounter += 1
-    ) {
-      let nextX = this.destinationPosition.x;
-      let nextY = this.destinationPosition.y;
-
-      switch (moveAction) {
-        case WALK_DOWN:
-          nextY += this.movingStepSize;
-          break;
-
-        case WALK_UP:
-          nextY -= this.movingStepSize;
-          break;
-
-        case WALK_LEFT:
-          nextX -= this.movingStepSize;
-          break;
-
-        case WALK_RIGHT:
-          nextX += this.movingStepSize;
-          break;
-
-        default:
-          break;
-      }
-
-      const isSpaceFree = this.checkIsSpaceFree(nextX, nextY);
-
-      if (isSpaceFree) {
-        this.isCollide = false;
-        this.destinationPosition.x = nextX;
-        this.destinationPosition.y = nextY;
-      } else {
-        this.isCollide = true;
-      }
-    }
+  move(moveAction = '', direction = '') {
+    // for (
+    //   let stepsCounter = 0;
+    //   stepsCounter < this.movementStepsNumber;
+    //   stepsCounter += 1
+    // ) {
+    //   let nextX = this.destinationPosition.x;
+    //   let nextY = this.destinationPosition.y;
+    //   switch (moveAction) {
+    //     case WALK && direction === DOWN:
+    //       nextY += this.movingStepSize;
+    //       break;
+    //     case WALK && direction === UP:
+    //       nextY -= this.movingStepSize;
+    //       break;
+    //     case WALK && direction === LEFT:
+    //       nextX -= this.movingStepSize;
+    //       break;
+    //     case WALK && direction === RIGHT:
+    //       nextX += this.movingStepSize;
+    //       break;
+    //     default:
+    //       break;
+    //   }
+    //   const isSpaceFree = this.checkIsSpaceFree(nextX, nextY);
+    //   if (isSpaceFree) {
+    //     this.isCollide = false;
+    //     this.destinationPosition.x = nextX;
+    //     this.destinationPosition.y = nextY;
+    //   } else {
+    //     this.isCollide = true;
+    //   }
+    // }
   }
 
   checkWayForwardIsPaved() {
@@ -355,48 +400,99 @@ class Character extends GameObject {
     return distance <= 1;
   }
 
+  _saveLastAction(action = '') {
+    if (action && this.lastAction !== action) {
+      this.lastAction = action;
+    }
+  }
+
+  _saveCurrentDirection(direction = '') {
+    if (direction !== '' && this.currentDirection !== direction) {
+      this.currentDirection = direction;
+    }
+  }
+
+  getCurrentAction(inputAction = '', inputDirection = '') {
+    if (inputAction && inputDirection) {
+      // если при нажатии клавиш задаётся действие и направление - оно идёт на дальнейшее выполнение
+      this.currentAction = inputAction;
+    } else if (!inputAction && inputDirection) {
+      // если указано только направление, то в зависимости от последнего действия идёт на выполнение дефолтное действие
+      switch (this.lastAction) {
+        case STAND:
+          this.currentAction = WALK;
+          break;
+
+        default:
+          break;
+      }
+    } else if (!inputAction && !inputDirection) {
+      // если нет ни направления ни действия - в зависимости от предыдущего действия - идёт на выполнение действие покоя (idle)
+      switch (this.lastAction) {
+        case '':
+          this.currentAction = STAND;
+          break;
+
+        case WALK:
+          this.currentAction = STAND;
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    return this.currentAction;
+  }
+
   updateMove(delta, root) {
     const { input } = root;
+
     const isWayForwardPaved = this.checkWayForwardIsPaved();
-    let action = '';
+    // let action = '';
+    const [inputAction] = input.getActions();
+    const direction = input.getDirection();
+    const currentAction = this.getCurrentAction(inputAction, direction);
 
-    if (this.isAutoActionPlay) {
-      action = this.generateAction(delta);
-    } else if (this.isPlayerControlled) {
-      action = input.action;
+    this._saveLastAction(currentAction);
+    this._saveCurrentDirection(direction);
 
-      events.emit('HERO_POSITION', this.position);
-    }
+    // if (this.isAutoActionPlay) {
+    //   action = this.generateAction(delta);
+    // } else if (this.isPlayerControlled) {
+
+    events.emit('HERO_POSITION', this.position);
+    // }
 
     if (isWayForwardPaved) {
-      this.move(action);
+      this.move(this.currentAction, this.currentDirection);
 
-      const actionForAnimation = this.isCollide
-        ? this.getStopAction(action)
-        : action;
+      // const actionForAnimation = this.isCollide
+      //   ? this.getStopAction(direction, action)
+      //   : action;
 
-      this.animateAction(actionForAnimation, delta);
+      this.animateAction(currentAction, this.currentDirection, delta);
     }
   }
 
-  getStopAction(moveAction = '', delta) {
-    switch (moveAction) {
-      case WALK_LEFT:
-        return STAND_LEFT;
+  // getStopAction(moveAction = '', direction='', delta) {
+  //   switch (moveAction) {
+  //     case WALK_LEFT:
+  //       return STAND_LEFT;
 
-      case WALK_RIGHT:
-        return STAND_RIGHT;
+  //     case WALK_RIGHT:
+  //       return STAND_RIGHT;
 
-      case WALK_UP:
-        return STAND_UP;
+  //     case WALK_UP:
+  //       return STAND_UP;
 
-      case WALK_DOWN:
-        return STAND_DOWN;
+  //     case WALK_DOWN:
+  //       return STAND_DOWN;
 
-      default:
-        return moveAction;
-    }
-  }
+  //     default:
+  //       return moveAction;
+  //   }
+  // }
 }
 
 export { Character };

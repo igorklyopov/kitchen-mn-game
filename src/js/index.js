@@ -75,7 +75,7 @@ const hero = new Character({
   },
 });
 
-// mainScene.addChild(hero);
+mainScene.addChild(hero);
 console.log(hero);
 
 const lidaSpriteData = findAssetByName(assetsData, 'lida');
@@ -98,7 +98,7 @@ lida.setActions(data2);
 lida.isAutoActionPlay = true;
 lida.setMessage({ text: 'Hello everyone!' });
 // mainScene.addChild(lida);
-console.log(lida);
+// console.log(lida);
 
 const camera = new Camera();
 mainScene.addChild(camera);
@@ -111,11 +111,7 @@ const DIRECTIONS_NAMES = {
   LEFT: 'LEFT',
   RIGHT: 'RIGHT',
 };
-const ACTIONS_NAMES = {
-  STAND: 'STAND',
-  WALK: 'WALK',
-};
-const { WALK } = ACTIONS_NAMES;
+
 const { UP, DOWN, LEFT, RIGHT } = DIRECTIONS_NAMES;
 
 const heroKeyMap = {
@@ -123,14 +119,13 @@ const heroKeyMap = {
   [DOWN]: ['KeyS', 'Numpad2'],
   [LEFT]: ['KeyA', 'Numpad4'],
   [RIGHT]: ['KeyD', 'Numpad6'],
-  SHOOT: ['KeyQ'],
+  SHOOT: ['KeyQ'], // for test
 };
 const input = new InputHandler();
 input.setKeyMap(heroKeyMap);
-input.setDefaultAction(WALK);
 input.setDirectionsNames(DIRECTIONS_NAMES);
-console.log(input);
-mainScene.input = new InputHandler();
+
+mainScene.input = input;
 
 // Add gridHelper for test
 // const gridHelper = new GridHelper({

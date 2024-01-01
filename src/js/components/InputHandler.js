@@ -3,8 +3,8 @@ class InputHandler {
     this.directionsNames = {};
     this.keyMap = {};
     this._direction = '';
-    this._actionsList = [];
-    this._defaultAction = '';
+    this._currentActions = [];
+    // this._lastActions = [];
 
     this._init();
   }
@@ -13,24 +13,17 @@ class InputHandler {
     this.keyMap = keyMap;
   }
 
-  setDefaultAction(actionName = '') {
-    this._defaultAction = actionName;
-  }
-
   setDirectionsNames(directionsNames = {}) {
     this.directionsNames = directionsNames;
   }
 
   _setDirection(direction = '') {
-    if (this._direction !== direction) this._direction = direction;
+    if (direction !== '' && this._direction !== direction)
+      this._direction = direction;
   }
 
   getDirection() {
-    if (this._direction !== '') {
-      return this._direction;
-    } else {
-      return null;
-    }
+    return this._direction;
   }
 
   _removeDirection() {
@@ -40,57 +33,46 @@ class InputHandler {
   _setAction(action = '') {
     if (action === '') return;
 
-    if (!this._actionsList.includes(action)) {
+    if (!this._currentActions.includes(action)) {
       // Add this action to the queue if it's new
-      this._actionsList.push(action);
+      this._currentActions.push(action);
     }
   }
 
-  getAction() {
-    if (this._actionsList.length > 0) {
-      return this._actionsList;
-    } else {
-      return null;
-    }
+  getActions() {
+    return this._currentActions;
   }
 
   _removeAction(action = '') {
-    const index = this._actionsList.indexOf(action);
+    const index = this._currentActions.indexOf(action);
 
     if (index === -1) {
       return;
     }
     // Remove this action from the list
-    this._actionsList.splice(index, 1);
+    this._currentActions.splice(index, 1);
   }
 
   _init() {
     document.addEventListener('keydown', (e) => {
-      for (const directionName in this.keyMap) {
-        if (this.keyMap[directionName].includes(e.code)) {
-          const isDirection = this.directionsNames[directionName];
+      for (const actionName in this.keyMap) {
+        if (this.keyMap[actionName].includes(e.code)) {
+          const isDirection = this.directionsNames[actionName];
 
           if (isDirection) {
-            this._setDirection(directionName);
-            this._setAction(this._defaultAction);
+            this._setDirection(actionName);
           } else {
-            this._setAction(directionName);
+            this._setAction(actionName);
           }
         }
       }
     });
 
     document.addEventListener('keyup', (e) => {
-      for (const directionName in this.keyMap) {
-        if (this.keyMap[directionName].includes(e.code)) {
-          const isDirection = this.directionsNames[directionName];
-
-          if (isDirection) {
-            this._removeDirection();
-            this._removeAction(this._defaultAction);
-          } else {
-            this._removeAction(directionName);
-          }
+      for (const actionName in this.keyMap) {
+        if (this.keyMap[actionName].includes(e.code)) {
+          this._removeDirection();
+          this._removeAction(actionName);
         }
       }
     });
