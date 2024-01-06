@@ -48,12 +48,12 @@ mainScene.addChild(gameMapSprite);
 const data2 = {
   repeat: true,
   data: [
-    { action: 'STAND_UP', time: 3000 },
-    { action: 'WALK_UP', distance: 4 },
-    { action: 'WALK_LEFT', distance: 4 },
-    { action: 'WALK_RIGHT', distance: 4 },
-    { action: 'STAND_DOWN', time: 2000 },
-    { action: 'WALK_DOWN', distance: 4 },
+    { action: 'STAND', direction: 'UP', time: 3000 },
+    { action: 'WALK', direction: 'UP', distance: 4 },
+    { action: 'WALK', direction: 'LEFT', distance: 4 },
+    { action: 'WALK', direction: 'RIGHT', distance: 4 },
+    { action: 'STAND', direction: 'DOWN', time: 2000 },
+    { action: 'WALK', direction: 'DOWN', distance: 4 },
   ],
 };
 /// //////////////////////////////
@@ -97,8 +97,8 @@ const lida = new Character({
 lida.setActions(data2);
 lida.isAutoActionPlay = true;
 lida.setMessage({ text: 'Hello everyone!' });
-// mainScene.addChild(lida);
-// console.log(lida);
+mainScene.addChild(lida);
+console.log(lida);
 
 const camera = new Camera();
 mainScene.addChild(camera);
@@ -175,4 +175,4 @@ gameLoop.start();
 // gameLoop.setFps(60);
 // gameLoop.pause();
 // gameLoop.stop();
-console.log(gameLoop);
+// console.log(gameLoop);

@@ -9,7 +9,6 @@ import {
   ACTIONS_NAMES,
   MOVEMENT_STEPS_NUMBER,
   MOVING_STEP_SIZE,
-  GAME_GRID_CELL_SIZE,
 } from '../data/constants.js';
 import { gameMap } from '../helpers/collisionBoundaries.js';
 import { isRectanglesCollide } from '../utils/isRectanglesCollide .js';
@@ -64,9 +63,8 @@ class Character extends GameObject {
 
     this.isPlayerControlled = isPlayerControlled; // flag for character role
     this.destinationPosition = this.position.duplicate();
-    this.movementStepsNumber = MOVEMENT_STEPS_NUMBER; // the number of squares (grid cells, tiles of map grid) the character moves at one time
-    this.movingStepSize = MOVING_STEP_SIZE;
-    this.movingDistance = GAME_GRID_CELL_SIZE; // the size of square (distance) the character moves at one time
+    this.movementStepsNumber = MOVEMENT_STEPS_NUMBER; // the number of steps  the character moves at one time (speed)
+    this.movingStepSize = MOVING_STEP_SIZE; // the size of step (distance) the character moves at one time
     this.canMove = true;
     this.isAutoActionPlay = false;
     this.actions = {
@@ -361,45 +359,43 @@ class Character extends GameObject {
   }
 
   move(moveAction = '', direction = '') {
-    // for (
-    //   let stepsCounter = 0;
-    //   stepsCounter < this.movementStepsNumber;
-    //   stepsCounter += 1
-    // ) {
+    for (
+      let stepsCounter = 0;
+      stepsCounter < this.movementStepsNumber;
+      stepsCounter += 1
+    ) {
+      let nextX = this.position.x;
+      let nextY = this.position.y;
 
-    // }
+      if (moveAction === WALK) {
+        switch (direction) {
+          case UP:
+            nextY -= this.movingStepSize;
+            break;
 
-    let nextX = this.position.x;
-    let nextY = this.position.y;
+          case DOWN:
+            nextY += this.movingStepSize;
+            break;
 
-    if (moveAction === WALK) {
-      switch (direction) {
-        case UP:
-          nextY -= this.movingDistance;
-          break;
+          case RIGHT:
+            nextX += this.movingStepSize;
+            break;
 
-        case DOWN:
-          nextY += this.movingDistance;
-          break;
+          case LEFT:
+            nextX -= this.movingStepSize;
+            break;
 
-        case RIGHT:
-          nextX += this.movingDistance;
-          break;
-
-        case LEFT:
-          nextX -= this.movingDistance;
-          break;
-
-        default:
-          break;
+          default:
+            break;
+        }
       }
-    }
 
-    const isSpaceFree = this.checkIsSpaceFree(nextX, nextY);
+      const isSpaceFree = this.checkIsSpaceFree(nextX, nextY);
 
-    if (isSpaceFree) {
-      this.position.x = nextX;
-      this.position.y = nextY;
+      if (isSpaceFree) {
+        this.position.x = nextX;
+        this.position.y = nextY;
+      }
     }
   }
 

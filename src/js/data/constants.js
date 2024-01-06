@@ -5,13 +5,12 @@ const GAME_CANVAS_HEIGHT = 180;
 const GAME_MAP_WIDTH = 1440;
 const GAME_MAP_HEIGHT = 960;
 const MOVING_STEP_SIZE = 1;
-const GAME_GRID_CELL_SIZE = 1;
 
 const HERO_POSITION_DEFAULT = {
   x: 15,
   y: 57,
 };
-const MOVEMENT_STEPS_NUMBER = 1; // the number of squares (grid cells, tiles of map grid) the character moves at one time
+const MOVEMENT_STEPS_NUMBER = 1; // the number of steps  the character moves at one time (speed)
 const DIRECTIONS_NAMES = {
   UP: 'UP',
   DOWN: 'DOWN',
@@ -37,7 +36,6 @@ export {
   GAME_MAP_WIDTH,
   GAME_MAP_HEIGHT,
   MOVING_STEP_SIZE,
-  GAME_GRID_CELL_SIZE,
   HERO_POSITION_DEFAULT,
   MOVEMENT_STEPS_NUMBER,
   ACTIONS_NAMES,
