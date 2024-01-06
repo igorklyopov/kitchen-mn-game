@@ -4,7 +4,8 @@ const GAME_CANVAS_WIDTH = 320;
 const GAME_CANVAS_HEIGHT = 180;
 const GAME_MAP_WIDTH = 1440;
 const GAME_MAP_HEIGHT = 960;
-const GAME_GRID_CELL_SIZE = 16;
+const MOVING_STEP_SIZE = 1;
+const GAME_GRID_CELL_SIZE = 1;
 
 const HERO_POSITION_DEFAULT = {
   x: 15,
@@ -25,7 +26,7 @@ const ACTIONS_NAMES = {
 const GAME_LOOP_FPS_DEFAULT = 30; // number frames per second, speed
 
 const COLLISION_OBJECTS_TYPES = {
-  1: 'wall',
+  1: 'WALL',
   2: '',
 };
 
@@ -35,6 +36,7 @@ export {
   GAME_CANVAS_HEIGHT,
   GAME_MAP_WIDTH,
   GAME_MAP_HEIGHT,
+  MOVING_STEP_SIZE,
   GAME_GRID_CELL_SIZE,
   HERO_POSITION_DEFAULT,
   MOVEMENT_STEPS_NUMBER,

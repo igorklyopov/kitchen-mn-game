@@ -4,7 +4,6 @@ class InputHandler {
     this.keyMap = {};
     this._direction = '';
     this._currentActions = [];
-    // this._lastActions = [];
 
     this._init();
   }
@@ -18,7 +17,11 @@ class InputHandler {
   }
 
   _setDirection(direction = '') {
-    if (direction !== '' && this._direction !== direction)
+    if (
+      direction !== '' &&
+      this._direction !== direction &&
+      this._direction === ''
+    )
       this._direction = direction;
   }
 
@@ -26,15 +29,17 @@ class InputHandler {
     return this._direction;
   }
 
-  _removeDirection() {
-    this._direction = '';
+  _removeDirection(direction = '') {
+    if (this._direction === direction) {
+      this._direction = '';
+    }
   }
 
   _setAction(action = '') {
     if (action === '') return;
 
     if (!this._currentActions.includes(action)) {
-      // Add this action to the queue if it's new
+      // Add this action to the list if it's new
       this._currentActions.push(action);
     }
   }
@@ -71,8 +76,13 @@ class InputHandler {
     document.addEventListener('keyup', (e) => {
       for (const actionName in this.keyMap) {
         if (this.keyMap[actionName].includes(e.code)) {
-          this._removeDirection();
-          this._removeAction(actionName);
+          const isDirection = this.directionsNames[actionName];
+
+          if (isDirection) {
+            this._removeDirection(actionName);
+          } else {
+            this._removeAction(actionName);
+          }
         }
       }
     });

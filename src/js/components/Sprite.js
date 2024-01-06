@@ -57,7 +57,7 @@ class Sprite extends GameObject {
     this.playAnimation({ animationName: this.animationName, deltaTime: delta });
   }
 
-  playAnimation({ animationName = '', deltaTime }) {
+  playAnimation({ animationName = '', deltaTime = 0 }) {
     const makeFramesIndexesList = () => {
       if (!this.animations[this.animationName]) {
         console.error('animation with this name not found');

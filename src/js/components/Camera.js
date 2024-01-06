@@ -11,7 +11,7 @@ export class Camera extends GameObject {
   constructor() {
     super({ name: 'camera' });
 
-    this.position = new Vector2({ x: 0, y: 0 });
+    this.position = new Vector2({ x: 0, y: 0 }); //  x: -96, y: -838
 
     events.on('HERO_POSITION', this, (heroPosition) => {
       // Create a new position based on the hero's position
@@ -26,7 +26,5 @@ export class Camera extends GameObject {
       });
       // console.log(this.position);
     });
-
-    console.log(this.position);
   }
 }

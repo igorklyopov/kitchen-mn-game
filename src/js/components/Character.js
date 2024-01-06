@@ -8,14 +8,16 @@ import {
   DIRECTIONS_NAMES,
   ACTIONS_NAMES,
   MOVEMENT_STEPS_NUMBER,
+  MOVING_STEP_SIZE,
   GAME_GRID_CELL_SIZE,
 } from '../data/constants.js';
-import { paveWayForward } from '../helpers/paveWayForward.js';
 import { gameMap } from '../helpers/collisionBoundaries.js';
 import { isRectanglesCollide } from '../utils/isRectanglesCollide .js';
+import { collisionMainData } from '../data/collisions/collisionMain.js';
 
 const { UP, DOWN, LEFT, RIGHT } = DIRECTIONS_NAMES;
 const { STAND, WALK, SHOOT } = ACTIONS_NAMES;
+const { tileSize } = collisionMainData;
 
 // const standActionsList = new Set([
 //   STAND_UP,
@@ -63,8 +65,9 @@ class Character extends GameObject {
     this.isPlayerControlled = isPlayerControlled; // flag for character role
     this.destinationPosition = this.position.duplicate();
     this.movementStepsNumber = MOVEMENT_STEPS_NUMBER; // the number of squares (grid cells, tiles of map grid) the character moves at one time
-    this.movingStepSize = GAME_GRID_CELL_SIZE; // the size of square (distance) the character moves at one time
-    this.isCollide = false;
+    this.movingStepSize = MOVING_STEP_SIZE;
+    this.movingDistance = GAME_GRID_CELL_SIZE; // the size of square (distance) the character moves at one time
+    this.canMove = true;
     this.isAutoActionPlay = false;
     this.actions = {
       repeat: false,
@@ -110,7 +113,41 @@ class Character extends GameObject {
   }
 
   step(delta, root) {
-    this.updateMove(delta, root);
+    const { input } = root;
+
+    const [inputAction] = input.getActions();
+    const direction = input.getDirection();
+    const currentAction = this.isAutoActionPlay
+      ? this.generateAction(delta)
+      : this.getCurrentAction(inputAction, direction);
+
+    // console.log(
+    //   'currentAction',
+    //   currentAction,
+    //   'lastAction',
+    //   this.lastAction,
+    //   'direction',
+    //   direction,
+    //   'canMove',
+    //   this.canMove,
+    // );
+
+    if (this.isPlayerControlled) {
+      events.emit('HERO_POSITION', this.position);
+    }
+
+    this._saveCurrentDirection(direction);
+
+    if (currentAction !== STAND) {
+      this._saveLastAction(currentAction);
+      this.move(currentAction, this.currentDirection, delta);
+    }
+
+    if (this.canMove) {
+      this.animateAction(currentAction, this.currentDirection, delta);
+    } else {
+      this.animateAction(STAND, this.currentDirection, delta);
+    }
   }
 
   incrementActionDataIndex() {
@@ -127,7 +164,7 @@ class Character extends GameObject {
   }
 
   generateAction(delta) {
-    if (this.isCollide) return;
+    // if (this.isMoving) return;
 
     const { data } = this.actions;
     const currentAction = data[this.actionDataIndex].action;
@@ -170,26 +207,6 @@ class Character extends GameObject {
   }
 
   animateAction(action = '', direction = '', delta) {
-    // if (!action) {
-    //   switch (this.currentDirection) {
-    //     case UP:
-    //       break;
-
-    //     case DOWN:
-    //       break;
-
-    //     case RIGHT:
-    //       break;
-
-    //     case LEFT:
-    //       break;
-
-    //     default:
-    //       break;
-    //   }
-    // }
-    // console.log(action, direction);
-
     if (action === STAND) {
       switch (direction) {
         case UP:
@@ -244,7 +261,7 @@ class Character extends GameObject {
           break;
 
         default:
-          break;
+          return;
       }
     }
 
@@ -252,19 +269,19 @@ class Character extends GameObject {
     if (action === SHOOT) {
       switch (direction) {
         case UP:
-          console.log('shoot up');
+          console.warn('shoot up');
           return;
 
         case DOWN:
-          console.log('shoot down');
+          console.warn('shoot down');
           return;
 
         case RIGHT:
-          console.log('shoot right');
+          console.warn('shoot right');
           return;
 
         case LEFT:
-          console.log('shoot left');
+          console.warn('shoot left');
           break;
 
         default:
@@ -273,64 +290,52 @@ class Character extends GameObject {
     }
   }
 
-  // divides the character`s body into squares equal to the map grid cell and turns their coordinates into map grid cell numbers along the x- and y-axis (for checking on the map whether the space is free)
-  normalizeCoordinates(nextX, nextY) {
-    const squareX = nextX / this.movingStepSize;
-    const squareY = nextY / this.movingStepSize;
-    const squaresXNumber = this.body.size.width / this.movingStepSize;
-    const squaresYNumber = this.body.size.height / this.movingStepSize;
-
-    const squares = [];
-
-    for (let x = 0; x < squaresXNumber; x += 1) {
-      let square;
-
-      for (let y = 0; y < squaresYNumber; y += 1) {
-        square = `${squareX + y},${squareY + x}`;
-
-        squares.push(square);
-      }
-    }
-
-    return squares;
-  }
-
   // Validating that the next destination is free
   checkIsSpaceFree(nextX, nextY) {
-    this.isSpaceFree = true;
+    const thisProps = {
+      position: { x: nextX, y: nextY },
+      width: this.body.size.width,
+      height: this.body.size.height,
+    };
 
-    if (!this.isPlayerControlled) {
-      const isCollideWithHero = isRectanglesCollide(
-        {
-          position: { x: this.position.x, y: this.position.y },
-          width: this.body.size.width,
-          height: this.body.size.height,
-        },
-        {
-          position: { x: this.heroPosition.x, y: this.heroPosition.y },
-          width: this.body.size.width,
-          height: this.body.size.height,
-        },
-      );
+    let collisionObjectProps = {
+      position: { x: 0, y: 0 },
+      width: 0,
+      height: 0,
+    };
 
-      if (isCollideWithHero) {
-        this.isSpaceFree = false;
-        if (!this.isCollide) this.showMessage();
+    if (this.isPlayerControlled) {
+      for (let i = 0; i < gameMap.length; i += 1) {
+        const coordinates = Object.values(gameMap[i]);
+        const collisionObjectProps = {
+          position: { x: coordinates[0][0], y: coordinates[0][1] },
+          width: tileSize,
+          height: tileSize,
+        };
 
-        return;
+        if (isRectanglesCollide(thisProps, collisionObjectProps)) {
+          this.canMove = false;
+          break;
+        } else {
+          this.canMove = true;
+        }
+      }
+    } else {
+      collisionObjectProps = {
+        position: { x: this.heroPosition.x, y: this.heroPosition.y },
+        width: this.body.size.width,
+        height: this.body.size.height,
+      };
+
+      if (isRectanglesCollide(thisProps, collisionObjectProps)) {
+        this.canMove = false;
+        // if (!this.isMoving) this.showMessage();
+      } else {
+        this.canMove = true;
       }
     }
 
-    const coordinatesList = this.normalizeCoordinates(nextX, nextY);
-
-    for (const coordinate of coordinatesList) {
-      if (gameMap.has(coordinate)) {
-        this.isSpaceFree = false;
-        break;
-      }
-    }
-
-    return this.isSpaceFree;
+    return this.canMove;
   }
 
   setMessage(
@@ -361,47 +366,45 @@ class Character extends GameObject {
     //   stepsCounter < this.movementStepsNumber;
     //   stepsCounter += 1
     // ) {
-    //   let nextX = this.destinationPosition.x;
-    //   let nextY = this.destinationPosition.y;
-    //   switch (moveAction) {
-    //     case WALK && direction === DOWN:
-    //       nextY += this.movingStepSize;
-    //       break;
-    //     case WALK && direction === UP:
-    //       nextY -= this.movingStepSize;
-    //       break;
-    //     case WALK && direction === LEFT:
-    //       nextX -= this.movingStepSize;
-    //       break;
-    //     case WALK && direction === RIGHT:
-    //       nextX += this.movingStepSize;
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    //   const isSpaceFree = this.checkIsSpaceFree(nextX, nextY);
-    //   if (isSpaceFree) {
-    //     this.isCollide = false;
-    //     this.destinationPosition.x = nextX;
-    //     this.destinationPosition.y = nextY;
-    //   } else {
-    //     this.isCollide = true;
-    //   }
+
     // }
-  }
 
-  checkWayForwardIsPaved() {
-    const distance = paveWayForward(
-      this,
-      this.destinationPosition,
-      this.movementStepsNumber,
-    );
+    let nextX = this.position.x;
+    let nextY = this.position.y;
 
-    return distance <= 1;
+    if (moveAction === WALK) {
+      switch (direction) {
+        case UP:
+          nextY -= this.movingDistance;
+          break;
+
+        case DOWN:
+          nextY += this.movingDistance;
+          break;
+
+        case RIGHT:
+          nextX += this.movingDistance;
+          break;
+
+        case LEFT:
+          nextX -= this.movingDistance;
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    const isSpaceFree = this.checkIsSpaceFree(nextX, nextY);
+
+    if (isSpaceFree) {
+      this.position.x = nextX;
+      this.position.y = nextY;
+    }
   }
 
   _saveLastAction(action = '') {
-    if (action && this.lastAction !== action) {
+    if (action !== '' && this.lastAction !== action) {
       this.lastAction = action;
     }
   }
@@ -413,86 +416,35 @@ class Character extends GameObject {
   }
 
   getCurrentAction(inputAction = '', inputDirection = '') {
-    if (inputAction && inputDirection) {
+    if (inputAction !== '' && inputDirection !== '') {
       // если при нажатии клавиш задаётся действие и направление - оно идёт на дальнейшее выполнение
-      this.currentAction = inputAction;
-    } else if (!inputAction && inputDirection) {
+      return inputAction;
+    } else if (inputAction === '' && inputDirection !== '') {
       // если указано только направление, то в зависимости от последнего действия идёт на выполнение дефолтное действие
       switch (this.lastAction) {
-        case STAND:
-          this.currentAction = WALK;
-          break;
+        case '':
+          return WALK;
+
+        case WALK:
+          return WALK;
 
         default:
           break;
       }
-    } else if (!inputAction && !inputDirection) {
+    } else if (inputAction === '' && inputDirection === '') {
       // если нет ни направления ни действия - в зависимости от предыдущего действия - идёт на выполнение действие покоя (idle)
       switch (this.lastAction) {
         case '':
-          this.currentAction = STAND;
-          break;
+          return STAND;
 
         case WALK:
-          this.currentAction = STAND;
-          break;
+          return STAND;
 
         default:
           break;
       }
     }
-
-    return this.currentAction;
   }
-
-  updateMove(delta, root) {
-    const { input } = root;
-
-    const isWayForwardPaved = this.checkWayForwardIsPaved();
-    // let action = '';
-    const [inputAction] = input.getActions();
-    const direction = input.getDirection();
-    const currentAction = this.getCurrentAction(inputAction, direction);
-
-    this._saveLastAction(currentAction);
-    this._saveCurrentDirection(direction);
-
-    // if (this.isAutoActionPlay) {
-    //   action = this.generateAction(delta);
-    // } else if (this.isPlayerControlled) {
-
-    events.emit('HERO_POSITION', this.position);
-    // }
-
-    if (isWayForwardPaved) {
-      this.move(this.currentAction, this.currentDirection);
-
-      // const actionForAnimation = this.isCollide
-      //   ? this.getStopAction(direction, action)
-      //   : action;
-
-      this.animateAction(currentAction, this.currentDirection, delta);
-    }
-  }
-
-  // getStopAction(moveAction = '', direction='', delta) {
-  //   switch (moveAction) {
-  //     case WALK_LEFT:
-  //       return STAND_LEFT;
-
-  //     case WALK_RIGHT:
-  //       return STAND_RIGHT;
-
-  //     case WALK_UP:
-  //       return STAND_UP;
-
-  //     case WALK_DOWN:
-  //       return STAND_DOWN;
-
-  //     default:
-  //       return moveAction;
-  //   }
-  // }
 }
 
 export { Character };
