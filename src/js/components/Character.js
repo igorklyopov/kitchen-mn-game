@@ -18,14 +18,6 @@ const { UP, DOWN, LEFT, RIGHT } = DIRECTIONS_NAMES;
 const { STAND, WALK, SHOOT } = ACTIONS_NAMES;
 const { tileSize } = collisionMainData;
 
-// const standActionsList = new Set([
-//   STAND_UP,
-//   STAND_DOWN,
-//   STAND_LEFT,
-//   STAND_RIGHT,
-// ]);
-// const walkActionsList = new Set([WALK_UP, WALK_DOWN, WALK_LEFT, WALK_RIGHT]);
-
 class Character extends GameObject {
   constructor({
     name = 'character',
@@ -62,7 +54,7 @@ class Character extends GameObject {
     this.addChild(this.body);
 
     this.isPlayerControlled = isPlayerControlled; // flag for character role
-    this.destinationPosition = this.position.duplicate();
+    // this.destinationPosition = this.position.duplicate();
     this.movementStepsNumber = MOVEMENT_STEPS_NUMBER; // the number of steps  the character moves at one time (speed)
     this.movingStepSize = MOVING_STEP_SIZE; // the size of step (distance) the character moves at one time
     this.canMove = true;
@@ -111,33 +103,34 @@ class Character extends GameObject {
   }
 
   step(delta, root) {
-    const { input } = root;
+    let currentAction = '';
+    let direction = '';
 
-    const [inputAction] = input.getActions();
-    const direction = input.getDirection();
-    const currentAction = this.isAutoActionPlay
-      ? this.generateAction(delta)
-      : this.getCurrentAction(inputAction, direction);
+    if (this.isAutoActionPlay) {
+      const { generatedAction, generatedDirection } =
+        this.generateAction(delta);
 
-    // console.log(
-    //   'currentAction',
-    //   currentAction,
-    //   'lastAction',
-    //   this.lastAction,
-    //   'direction',
-    //   direction,
-    //   'canMove',
-    //   this.canMove,
-    // );
+      currentAction = this.getCurrentAction(
+        generatedAction,
+        generatedDirection,
+      );
+      direction = generatedDirection;
+    } else {
+      const { input } = root;
+      const [inputAction] = input.getActions();
+
+      direction = input.getDirection();
+      currentAction = this.getCurrentAction(inputAction, direction);
+    }
 
     if (this.isPlayerControlled) {
       events.emit('HERO_POSITION', this.position);
     }
 
+    this._saveLastAction(currentAction);
     this._saveCurrentDirection(direction);
 
     if (currentAction !== STAND) {
-      this._saveLastAction(currentAction);
       this.move(currentAction, this.currentDirection, delta);
     }
 
@@ -148,63 +141,162 @@ class Character extends GameObject {
     }
   }
 
+  setActions(
+    actionsData = {
+      repeat: false,
+      data: [],
+    },
+  ) {
+    this.actions = actionsData; // ?
+
+    this.actions.data = this.getActionsWithWayPoints(actionsData.data);
+  }
+
+  getActionsWithWayPoints(data = []) {
+    if (data.length < 1) return;
+
+    const actionsWithWayPoints = [];
+    let wayPoint = this.position.duplicate();
+
+    for (let i = 0; i < data.length; i += 1) {
+      const item = data[i];
+
+      if (item.action === STAND) {
+        item.destination = new Vector2({ x: 0, y: 0 });
+      }
+
+      if (item.action === WALK) {
+        const pathLength = item.distance * this.movingStepSize;
+
+        switch (item.direction) {
+          case UP:
+            wayPoint = wayPoint.duplicate();
+            wayPoint.y -= pathLength;
+            item.destination = wayPoint;
+            break;
+
+          case DOWN:
+            wayPoint = wayPoint.duplicate();
+            wayPoint.y += pathLength;
+            item.destination = wayPoint;
+            break;
+
+          case RIGHT:
+            wayPoint = wayPoint.duplicate();
+            wayPoint.x += pathLength;
+            item.destination = wayPoint;
+            break;
+
+          case LEFT:
+            wayPoint = wayPoint.duplicate();
+            wayPoint.x -= pathLength;
+            item.destination = wayPoint;
+            break;
+
+          default:
+            break;
+        }
+      }
+
+      actionsWithWayPoints.push(item);
+    }
+
+    return actionsWithWayPoints;
+  }
+
+  _saveLastAction(action = '') {
+    if (action !== '' && this.lastAction !== action) {
+      this.lastAction = action;
+    }
+  }
+
+  _saveCurrentDirection(direction = '') {
+    if (direction !== '' && this.currentDirection !== direction) {
+      this.currentDirection = direction;
+    }
+  }
+
+  getCurrentAction(inputAction = '', inputDirection = '') {
+    if (inputAction !== '' && inputDirection !== '') {
+      // если при нажатии клавиш задаётся действие и направление - оно идёт на дальнейшее выполнение
+      return inputAction;
+    } else if (inputAction === '' && inputDirection !== '') {
+      // если указано только направление, то в зависимости от последнего действия идёт на выполнение дефолтное действие
+      switch (this.lastAction) {
+        case STAND:
+          return WALK;
+
+        case WALK:
+          return WALK;
+
+        default:
+          return '';
+      }
+    } else if (inputAction === '' && inputDirection === '') {
+      // если нет ни направления ни действия - в зависимости от предыдущего действия - идёт на выполнение действие покоя (idle)
+      switch (this.lastAction) {
+        case '':
+          return STAND;
+
+        case WALK:
+          return STAND;
+
+        default:
+          return '';
+      }
+    }
+  }
+
   incrementActionDataIndex() {
-    if (this.actionDataIndex < this.actions.data.length)
+    if (this.actionDataIndex < this.actions.data.length - 1)
       this.actionDataIndex += 1;
+    return this.actionDataIndex;
   }
 
   resetActionDataIndex() {
     this.actionDataIndex = 0;
+    return this.actionDataIndex;
   }
 
-  setActions(actionsData) {
-    this.actions = actionsData;
-  }
+  generateAction(delta = 0) {
+    const { data, repeat } = this.actions;
+    const timeToNextAction = data[this.actionDataIndex]?.time;
+    const destination = data[this.actionDataIndex]?.destination;
+    const isArrivedToDestinationPosition =
+      this.position.x === destination.x && this.position.y === destination.y;
 
-  generateAction(delta) {
-    // if (this.isMoving) return;
+    let generatedAction = data[this.actionDataIndex]?.action;
+    let generatedDirection = data[this.actionDataIndex]?.direction;
 
-    const { data } = this.actions;
-    const currentAction = data[this.actionDataIndex].action;
-    // const currentDistance = data[this.actionDataIndex].distance;
-    const timeToNextAction = data[this.actionDataIndex].time;
-    // const isWayForwardPaved = this.checkWayForwardIsPaved();
-
-    // const isArrived =
-    //   this.destinationPosition.x === this.position.x &&
-    //   this.destinationPosition.y === this.position.y;
-
-    if (timeToNextAction) {
-      this.frameTimer.setTime(timeToNextAction);
-      this.frameTimer.setCallback(() => this.incrementActionDataIndex());
-      this.frameTimer.start(delta);
+    if (generatedAction === STAND) {
+      if (timeToNextAction) {
+        this.frameTimer.setTime(timeToNextAction);
+        this.frameTimer.setCallback(() => this.incrementActionDataIndex());
+        this.frameTimer.start(delta);
+      }
     }
-    // else if (standActionsList.has(currentAction)) {
-    //   this.incrementActionDataIndex();
-    // }
 
-    // if (walkActionsList.has(currentAction) && isArrived && isWayForwardPaved) {
-    //   if (currentDistance && this.movingStepsCounter < currentDistance) {
-    //     this.movingStepsCounter += 1;
-    //   }
+    if (generatedAction === WALK && isArrivedToDestinationPosition) {
+      this.incrementActionDataIndex();
 
-    //   if (this.movingStepsCounter === currentDistance) {
-    //     this.movingStepsCounter = 0;
-    //     this.incrementActionDataIndex();
-    //   }
-    // }
+      if (this.actionDataIndex < this.actions.data.length) {
+        generatedAction = '';
+        generatedDirection = '';
+      }
+    }
 
-    const isEndOfAutoActionsList =
-      this.actionDataIndex === this.actions.data.length;
-
-    if (this.actions.repeat && isEndOfAutoActionsList) {
+    if (
+      this.actionDataIndex === this.actions.data.length - 1 &&
+      repeat &&
+      isArrivedToDestinationPosition
+    ) {
       this.resetActionDataIndex();
     }
 
-    return currentAction;
+    return { generatedAction, generatedDirection };
   }
 
-  animateAction(action = '', direction = '', delta) {
+  animateAction(action = '', direction = '', delta = 0) {
     if (action === STAND) {
       switch (direction) {
         case UP:
@@ -327,35 +419,13 @@ class Character extends GameObject {
 
       if (isRectanglesCollide(thisProps, collisionObjectProps)) {
         this.canMove = false;
-        // if (!this.isMoving) this.showMessage();
+        // if (!this.canMove) this.showMessage();
       } else {
         this.canMove = true;
       }
     }
 
     return this.canMove;
-  }
-
-  setMessage(
-    messageData = {
-      text: '',
-      buttons: [{ key: '', content: null, onClick: () => {} }],
-    },
-  ) {
-    this.messageData = messageData;
-  }
-
-  showMessage() {
-    this.conversation = new Dialog({
-      container: document.querySelector('.js_game'),
-      text: this.messageData.text,
-      buttons: this.messageData.buttons,
-      onComplete: () => {
-        console.log('onComplete');
-      },
-    });
-    this.conversation.open();
-    events.emit('INTERACTION_START', this.name);
   }
 
   move(moveAction = '', direction = '') {
@@ -399,47 +469,26 @@ class Character extends GameObject {
     }
   }
 
-  _saveLastAction(action = '') {
-    if (action !== '' && this.lastAction !== action) {
-      this.lastAction = action;
-    }
+  setMessage(
+    messageData = {
+      text: '',
+      buttons: [{ key: '', content: null, onClick: () => {} }],
+    },
+  ) {
+    this.messageData = messageData;
   }
 
-  _saveCurrentDirection(direction = '') {
-    if (direction !== '' && this.currentDirection !== direction) {
-      this.currentDirection = direction;
-    }
-  }
-
-  getCurrentAction(inputAction = '', inputDirection = '') {
-    if (inputAction !== '' && inputDirection !== '') {
-      // если при нажатии клавиш задаётся действие и направление - оно идёт на дальнейшее выполнение
-      return inputAction;
-    } else if (inputAction === '' && inputDirection !== '') {
-      // если указано только направление, то в зависимости от последнего действия идёт на выполнение дефолтное действие
-      switch (this.lastAction) {
-        case '':
-          return WALK;
-
-        case WALK:
-          return WALK;
-
-        default:
-          break;
-      }
-    } else if (inputAction === '' && inputDirection === '') {
-      // если нет ни направления ни действия - в зависимости от предыдущего действия - идёт на выполнение действие покоя (idle)
-      switch (this.lastAction) {
-        case '':
-          return STAND;
-
-        case WALK:
-          return STAND;
-
-        default:
-          break;
-      }
-    }
+  showMessage() {
+    this.conversation = new Dialog({
+      container: document.querySelector('.js_game'),
+      text: this.messageData.text,
+      buttons: this.messageData.buttons,
+      onComplete: () => {
+        console.log('onComplete');
+      },
+    });
+    this.conversation.open();
+    events.emit('INTERACTION_START', this.name);
   }
 }
 

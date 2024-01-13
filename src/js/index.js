@@ -22,6 +22,7 @@ import { assetsData } from './data/assetsData.js';
 import { findAssetByName } from './utils/findAssetByName.js';
 import { collisionBoundaries } from './helpers/collisionBoundaries.js';
 // import { GridHelper } from './helpers/GridHelper.js';
+import { data2 } from './data/characters/actions.js';
 
 // Grabbing the canvas to draw to
 const canvas = refs.gameCanvas;
@@ -43,20 +44,7 @@ const gameMapSprite = new Sprite({
   frameSize: { width: GAME_MAP_WIDTH, height: GAME_MAP_HEIGHT },
 });
 mainScene.addChild(gameMapSprite);
-/// ///////////////////////////////
-// for test
-const data2 = {
-  repeat: true,
-  data: [
-    { action: 'STAND', direction: 'UP', time: 3000 },
-    { action: 'WALK', direction: 'UP', distance: 4 },
-    { action: 'WALK', direction: 'LEFT', distance: 4 },
-    { action: 'WALK', direction: 'RIGHT', distance: 4 },
-    { action: 'STAND', direction: 'DOWN', time: 2000 },
-    { action: 'WALK', direction: 'DOWN', distance: 4 },
-  ],
-};
-/// //////////////////////////////
+
 const heroSpriteData = findAssetByName(assetsData, 'hero');
 
 const hero = new Character({

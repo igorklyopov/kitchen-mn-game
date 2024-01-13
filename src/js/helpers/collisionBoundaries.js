@@ -7,7 +7,7 @@ const { map, width, tileSize } = collisionMainData;
 const collisionsMap = make2DArray(map, width);
 const gameMap = [];
 const collisionBoundaries = [];
-
+// for test
 collisionsMap.forEach((row, y) => {
   row.forEach((item, x) => {
     if (item !== 0) {
