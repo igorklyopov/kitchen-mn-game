@@ -6,25 +6,13 @@ const DEFAULT_DIALOG_CLOSE_BUTTON = {
 };
 
 class Dialog {
-  constructor({
-    container = document.querySelector('body'),
-    text = '',
-    buttons = [
-      {
-        key: DEFAULT_DIALOG_CLOSE_BUTTON.key,
-        content: DEFAULT_DIALOG_CLOSE_BUTTON.content,
-        onClick: () => this.close(),
-      },
-    ],
-    onComplete = () => {},
-  }) {
+  constructor({ container = document.querySelector('body') }) {
     this.container = container;
-    this.text = text;
-    this.onComplete = onComplete;
     this.root = null;
-    this.buttonsData = buttons;
+    this.text = '';
+    this.buttonsData = [];
     this.buttonsRefs = [];
-
+    this.onComplete = () => {};
     this.opened = false;
   }
 
@@ -34,6 +22,34 @@ class Dialog {
 
   get isOpen() {
     return this.opened;
+  }
+
+  setOnComplete(callback = () => {}) {
+    this.onComplete = callback;
+  }
+
+  setConfig({
+    text = '',
+    buttons = [
+      {
+        key: DEFAULT_DIALOG_CLOSE_BUTTON.key,
+        content: DEFAULT_DIALOG_CLOSE_BUTTON.content,
+        onClick: () => this.close(),
+      },
+    ],
+  }) {
+    this.text = text;
+    this.buttonsData = buttons;
+
+    const isCreated = this.container.querySelector(
+      '[data-name = "dialogRoot"]',
+    );
+
+    if (isCreated) return;
+
+    this.create();
+    this.container.appendChild(this.root);
+    this.addActionToButtons();
   }
 
   makeButtonsEls() {
@@ -48,6 +64,7 @@ class Dialog {
       buttonEl.setAttribute('type', 'button');
       buttonEl.setAttribute('data-key', key);
       buttonEl.setAttribute('data-name', 'dialogButton');
+      buttonEl.classList.add('dialog_button');
 
       if (content) buttonEl.innerHTML = content;
 
@@ -86,10 +103,11 @@ class Dialog {
   create() {
     // Create the elements
     this.root = document.createElement('div');
-    this.root.classList.add('message');
+    this.root.setAttribute('data-name', 'dialogRoot');
+    this.root.classList.add('dialog');
 
     const textEl = document.createElement('p');
-    textEl.classList.add('message_text');
+    textEl.classList.add('dialog_text');
 
     this.root.append(textEl);
 
@@ -102,37 +120,27 @@ class Dialog {
     const buttonsEls = this.makeButtonsEls();
 
     buttonsWrapEl.append(...buttonsEls);
-
-    // Init the typewriter effect
-    this.revealingText = new RevealingText({
-      element: this.root.querySelector('.message_text'),
-      text: this.text,
-    });
   }
 
   open() {
-    this.create();
-    this.container.appendChild(this.root);
-    this.addActionToButtons();
-    this.revealingText.init();
+    this.root.classList.add('is_open');
     this.isOpen = true;
+
+    // Init the typewriter effect
+    this.revealingText = new RevealingText({
+      element: this.root.querySelector('.dialog_text'),
+      text: this.text,
+    });
+    this.revealingText.init();
   }
 
   close() {
-    if (this.revealingText.isDone) {
-      this.removeActionFromButtons();
-      this.root.remove();
-      this.onComplete();
-    } else {
-      this.revealingText.warpToDone();
-    }
-
+    this.root.classList.remove('is_open');
+    this.onComplete();
+    this.removeActionFromButtons();
+    this.root.remove();
     this.isOpen = false;
   }
 }
-
-// const m = new Dialog({ text: 'some text for test' });
-// m.open();
-// console.log(m);
 
 export { Dialog };

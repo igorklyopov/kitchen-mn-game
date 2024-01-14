@@ -9,6 +9,7 @@ import {
   ACTIONS_NAMES,
   MOVEMENT_STEPS_NUMBER,
   MOVING_STEP_SIZE,
+  EVENTS_NAMES,
 } from '../data/constants.js';
 import { gameMap } from '../helpers/collisionBoundaries.js';
 import { isRectanglesCollide } from '../utils/isRectanglesCollide .js';
@@ -16,6 +17,7 @@ import { collisionMainData } from '../data/collisions/collisionMain.js';
 
 const { UP, DOWN, LEFT, RIGHT } = DIRECTIONS_NAMES;
 const { STAND, WALK, SHOOT } = ACTIONS_NAMES;
+const { HERO_POSITION, CONVERSATION_START, CONVERSATION_END } = EVENTS_NAMES;
 const { tileSize } = collisionMainData;
 
 class Character extends GameObject {
@@ -74,16 +76,33 @@ class Character extends GameObject {
       this.heroPosition = new Vector2(0, 0);
 
       events.on(
-        'HERO_POSITION',
+        HERO_POSITION,
         this,
         (heroPosition) => (this.heroPosition = heroPosition),
       );
 
-      this.isActive = false;
+      // this.isActive = false;
     }
 
-    this.messageData = {};
-    this.conversation = null;
+    this.messagesData = [
+      {
+        text: '',
+        buttons: [
+          {
+            key: '',
+            content: null,
+            onClick: () => {},
+          },
+        ],
+      },
+    ];
+    this.conversation = new Dialog({
+      container: document.querySelector('.js_game'),
+    });
+    this.conversation.setOnComplete(() => {
+      console.log(`conversation with ${this.name} is complete!`); // for test
+      events.emit(CONVERSATION_END, this.name);
+    });
   }
 
   set movementSteps(stepsNumber) {
@@ -124,7 +143,7 @@ class Character extends GameObject {
     }
 
     if (this.isPlayerControlled) {
-      events.emit('HERO_POSITION', this.position);
+      events.emit(HERO_POSITION, this.position);
     }
 
     this._saveLastAction(currentAction);
@@ -147,8 +166,7 @@ class Character extends GameObject {
       data: [],
     },
   ) {
-    this.actions = actionsData; // ?
-
+    this.actions = actionsData;
     this.actions.data = this.getActionsWithWayPoints(actionsData.data);
   }
 
@@ -381,7 +399,7 @@ class Character extends GameObject {
   }
 
   // Validating that the next destination is free
-  checkIsSpaceFree(nextX, nextY) {
+  checkIsSpaceFree(nextX = 0, nextY = 0) {
     const thisProps = {
       position: { x: nextX, y: nextY },
       width: this.body.size.width,
@@ -419,7 +437,7 @@ class Character extends GameObject {
 
       if (isRectanglesCollide(thisProps, collisionObjectProps)) {
         this.canMove = false;
-        // if (!this.canMove) this.showMessage();
+        if (!this.conversation.isOpen) this.showMessage('hello');
       } else {
         this.canMove = true;
       }
@@ -469,26 +487,29 @@ class Character extends GameObject {
     }
   }
 
-  setMessage(
-    messageData = {
-      text: '',
-      buttons: [{ key: '', content: null, onClick: () => {} }],
-    },
+  setMessages(
+    messagesData = [
+      {
+        text: '',
+        buttons: [{ key: '', content: null, onClick: () => {} }],
+      },
+    ],
   ) {
-    this.messageData = messageData;
+    this.messagesData = messagesData;
   }
 
-  showMessage() {
-    this.conversation = new Dialog({
-      container: document.querySelector('.js_game'),
-      text: this.messageData.text,
-      buttons: this.messageData.buttons,
-      onComplete: () => {
-        console.log('onComplete');
-      },
-    });
+  showMessage(messageId = '') {
+    for (const message of this.messagesData) {
+      if (message.id === messageId) {
+        this.conversation.setConfig({
+          text: message.text,
+          buttons: message.buttons,
+        });
+        break;
+      }
+    }
     this.conversation.open();
-    events.emit('INTERACTION_START', this.name);
+    events.emit(CONVERSATION_START, this.name);
   }
 }
 

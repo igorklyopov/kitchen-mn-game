@@ -17,12 +17,16 @@ import {
   HERO_POSITION_DEFAULT,
   GAME_LOOP_FPS_DEFAULT,
   DEV_MODE,
+  EVENTS_NAMES,
 } from '../js/data/constants.js';
 import { assetsData } from './data/assetsData.js';
 import { findAssetByName } from './utils/findAssetByName.js';
 import { collisionBoundaries } from './helpers/collisionBoundaries.js';
 // import { GridHelper } from './helpers/GridHelper.js';
 import { data2 } from './data/characters/actions.js';
+import { events } from './components/Events.js';
+
+const { CONVERSATION_START, CONVERSATION_END } = EVENTS_NAMES;
 
 // Grabbing the canvas to draw to
 const canvas = refs.gameCanvas;
@@ -82,11 +86,29 @@ const lida = new Character({
     y: gridCells(53),
   },
 });
-lida.setActions(data2);
+lida.setActions(data2); // for test
 lida.isAutoActionPlay = true;
-lida.setMessage({ text: 'Hello everyone!' });
+// for test
+lida.setMessages([
+  {
+    id: 'hello',
+    text: 'Hello everyone!',
+    buttons: [
+      {
+        key: 'test',
+        content: 'test',
+        onClick: function (e) {
+          this.close();
+        },
+      },
+    ],
+  },
+]);
 mainScene.addChild(lida);
 console.log(lida);
+
+events.on(CONVERSATION_START); // for test
+events.on(CONVERSATION_END); // for test
 
 const camera = new Camera();
 mainScene.addChild(camera);
