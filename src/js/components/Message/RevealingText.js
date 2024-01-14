@@ -4,47 +4,29 @@ class RevealingText {
     this.text = text;
     this.speed = speed;
 
-    this.timeout = null;
+    this.interval = null;
     this.isDone = false;
   }
 
-  revealOneSymbol(list) {
-    const next = list.splice(0, 1)[0];
-    next.span.classList.add('revealed');
-
-    if (list.length > 0) {
-      this.timeout = setTimeout(() => {
-        this.revealOneSymbol(list);
-      }, next.delayAfter);
-    } else {
-      this.isDone = true;
-    }
-  }
-
   warpToDone() {
-    clearTimeout(this.timeout);
+    clearInterval(this.interval);
     this.isDone = true;
-    this.element.querySelectorAll('span').forEach((s) => {
-      s.classList.add('revealed');
-    });
   }
 
   init() {
-    const symbols = [];
-    this.text.split('').forEach((symbol) => {
-      // Create each span, add to element in DOM
-      const span = document.createElement('span');
-      span.textContent = symbol;
-      this.element.appendChild(span);
+    let i = 0;
+    if (this.element.innerHTML !== '') this.element.innerHTML = '';
 
-      // Add this span to our internal state Array
-      symbols.push({
-        span,
-        delayAfter: symbol === ' ' ? 0 : this.speed,
-      });
-    });
+    this.isDone = false;
 
-    if (symbols.length > 0) this.revealOneSymbol(symbols);
+    this.interval = setInterval(() => {
+      if (i === this.text.length) {
+        this.warpToDone();
+      } else {
+        this.element.innerHTML += this.text[i];
+        i += 1;
+      }
+    }, this.speed);
   }
 }
 
