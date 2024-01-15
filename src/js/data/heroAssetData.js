@@ -1,5 +1,5 @@
-import { assetsData } from './assetsData.js';
-import {findAssetByName} from '../utils/findAssetByName.js'
+import { assetsData } from './assetsData';
+import { findAssetByName } from '../utils/findAssetByName';
 
 const heroAssetData = findAssetByName(assetsData, 'hero');
 

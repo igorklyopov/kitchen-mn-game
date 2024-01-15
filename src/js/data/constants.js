@@ -1,39 +1,51 @@
-const GAME_CANVAS_WIDTH = 1024;
-const GAME_CANVAS_HEIGHT = 576;
-const GAME_MAP_POSITION_DEFAULT = {
-  x: 240,
-  y: -660,
-};
-const HERO_POSITION_DEFAULT = {
-  x: 480,
-  y: 250,
-};
-const MOVING_STEP = 2;
-const ACTIONS_NAMES = {
-  move_top: 'move_top',
-  move_bottom: 'move_bottom',
-  move_left: 'move_left',
-  move_right: 'move_right',
-  stand_top: 'stand_top',
-  stand_bottom: 'stand_bottom',
-  stand_left: 'stand_left',
-  stand_right: 'stand_right',
-};
-const HERO_ACTIONS = [
-  { name: ACTIONS_NAMES.move_top, keys: ['KeyW', 'Numpad8'] },
-  { name: ACTIONS_NAMES.move_bottom, keys: ['KeyS', 'Numpad2'] },
-  { name: ACTIONS_NAMES.move_left, keys: ['KeyA', 'Numpad4'] },
-  { name: ACTIONS_NAMES.move_right, keys: ['KeyD', 'Numpad6'] },
-];
+const DEV_MODE = true; // for test
 
+const GAME_CANVAS_WIDTH = 320;
+const GAME_CANVAS_HEIGHT = 180;
+const GAME_MAP_WIDTH = 1440;
+const GAME_MAP_HEIGHT = 960;
+const MOVING_STEP_SIZE = 1;
+
+const HERO_POSITION_DEFAULT = {
+  x: 15,
+  y: 57,
+};
+const MOVEMENT_STEPS_NUMBER = 1; // the number of steps  the character moves at one time (speed)
+const DIRECTIONS_NAMES = {
+  UP: 'UP',
+  DOWN: 'DOWN',
+  LEFT: 'LEFT',
+  RIGHT: 'RIGHT',
+};
+const ACTIONS_NAMES = {
+  STAND: 'STAND',
+  WALK: 'WALK',
+};
+const EVENTS_NAMES = {
+  HERO_POSITION: 'HERO_POSITION',
+  CONVERSATION_START: 'CONVERSATION_START',
+  CONVERSATION_END: 'CONVERSATION_END',
+};
+
+const GAME_LOOP_FPS_DEFAULT = 30; // number frames per second, speed
+
+const COLLISION_OBJECTS_TYPES = {
+  1: 'WALL',
+  2: '',
+};
 
 export {
+  DEV_MODE,
   GAME_CANVAS_WIDTH,
   GAME_CANVAS_HEIGHT,
-  GAME_MAP_POSITION_DEFAULT,
+  GAME_MAP_WIDTH,
+  GAME_MAP_HEIGHT,
+  MOVING_STEP_SIZE,
   HERO_POSITION_DEFAULT,
-  MOVING_STEP,
+  MOVEMENT_STEPS_NUMBER,
   ACTIONS_NAMES,
-  HERO_ACTIONS,
-  
+  DIRECTIONS_NAMES,
+  EVENTS_NAMES,
+  COLLISION_OBJECTS_TYPES,
+  GAME_LOOP_FPS_DEFAULT,
 };

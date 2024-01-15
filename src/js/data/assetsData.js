@@ -1,37 +1,153 @@
-export const assetsData = [
-  { name: 'gameMap', src: '../../public/assets/img/kitchen_mn_map.png' },
+/**
+ * {
+  name: String,
+  src: String,
+  frameSize: { width: Integer, height: Integer },
+  maxNumberOfFramesAlongX: Integer,
+  numberOfFramesAlongY: Integer,
+  animations: {
+    walkUp: {
+      frameX:Integer, // x coordinate of beginning frames row (starting from 0)
+      frameY:Integer, // y coordinate of beginning frames row (starting from 0)
+      frameXNumber:Integer, // frames number in the row of frames
+      startFrameIndex:Integer, // frame number in the frame line from which the animation begins (starting from 0)
+      fps: Integer,
+
+  },
+ */
+
+const assetsData = [
+  { name: 'gameMap', src: '/assets/images/kitchen_mn_map.png' },
   {
     name: 'hero',
-    src: '../../public/assets/img/hero.png',
-    frameXCount: 3,
-    frameYCount: 4,
-    fps: 10,
-    actions: {
-      move_top: { frameX: 0, frameY: 3, maxFrame: 2 },
-      move_bottom: { frameX: 0, frameY: 0 },
-      move_right: { frameX: 0, frameY: 2 },
-      move_left: { frameX: 0, frameY: 1 },
-      stand_top: { frameX: 1, frameY: 3 },
-      stand_bottom: { frameX: 1, frameY: 0 },
-      stand_left: { frameX: 1, frameY: 1 },
-      stand_right: { frameX: 1, frameY: 2 },
+    src: '/assets/images/sprites/hero.png',
+    frameSize: { width: 32, height: 32 },
+    maxNumberOfFramesAlongX: 3,
+    numberOfFramesAlongY: 4,
+    animations: {
+      walkUp: {
+        frameX: 0, // x coordinate of beginning frames row (starting from 0)
+        frameY: 3, // y coordinate of beginning frames row (starting from 0)
+        frameXNumber: 3, // frames number in the row of frames
+        startFrameIndex: 1, // frame number in the frame line from which the animation begins (starting from 0)
+        fps: 10,
+      },
+      walkDown: {
+        frameX: 0,
+        frameY: 0,
+        frameXNumber: 3,
+        startFrameIndex: 1,
+        fps: 10,
+      },
+      walkRight: {
+        frameX: 0,
+        frameY: 2,
+        frameXNumber: 3,
+        startFrameIndex: 1,
+        fps: 10,
+      },
+      walkLeft: {
+        frameX: 0,
+        frameY: 1,
+        frameXNumber: 3,
+        startFrameIndex: 1,
+        fps: 10,
+      },
+      standUp: {
+        frameX: 1,
+        frameY: 3,
+        frameXNumber: 0,
+        startFrameIndex: 1,
+        fps: 10,
+      },
+      standDown: {
+        frameX: 1,
+        frameY: 0,
+        frameXNumber: 0,
+        startFrameIndex: 1,
+        fps: 10,
+      },
+      standLeft: {
+        frameX: 1,
+        frameY: 1,
+        frameXNumber: 0,
+        startFrameIndex: 1,
+        fps: 10,
+      },
+      standRight: {
+        frameX: 1,
+        frameY: 2,
+        frameXNumber: 0,
+        startFrameIndex: 1,
+        fps: 10,
+      },
     },
   },
   {
     name: 'lida',
-    src: '../../../public/assets/img/characters/female/lida.png',
-    frameXCount: 3,
-    frameYCount: 4,
-    fps: 10,
-    actions: {
-      move_top: { frameX: 0, frameY: 3, maxFrame: 2 },
-      move_bottom: { frameX: 0, frameY: 0 },
-      move_right: { frameX: 0, frameY: 2 },
-      move_left: { frameX: 0, frameY: 1 },
-      stand_top: { frameX: 1, frameY: 3 },
-      stand_bottom: { frameX: 1, frameY: 0 },
-      stand_left: { frameX: 1, frameY: 1 },
-      stand_right: { frameX: 1, frameY: 2 },
+    src: '/assets/images/sprites/characters/female/lida.png',
+    frameSize: { width: 32, height: 32 },
+    maxNumberOfFramesAlongX: 3,
+    numberOfFramesAlongY: 4,
+    animations: {
+      walkUp: {
+        frameX: 0, // x coordinate of beginning frames row (starting from 0)
+        frameY: 3, // y coordinate of beginning frames row (starting from 0)
+        frameXNumber: 3, // frames number in the row of frames
+        startFrameIndex: 1, // frame number in the frame line from which the animation begins (starting from 0)
+        fps: 10,
+      },
+      walkDown: {
+        frameX: 0,
+        frameY: 0,
+        frameXNumber: 3,
+        startFrameIndex: 1,
+        fps: 10,
+      },
+      walkRight: {
+        frameX: 0,
+        frameY: 2,
+        frameXNumber: 3,
+        startFrameIndex: 1,
+        fps: 10,
+      },
+      walkLeft: {
+        frameX: 0,
+        frameY: 1,
+        frameXNumber: 3,
+        startFrameIndex: 1,
+        fps: 10,
+      },
+      standUp: {
+        frameX: 1,
+        frameY: 3,
+        frameXNumber: 0,
+        startFrameIndex: 1,
+        fps: 10,
+      },
+      standDown: {
+        frameX: 1,
+        frameY: 0,
+        frameXNumber: 0,
+        startFrameIndex: 1,
+        fps: 10,
+      },
+      standLeft: {
+        frameX: 1,
+        frameY: 1,
+        frameXNumber: 0,
+        startFrameIndex: 1,
+        fps: 10,
+      },
+      standRight: {
+        frameX: 1,
+        frameY: 2,
+        frameXNumber: 0,
+        startFrameIndex: 1,
+        fps: 10,
+      },
     },
   },
 ];
+
+export { assetsData };

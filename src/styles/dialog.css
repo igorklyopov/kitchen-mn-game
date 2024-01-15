@@ -1,5 +1,34 @@
-/* dialog */
 .dialog {
+  /* position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 36px;
+  padding: 4px; */
+
+  display: none;
+}
+
+.dialog.is_open{
+  display: block;
+}
+
+.dialog_text {
+  margin: 0;
+  font-size: 20px;
+}
+.dialog span {
+  opacity: 0;
+}
+.dialog span.revealed {
+  opacity: 1;
+}
+
+.dialog_button {
+}
+
+
+/* .dialog {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -39,12 +68,11 @@
   background-color: rgba(0, 0, 0, 0.8);
 }
 
-.dialog_content {
-  
+.dialog_content_wrap {
   max-width: 70%;
 
   background-color: azure;
-}
+} */
 
 .dialog_content_text {
 }
@@ -53,10 +81,9 @@
   position: relative;
 }
 
-.dialog_button{
-
+.dialog_button {
 }
 
-.dialog_button:disabled{
+.dialog_button:disabled {
   background-color: coral;
 }
