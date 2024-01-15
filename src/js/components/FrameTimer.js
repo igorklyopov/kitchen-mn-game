@@ -28,7 +28,7 @@ class FrameTimer {
       this.isStopped = true;
       this.callback();
     } else {
-      this.timer += Math.round(deltaTime);
+      this.timer = Math.round(this.timer + Math.round(deltaTime));
     }
   }
 }

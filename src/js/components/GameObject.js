@@ -4,7 +4,7 @@ import { events } from './Events.js';
 export class GameObject {
   constructor({ position, name }) {
     this.name = name ?? 'gameObject';
-    this.position = position ?? new Vector2(0, 0);
+    this.position = position ?? new Vector2({ x: 0, y: 0 });
     this.children = [];
     this.parent = null;
     this.hasReadyBeenCalled = false;

@@ -11,6 +11,8 @@ export class Camera extends GameObject {
   constructor() {
     super({ name: 'camera' });
 
+    this.position = new Vector2({ x: 0, y: 0 }); //  x: -96, y: -838
+
     events.on('HERO_POSITION', this, (heroPosition) => {
       // Create a new position based on the hero's position
       const heroHalf = heroSpriteData.frameSize.width / 2;
@@ -18,10 +20,11 @@ export class Camera extends GameObject {
       const canvasHeight = GAME_CANVAS_HEIGHT;
       const halfWidth = -heroHalf + canvasWidth / 2;
       const halfHeight = -heroHalf + canvasHeight / 2;
-      this.position = new Vector2(
-        -heroPosition.x + halfWidth,
-        -heroPosition.y + halfHeight,
-      );
+      this.position = new Vector2({
+        x: -heroPosition.x + halfWidth,
+        y: -heroPosition.y + halfHeight,
+      });
+      // console.log(this.position);
     });
   }
 }

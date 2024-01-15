@@ -15,12 +15,18 @@ import {
   GAME_MAP_WIDTH,
   GAME_MAP_HEIGHT,
   HERO_POSITION_DEFAULT,
+  GAME_LOOP_FPS_DEFAULT,
   DEV_MODE,
+  EVENTS_NAMES,
 } from '../js/data/constants.js';
 import { assetsData } from './data/assetsData.js';
 import { findAssetByName } from './utils/findAssetByName.js';
 import { collisionBoundaries } from './helpers/collisionBoundaries.js';
 // import { GridHelper } from './helpers/GridHelper.js';
+import { data2 } from './data/characters/actions.js';
+import { events } from './components/Events.js';
+
+const { CONVERSATION_START, CONVERSATION_END } = EVENTS_NAMES;
 
 // Grabbing the canvas to draw to
 const canvas = refs.gameCanvas;
@@ -31,7 +37,7 @@ const ctx = canvas.getContext('2d');
 // Establish the root scene
 const mainScene = new GameObject({
   name: 'mainScene',
-  position: new Vector2(0, 0),
+  position: new Vector2({ x: 0, y: 0 }),
 });
 
 // Build up the scene by adding a, ground, and hero
@@ -42,20 +48,7 @@ const gameMapSprite = new Sprite({
   frameSize: { width: GAME_MAP_WIDTH, height: GAME_MAP_HEIGHT },
 });
 mainScene.addChild(gameMapSprite);
-/// ///////////////////////////////
-// for test
-const data2 = {
-  repeat: true,
-  data: [
-    { action: 'STAND_UP', time: 3000 },
-    { action: 'WALK_UP', distance: 4 },
-    { action: 'WALK_LEFT', distance: 4 },
-    { action: 'WALK_RIGHT', distance: 4 },
-    { action: 'STAND_DOWN', time: 2000 },
-    { action: 'WALK_DOWN', distance: 4 },
-  ],
-};
-/// //////////////////////////////
+
 const heroSpriteData = findAssetByName(assetsData, 'hero');
 
 const hero = new Character({
@@ -93,17 +86,56 @@ const lida = new Character({
     y: gridCells(53),
   },
 });
-lida.setActions(data2);
+lida.setActions(data2); // for test
 lida.isAutoActionPlay = true;
-lida.setMessage({ text: 'Hello everyone!' });
+// for test
+lida.setMessages([
+  {
+    id: 'hello',
+    text: 'Hello everyone!',
+    buttons: [
+      {
+        key: 'test',
+        content: 'test',
+        onClick: function (e) {
+          this.close();
+        },
+      },
+    ],
+  },
+]);
 mainScene.addChild(lida);
 console.log(lida);
+
+events.on(CONVERSATION_START); // for test
+events.on(CONVERSATION_END); // for test
 
 const camera = new Camera();
 mainScene.addChild(camera);
 
 // Add an InputHandler class to the main scene
-mainScene.input = new InputHandler();
+
+const DIRECTIONS_NAMES = {
+  UP: 'UP',
+  DOWN: 'DOWN',
+  LEFT: 'LEFT',
+  RIGHT: 'RIGHT',
+};
+
+const { UP, DOWN, LEFT, RIGHT } = DIRECTIONS_NAMES;
+
+const heroKeyMap = {
+  [UP]: ['KeyW', 'Numpad8'],
+  [DOWN]: ['KeyS', 'Numpad2'],
+  [LEFT]: ['KeyA', 'Numpad4'],
+  [RIGHT]: ['KeyD', 'Numpad6'],
+  SHOOT: ['KeyQ'], // for test
+};
+const input = new InputHandler();
+input.setKeyMap(heroKeyMap);
+input.setDirectionsNames(DIRECTIONS_NAMES);
+
+mainScene.input = input;
 
 // Add gridHelper for test
 // const gridHelper = new GridHelper({
@@ -144,5 +176,13 @@ const draw = () => {
 };
 
 // Start the game!
-const gameLoop = new GameLoop(update, draw);
+const gameLoop = new GameLoop({
+  update,
+  render: draw,
+  fps: GAME_LOOP_FPS_DEFAULT,
+});
 gameLoop.start();
+// gameLoop.setFps(60);
+// gameLoop.pause();
+// gameLoop.stop();
+// console.log(gameLoop);

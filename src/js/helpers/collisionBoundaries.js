@@ -5,9 +5,9 @@ import { COLLISION_OBJECTS_TYPES } from '../data/constants.js';
 
 const { map, width, tileSize } = collisionMainData;
 const collisionsMap = make2DArray(map, width);
-const gameMap = new Map();
+const gameMap = [];
 const collisionBoundaries = [];
-
+// for test
 collisionsMap.forEach((row, y) => {
   row.forEach((item, x) => {
     if (item !== 0) {
@@ -30,10 +30,13 @@ collisionsMap.forEach((row, y) => {
 collisionsMap.forEach((row, y) => {
   row.forEach((item, x) => {
     if (item !== 0) {
-      const key = `${x},${y}`;
-      const value = COLLISION_OBJECTS_TYPES[item];
+      const type = COLLISION_OBJECTS_TYPES[item];
+      const coordinates = [x * tileSize, y * tileSize];
+      const collisionObject = {
+        [type]: coordinates,
+      };
 
-      gameMap.set(key, value);
+      gameMap.push(collisionObject);
     }
   });
 });

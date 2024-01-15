@@ -3,7 +3,7 @@ class Events {
   nextId = 0;
 
   // emit event
-  emit(eventName, value) {
+  emit(eventName = '', value = null) {
     this.callbacks.forEach((stored) => {
       if (stored.eventName === eventName) {
         stored.callback(value);
@@ -12,7 +12,7 @@ class Events {
   }
 
   // subscribe to something happening
-  on(eventName, caller, callback) {
+  on(eventName = '', caller = null, callback = () => {}) {
     this.nextId += 1;
     this.callbacks.push({
       id: this.nextId,
