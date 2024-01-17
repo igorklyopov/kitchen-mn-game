@@ -18,7 +18,9 @@ class GameLoop {
     this.timeStep = Math.round(1000 / this.fps);
   }
 
-  runUpdate(timeStamp) {
+  mainLoop = (timeStamp) => {
+    if (!this.isRunning) return;
+
     const deltaTime = Math.round(timeStamp - this.lastFrameTime);
     this.lastFrameTime = Math.round(timeStamp);
 
@@ -28,23 +30,22 @@ class GameLoop {
     // Fixed time step updates.
     // If there's enough accumulated time to run one or more fixed updates, run them.
     while (this.accumulatedTime >= this.timeStep) {
-      this.update(this.timeStep); // Here, we pass the fixed time step size.
+      if (!this.isPaused) {
+        this.update(this.timeStep); // Here, we pass the fixed time step size.
+
+        // Render
+        this.render();
+      }
+
       this.accumulatedTime -= this.timeStep;
     }
-  }
-
-  mainLoop = (timeStamp) => {
-    if (!this.isRunning) return;
-
-    if (!this.isPaused) this.runUpdate(timeStamp);
-
-    // Render
-    this.render();
 
     this.rafId = requestAnimationFrame(this.mainLoop);
   };
 
   start() {
+    this.isPaused = false;
+
     if (!this.isRunning) {
       this.isRunning = true;
       this.rafId = requestAnimationFrame(this.mainLoop);

@@ -5,7 +5,7 @@ export default defineConfig({
   publicDir: 'public',
   root: './',
   build: {
-    outDir: 'docs',
+    outDir: 'dist',
   },
   plugins: [
     eslint({

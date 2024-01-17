@@ -40,7 +40,7 @@ const mainScene = new GameObject({
   position: new Vector2({ x: 0, y: 0 }),
 });
 
-// Build up the scene by adding a, ground, and hero
+// Build up the scene by adding  ground and hero
 const gameMapSpriteData = findAssetByName(assetsData, 'gameMap');
 const gameMapSprite = new Sprite({
   name: 'gameMapSprite',
@@ -110,7 +110,8 @@ console.log(lida);
 events.on(CONVERSATION_START); // for test
 events.on(CONVERSATION_END); // for test
 
-const camera = new Camera();
+const camera = new Camera(hero.position);
+// const camera = new Camera();
 mainScene.addChild(camera);
 
 // Add an InputHandler class to the main scene
@@ -153,6 +154,9 @@ const draw = () => {
   // Clear anything stale
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  // Activate camera
+  camera.track();
+
   // Save the current state (for camera offset)
   ctx.save();
 
@@ -182,7 +186,3 @@ const gameLoop = new GameLoop({
   fps: GAME_LOOP_FPS_DEFAULT,
 });
 gameLoop.start();
-// gameLoop.setFps(60);
-// gameLoop.pause();
-// gameLoop.stop();
-// console.log(gameLoop);
