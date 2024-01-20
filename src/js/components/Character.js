@@ -84,18 +84,7 @@ class Character extends GameObject {
       // this.isActive = false;
     }
 
-    this.messagesData = [
-      {
-        text: '',
-        buttons: [
-          {
-            key: '',
-            content: null,
-            onClick: () => {},
-          },
-        ],
-      },
-    ];
+    this.messagesData = [];
     this.conversation = new Dialog({
       container: document.querySelector('.js_game'),
     });
@@ -134,15 +123,16 @@ class Character extends GameObject {
         generatedDirection,
       );
       direction = generatedDirection;
-    } else {
+      console.log(currentAction, direction);
+    }
+
+    if (this.isPlayerControlled) {
       const { input } = root;
       const [inputAction] = input.getActions();
 
       direction = input.getDirection();
       currentAction = this.getCurrentAction(inputAction, direction);
-    }
 
-    if (this.isPlayerControlled) {
       events.emit(HERO_POSITION, this.position);
     }
 
@@ -281,7 +271,7 @@ class Character extends GameObject {
     const timeToNextAction = data[this.actionDataIndex]?.time;
     const destination = data[this.actionDataIndex]?.destination;
     const isArrivedToDestinationPosition =
-      this.position.x === destination.x && this.position.y === destination.y;
+      this.position.x === destination?.x && this.position.y === destination?.y;
 
     let generatedAction = data[this.actionDataIndex]?.action;
     let generatedDirection = data[this.actionDataIndex]?.direction;
@@ -499,6 +489,8 @@ class Character extends GameObject {
   }
 
   showMessage(messageId = '') {
+    if (this.messagesData.length < 1) return;
+
     for (const message of this.messagesData) {
       if (message.id === messageId) {
         this.conversation.setConfig({

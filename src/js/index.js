@@ -23,7 +23,7 @@ import { assetsData } from './data/assetsData.js';
 import { findAssetByName } from './utils/findAssetByName.js';
 import { collisionBoundaries } from './helpers/collisionBoundaries.js';
 // import { GridHelper } from './helpers/GridHelper.js';
-import { data2 } from './data/characters/actions.js';
+import { lidaActions } from './data/characters/actions.js';
 import { events } from './components/Events.js';
 
 const { CONVERSATION_START, CONVERSATION_END } = EVENTS_NAMES;
@@ -75,35 +75,21 @@ const lidaSpriteData = findAssetByName(assetsData, 'lida');
 const lida = new Character({
   name: 'lida',
   imageSrc: lidaSpriteData.src,
-  frameX: lidaSpriteData.animations.standUp.frameX,
-  frameY: lidaSpriteData.animations.standUp.frameY,
+  frameX: lidaSpriteData.animations.standRight.frameX,
+  frameY: lidaSpriteData.animations.standRight.frameY,
   frameSize: lidaSpriteData.frameSize,
   frameXMaxNumber: lidaSpriteData.maxNumberOfFramesAlongX,
   frameYNumber: lidaSpriteData.numberOfFramesAlongY,
   animations: lidaSpriteData.animations,
   position: {
-    x: gridCells(15),
-    y: gridCells(53),
+    x: gridCells(44), // 15
+    y: gridCells(6), // 53
   },
 });
-lida.setActions(data2); // for test
+lida.setActions(lidaActions); // for test
 lida.isAutoActionPlay = true;
 // for test
-lida.setMessages([
-  {
-    id: 'hello',
-    text: 'Hello everyone!',
-    buttons: [
-      {
-        key: 'test',
-        content: 'test',
-        onClick: function (e) {
-          this.close();
-        },
-      },
-    ],
-  },
-]);
+// lida.setMessages();
 mainScene.addChild(lida);
 console.log(lida);
 
@@ -111,20 +97,16 @@ events.on(CONVERSATION_START); // for test
 events.on(CONVERSATION_END); // for test
 
 const camera = new Camera(hero.position);
-// const camera = new Camera();
 mainScene.addChild(camera);
 
 // Add an InputHandler class to the main scene
-
 const DIRECTIONS_NAMES = {
   UP: 'UP',
   DOWN: 'DOWN',
   LEFT: 'LEFT',
   RIGHT: 'RIGHT',
 };
-
 const { UP, DOWN, LEFT, RIGHT } = DIRECTIONS_NAMES;
-
 const heroKeyMap = {
   [UP]: ['KeyW', 'Numpad8'],
   [DOWN]: ['KeyS', 'Numpad2'],
@@ -186,3 +168,105 @@ const gameLoop = new GameLoop({
   fps: GAME_LOOP_FPS_DEFAULT,
 });
 gameLoop.start();
+/// //////////////////////////////
+const lidaPathData = [
+  {
+    x: 704,
+    y: 95,
+  },
+  {
+    x: 912,
+    y: 96,
+  },
+  {
+    x: 912,
+    y: 144,
+  },
+  {
+    x: 1040,
+    y: 144,
+  },
+  {
+    x: 1040,
+    y: 96,
+  },
+  {
+    x: 1136,
+    y: 96,
+  },
+  {
+    x: 1136,
+    y: 320,
+  },
+  {
+    x: 1312,
+    y: 320,
+  },
+  {
+    x: 1312,
+    y: 751,
+  },
+  {
+    x: 1041,
+    y: 752,
+  },
+  {
+    x: 1041,
+    y: 240,
+  },
+  {
+    x: 897,
+    y: 239,
+  },
+  {
+    x: 897,
+    y: 144,
+  },
+  {
+    x: 768,
+    y: 144,
+  },
+  {
+    x: 768,
+    y: 255,
+  },
+  {
+    x: 848,
+    y: 256,
+  },
+  {
+    x: 848,
+    y: 319,
+  },
+  {
+    x: 736,
+    y: 319,
+  },
+  {
+    x: 736,
+    y: 128,
+  },
+  {
+    x: 704,
+    y: 128,
+  },
+  {
+    x: 704,
+    y: 95,
+  },
+];
+const d = [];
+
+for (let i = 0; i < lidaPathData.length; i += 1) {
+  if (i !== 0) {
+    const prevCoord = lidaPathData[i - 1];
+    const currCoord = lidaPathData[i];
+    const distanceToTravelX = currCoord.x - prevCoord.x;
+    const distanceToTravelY = currCoord.y - prevCoord.y;
+
+    const distance = Math.sqrt(distanceToTravelX ** 2 + distanceToTravelY ** 2);
+    d.push(Math.round(distance));
+  }
+}
+
+console.log(d);

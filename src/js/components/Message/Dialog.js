@@ -123,6 +123,8 @@ class Dialog {
   }
 
   open() {
+    if (!this.root) return;
+
     this.root.classList.add('is_open');
     this.isOpen = true;
 

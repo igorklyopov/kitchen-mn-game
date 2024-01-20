@@ -1,7 +1,7 @@
 const DEV_MODE = true; // for test
 
-const GAME_CANVAS_WIDTH = 320;
-const GAME_CANVAS_HEIGHT = 180;
+const GAME_CANVAS_WIDTH = 1440; // 320
+const GAME_CANVAS_HEIGHT = 960; // 180
 const GAME_MAP_WIDTH = 1440;
 const GAME_MAP_HEIGHT = 960;
 const MOVING_STEP_SIZE = 1;
