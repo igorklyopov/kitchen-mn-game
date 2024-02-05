@@ -3,59 +3,45 @@ import { RevealingText } from './RevealingText';
 const DEFAULT_DIALOG_CLOSE_BUTTON = {
   key: 'close',
   content: 'close',
+  onClick: function () {
+    this.close();
+  },
 };
 
+let dialogId = 0;
+
 class Dialog {
-  constructor({ container = document.querySelector('body') }) {
-    this.container = container;
-    this.root = null;
-    this.text = '';
-    this.buttonsData = [];
+  constructor(container = document.querySelector('body')) {
+    this._container = container;
+    this._root = null;
+    this._dialogId = dialogId += 1;
+    this._text = '';
+    this._buttonsData = [DEFAULT_DIALOG_CLOSE_BUTTON];
     this.buttonsRefs = [];
-    this.onComplete = () => {};
-    this.opened = false;
+    this._onComplete = () => {};
+    this._opened = false;
+    this._elementsCommonClassName = 'js_dialog_el';
+
+    this._create();
+
+    this._refs = Array.from(
+      this._root.getElementsByClassName(this._elementsCommonClassName),
+    );
+    this._revealingText = new RevealingText(
+      this._refs.find((ref) => ref.dataset.name === 'text' ?? ref),
+    );
   }
 
   set isOpen(value) {
-    this.opened = value;
+    this._opened = value;
   }
 
   get isOpen() {
-    return this.opened;
+    return this._opened;
   }
 
-  setOnComplete(callback = () => {}) {
-    this.onComplete = callback;
-  }
-
-  setConfig({
-    text = '',
-    buttons = [
-      {
-        key: DEFAULT_DIALOG_CLOSE_BUTTON.key,
-        content: DEFAULT_DIALOG_CLOSE_BUTTON.content,
-        onClick: () => this.close(),
-      },
-    ],
-  }) {
-    this.text = text;
-    this.buttonsData = buttons;
-
-    const isCreated = this.container.querySelector(
-      '[data-name = "dialogRoot"]',
-    );
-
-    if (isCreated) return;
-
-    this.create();
-    this.container.appendChild(this.root);
-    this.addActionToButtons();
-  }
-
-  makeButtonsEls() {
-    const buttonElements = [];
-
-    this.buttonsData.forEach(({ key, content }) => {
+  _makeButtonsEls(buttonsData = []) {
+    return buttonsData.map(({ key, content, onClick }) => {
       if (!key || String(key).trim().length < 1) {
         throw new Error('add unique key attribute to each button');
       }
@@ -64,84 +50,101 @@ class Dialog {
       buttonEl.setAttribute('type', 'button');
       buttonEl.setAttribute('data-key', key);
       buttonEl.setAttribute('data-name', 'dialogButton');
-      buttonEl.classList.add('dialog_button');
+      buttonEl.classList.add(this._elementsCommonClassName, 'dialog_button');
 
       if (content) buttonEl.innerHTML = content;
+      buttonEl.addEventListener('click', onClick.bind(this));
 
-      buttonElements.push(buttonEl);
+      return buttonEl;
     });
-
-    return buttonElements;
   }
 
-  addActionToButtons() {
-    this.buttonsRefs = this.container.querySelectorAll(
-      '[data-name = "dialogButton"]',
+  _addButtons() {
+    const buttonsWrapRef = this._refs.find(
+      (ref) => ref.dataset.name === 'buttonsWrap' ?? ref,
     );
+    if (buttonsWrapRef.innerHTML !== '') return;
 
-    this.buttonsRefs.forEach((buttonEl) => {
-      this.buttonsData.forEach((buttonData) => {
-        if (buttonEl.dataset.key === buttonData.key) {
-          buttonEl.addEventListener('click', buttonData.onClick.bind(this));
-        }
-      });
-    });
+    const buttonsEls = this._makeButtonsEls(this._buttonsData);
+
+    buttonsWrapRef.innerHTML = '';
+    buttonsWrapRef.append(...buttonsEls);
+
+    this.buttonsRefs = [...buttonsEls];
+    this._refs = [...this._refs, ...this.buttonsRefs];
   }
 
-  removeActionFromButtons() {
-    this.buttonsRefs = [];
-
-    this.buttonsRefs.forEach((buttonEl) => {
-      this.buttonsData.forEach((buttonData) => {
-        if (buttonEl.dataset.key === buttonData.key) {
-          buttonEl.removeEventListener('click', buttonData.onClick.bind(this));
-        }
-      });
-    });
+  setOnComplete(callback = () => {}) {
+    this._onComplete = callback;
   }
 
-  create() {
+  setContent(text = '') {
+    this._text = text;
+    this._revealingText.setText(this._text);
+  }
+
+  setButtons(buttons = [DEFAULT_DIALOG_CLOSE_BUTTON]) {
+    this._buttonsData = buttons;
+    this._addButtons();
+  }
+
+  _create() {
     // Create the elements
-    this.root = document.createElement('div');
-    this.root.setAttribute('data-name', 'dialogRoot');
-    this.root.classList.add('dialog');
+    this._root = document.createElement('div');
+    this._root.setAttribute('data-name', 'dialogRoot');
+    this._root.setAttribute('data-id', this._dialogId);
+    this._root.classList.add('dialog');
 
     const textEl = document.createElement('p');
-    textEl.classList.add('dialog_text');
-
-    this.root.append(textEl);
+    textEl.setAttribute('data-name', 'text');
+    textEl.classList.add(this._elementsCommonClassName, 'dialog_text');
 
     const buttonsWrapEl = document.createElement('div');
     buttonsWrapEl.setAttribute('data-name', 'buttonsWrap');
-    buttonsWrapEl.classList.add('dialog_buttons_wrap');
+    buttonsWrapEl.classList.add(
+      this._elementsCommonClassName,
+      'dialog_buttons_wrap',
+    );
 
-    this.root.append(buttonsWrapEl);
+    if (this._text.trim() !== '') {
+      this._addButtons();
+    }
 
-    const buttonsEls = this.makeButtonsEls();
+    this._root.append(textEl, buttonsWrapEl);
+    this._container?.appendChild(this._root);
+  }
 
-    buttonsWrapEl.append(...buttonsEls);
+  clear() {
+    for (const ref of this._refs) {
+      if (ref.dataset.name === 'buttonsWrap' || ref.dataset.name === 'text') {
+        ref.innerHTML = '';
+      }
+    }
+    this._text = '';
+    this.buttonsRefs = [DEFAULT_DIALOG_CLOSE_BUTTON];
+    this._refs = this._refs.filter(
+      (ref) => ref.dataset.name !== 'dialogButton',
+    );
   }
 
   open() {
-    if (!this.root) return;
+    if (!this._root || this.isOpen) return;
+    if (this._text.trim() === '') {
+      console.warn('there is no content in the dialog you want to open');
+      return;
+    }
 
-    this.root.classList.add('is_open');
     this.isOpen = true;
-
-    // Init the typewriter effect
-    this.revealingText = new RevealingText({
-      element: this.root.querySelector('.dialog_text'),
-      text: this.text,
-    });
-    this.revealingText.init();
+    this._root.classList.add('is_open');
+    this._revealingText.init();
   }
 
   close() {
-    this.root.classList.remove('is_open');
-    this.onComplete();
-    this.removeActionFromButtons();
-    this.root.remove();
+    this._revealingText.stop();
+    this._root.classList.remove('is_open');
     this.isOpen = false;
+    this._onComplete();
+    this.clear();
   }
 }
 

@@ -24,7 +24,9 @@ import { findAssetByName } from './utils/findAssetByName.js';
 import { collisionBoundaries } from './helpers/collisionBoundaries.js';
 // import { GridHelper } from './helpers/GridHelper.js';
 import { lidaActions } from './data/characters/actions.js';
+import { lidaConversationData } from './data/characters/charactersDialogSettings.js';
 import { events } from './components/Events.js';
+import { Dialog } from './components/Message/Dialog.js';
 
 const { CONVERSATION_START, CONVERSATION_END } = EVENTS_NAMES;
 
@@ -88,13 +90,9 @@ const lida = new Character({
 });
 lida.setActions(lidaActions); // for test
 lida.isAutoActionPlay = true;
-// for test
-// lida.setMessages();
+
 mainScene.addChild(lida);
 console.log(lida);
-
-events.on(CONVERSATION_START); // for test
-events.on(CONVERSATION_END); // for test
 
 const camera = new Camera(hero.position);
 mainScene.addChild(camera);
@@ -168,7 +166,40 @@ const gameLoop = new GameLoop({
   fps: GAME_LOOP_FPS_DEFAULT,
 });
 gameLoop.start();
-/// //////////////////////////////
+
+/// ////////// DRAFTS ////////////////////
+
+/// /////////// make character conversation ////////////
+let activeCharacter = '';
+const characterConversation = new Dialog(refs.dialog);
+characterConversation.setOnComplete(() => {
+  console.log(`conversation with ${activeCharacter} is complete!`); // for test
+  events.emit(CONVERSATION_END, activeCharacter);
+});
+events.on(CONVERSATION_START, 'game', (characterName) => {
+  // for test
+  console.log('CONVERSATION_START');
+  if (activeCharacter !== characterName) activeCharacter = characterName;
+  switch (activeCharacter) {
+    case 'lida':
+      characterConversation.setContent(lidaConversationData.content[0].text);
+      characterConversation.setButtons(lidaConversationData.buttons);
+      break;
+
+    default:
+      break;
+  }
+
+  characterConversation.open();
+
+  // gameLoop.pause();
+}); // for test
+events.on(CONVERSATION_END, 'game', () => {
+  // gameLoop.start();
+}); // for test
+console.log(events);
+
+/// ////////// make action waypoints list (for test) ////////////////////
 const lidaPathData = [
   {
     x: 704,
@@ -255,18 +286,24 @@ const lidaPathData = [
     y: 95,
   },
 ];
-const d = [];
+const makeActionsWaypointsList = (pathData) => {
+  const actionWaypointsList = [];
 
-for (let i = 0; i < lidaPathData.length; i += 1) {
-  if (i !== 0) {
-    const prevCoord = lidaPathData[i - 1];
-    const currCoord = lidaPathData[i];
-    const distanceToTravelX = currCoord.x - prevCoord.x;
-    const distanceToTravelY = currCoord.y - prevCoord.y;
+  for (let i = 0; i < lidaPathData.length; i += 1) {
+    if (i !== 0) {
+      const prevCoord = lidaPathData[i - 1];
+      const currCoord = lidaPathData[i];
+      const distanceToTravelX = currCoord.x - prevCoord.x;
+      const distanceToTravelY = currCoord.y - prevCoord.y;
 
-    const distance = Math.sqrt(distanceToTravelX ** 2 + distanceToTravelY ** 2);
-    d.push(Math.round(distance));
+      const distance = Math.sqrt(
+        distanceToTravelX ** 2 + distanceToTravelY ** 2,
+      );
+      actionWaypointsList.push(Math.round(distance));
+    }
   }
-}
 
-console.log(d);
+  return actionWaypointsList;
+};
+
+console.log(makeActionsWaypointsList(lidaPathData));

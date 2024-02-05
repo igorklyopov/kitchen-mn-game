@@ -3,7 +3,6 @@ import { Vector2 } from './Vector2.js';
 import { Sprite } from './Sprite.js';
 import { events } from './Events.js';
 import { FrameTimer } from './FrameTimer.js';
-import { Dialog } from './Message/Dialog.js';
 import {
   DIRECTIONS_NAMES,
   ACTIONS_NAMES,
@@ -17,7 +16,7 @@ import { collisionMainData } from '../data/collisions/collisionMain.js';
 
 const { UP, DOWN, LEFT, RIGHT } = DIRECTIONS_NAMES;
 const { STAND, WALK, SHOOT } = ACTIONS_NAMES;
-const { HERO_POSITION, CONVERSATION_START, CONVERSATION_END } = EVENTS_NAMES;
+const { HERO_POSITION, CONVERSATION_START } = EVENTS_NAMES;
 const { tileSize } = collisionMainData;
 
 class Character extends GameObject {
@@ -56,10 +55,9 @@ class Character extends GameObject {
     this.addChild(this.body);
 
     this.isPlayerControlled = isPlayerControlled; // flag for character role
-    // this.destinationPosition = this.position.duplicate();
     this.movementStepsNumber = MOVEMENT_STEPS_NUMBER; // the number of steps  the character moves at one time (speed)
     this.movingStepSize = MOVING_STEP_SIZE; // the size of step (distance) the character moves at one time
-    this.canMove = true;
+    this.isSpaceInFrontFree = true;
     this.isAutoActionPlay = false;
     this.actions = {
       repeat: false,
@@ -80,18 +78,7 @@ class Character extends GameObject {
         this,
         (heroPosition) => (this.heroPosition = heroPosition),
       );
-
-      // this.isActive = false;
     }
-
-    this.messagesData = [];
-    this.conversation = new Dialog({
-      container: document.querySelector('.js_game'),
-    });
-    this.conversation.setOnComplete(() => {
-      console.log(`conversation with ${this.name} is complete!`); // for test
-      events.emit(CONVERSATION_END, this.name);
-    });
   }
 
   set movementSteps(stepsNumber) {
@@ -123,7 +110,6 @@ class Character extends GameObject {
         generatedDirection,
       );
       direction = generatedDirection;
-      console.log(currentAction, direction);
     }
 
     if (this.isPlayerControlled) {
@@ -143,7 +129,7 @@ class Character extends GameObject {
       this.move(currentAction, this.currentDirection, delta);
     }
 
-    if (this.canMove) {
+    if (this.isSpaceInFrontFree) {
       this.animateAction(currentAction, this.currentDirection, delta);
     } else {
       this.animateAction(STAND, this.currentDirection, delta);
@@ -405,17 +391,21 @@ class Character extends GameObject {
     if (this.isPlayerControlled) {
       for (let i = 0; i < gameMap.length; i += 1) {
         const coordinates = Object.values(gameMap[i]);
-        const collisionObjectProps = {
+        // const collisionObjectType = Object.keys(gameMap[i]);
+
+        collisionObjectProps = {
           position: { x: coordinates[0][0], y: coordinates[0][1] },
           width: tileSize,
           height: tileSize,
         };
 
         if (isRectanglesCollide(thisProps, collisionObjectProps)) {
-          this.canMove = false;
+          // console.log(collisionObjectType);
+
+          if (this.isSpaceInFrontFree) this.isSpaceInFrontFree = false;
           break;
         } else {
-          this.canMove = true;
+          if (!this.isSpaceInFrontFree) this.isSpaceInFrontFree = true;
         }
       }
     } else {
@@ -426,14 +416,14 @@ class Character extends GameObject {
       };
 
       if (isRectanglesCollide(thisProps, collisionObjectProps)) {
-        this.canMove = false;
-        if (!this.conversation.isOpen) this.showMessage('hello');
+        if (this.isSpaceInFrontFree) {
+          this.isSpaceInFrontFree = false;
+          events.emit(CONVERSATION_START, this.name);
+        }
       } else {
-        this.canMove = true;
+        if (!this.isSpaceInFrontFree) this.isSpaceInFrontFree = true;
       }
     }
-
-    return this.canMove;
   }
 
   move(moveAction = '', direction = '') {
@@ -468,40 +458,13 @@ class Character extends GameObject {
         }
       }
 
-      const isSpaceFree = this.checkIsSpaceFree(nextX, nextY);
+      this.checkIsSpaceFree(nextX, nextY);
 
-      if (isSpaceFree) {
+      if (this.isSpaceInFrontFree) {
         this.position.x = nextX;
         this.position.y = nextY;
       }
     }
-  }
-
-  setMessages(
-    messagesData = [
-      {
-        text: '',
-        buttons: [{ key: '', content: null, onClick: () => {} }],
-      },
-    ],
-  ) {
-    this.messagesData = messagesData;
-  }
-
-  showMessage(messageId = '') {
-    if (this.messagesData.length < 1) return;
-
-    for (const message of this.messagesData) {
-      if (message.id === messageId) {
-        this.conversation.setConfig({
-          text: message.text,
-          buttons: message.buttons,
-        });
-        break;
-      }
-    }
-    this.conversation.open();
-    events.emit(CONVERSATION_START, this.name);
   }
 }
 

@@ -1,14 +1,14 @@
-const DEV_MODE = true; // for test
+const DEV_MODE = false; // for test
 
-const GAME_CANVAS_WIDTH = 1440; // 320
-const GAME_CANVAS_HEIGHT = 960; // 180
+const GAME_CANVAS_WIDTH = 320; // 1440 (for test)
+const GAME_CANVAS_HEIGHT = 180; // 960 (for test)
 const GAME_MAP_WIDTH = 1440;
 const GAME_MAP_HEIGHT = 960;
 const MOVING_STEP_SIZE = 1;
 
 const HERO_POSITION_DEFAULT = {
   x: 15,
-  y: 57,
+  y: 56,
 };
 const MOVEMENT_STEPS_NUMBER = 1; // the number of steps  the character moves at one time (speed)
 const DIRECTIONS_NAMES = {
@@ -33,6 +33,7 @@ const COLLISION_OBJECTS_TYPES = {
   1: 'WALL',
   2: '',
 };
+const REVEALING_TEXT_SPEED_DEFAULT = 80;
 
 export {
   DEV_MODE,
@@ -48,4 +49,5 @@ export {
   EVENTS_NAMES,
   COLLISION_OBJECTS_TYPES,
   GAME_LOOP_FPS_DEFAULT,
+  REVEALING_TEXT_SPEED_DEFAULT,
 };

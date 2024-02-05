@@ -1,14 +1,24 @@
+import { REVEALING_TEXT_SPEED_DEFAULT } from '../../data/constants';
+
 class RevealingText {
-  constructor({ element = null, text = '', speed = 80 }) {
+  constructor(element = null) {
     this.element = element;
-    this.text = text;
-    this.speed = speed;
+    this.text = '';
+    this.speed = REVEALING_TEXT_SPEED_DEFAULT;
 
     this.interval = null;
     this.isDone = false;
   }
 
-  warpToDone() {
+  setText(text = '') {
+    this.text = text;
+  }
+
+  setSpeed(speed = 0) {
+    this.speed = speed;
+  }
+
+  stop() {
     clearInterval(this.interval);
     this.isDone = true;
   }
@@ -21,7 +31,7 @@ class RevealingText {
 
     this.interval = setInterval(() => {
       if (i === this.text.length) {
-        this.warpToDone();
+        this.stop();
       } else {
         this.element.innerHTML += this.text[i];
         i += 1;
