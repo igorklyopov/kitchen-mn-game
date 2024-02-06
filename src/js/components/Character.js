@@ -212,10 +212,10 @@ class Character extends GameObject {
 
   getCurrentAction(inputAction = '', inputDirection = '') {
     if (inputAction !== '' && inputDirection !== '') {
-      // если при нажатии клавиш задаётся действие и направление - оно идёт на дальнейшее выполнение
+      // if an action and direction are specified when pressing a key, it goes to further execution
       return inputAction;
     } else if (inputAction === '' && inputDirection !== '') {
-      // если указано только направление, то в зависимости от последнего действия идёт на выполнение дефолтное действие
+      // if only the direction is specified, then depending on the last action the default action is executed
       switch (this.lastAction) {
         case STAND:
           return WALK;
@@ -227,7 +227,7 @@ class Character extends GameObject {
           return '';
       }
     } else if (inputAction === '' && inputDirection === '') {
-      // если нет ни направления ни действия - в зависимости от предыдущего действия - идёт на выполнение действие покоя (idle)
+      // if there is no direction or action - depending on the previous action - the idle action is performed (idle)
       switch (this.lastAction) {
         case '':
           return STAND;

@@ -24,9 +24,9 @@ import { findAssetByName } from './utils/findAssetByName.js';
 import { collisionBoundaries } from './helpers/collisionBoundaries.js';
 // import { GridHelper } from './helpers/GridHelper.js';
 import { lidaActions } from './data/characters/actions.js';
-import { lidaConversationData } from './data/characters/charactersDialogSettings.js';
+import { charactersConversationData } from './data/characters/charactersConversationData.js';
 import { events } from './components/Events.js';
-import { Dialog } from './components/Message/Dialog.js';
+import { Dialog } from './components/Conversation/Dialog.js';
 
 const { CONVERSATION_START, CONVERSATION_END } = EVENTS_NAMES;
 
@@ -180,10 +180,15 @@ events.on(CONVERSATION_START, 'game', (characterName) => {
   // for test
   console.log('CONVERSATION_START');
   if (activeCharacter !== characterName) activeCharacter = characterName;
-  switch (activeCharacter) {
+  switch (characterName) {
     case 'lida':
-      characterConversation.setContent(lidaConversationData.content[0].text);
-      characterConversation.setButtons(lidaConversationData.buttons);
+      characterConversation.setContent(
+        charactersConversationData[characterName].messages,
+      );
+      characterConversation.setButtons(
+        charactersConversationData[characterName].buttons,
+      );
+      characterConversation.chooseMessage(1);
       break;
 
     default:
