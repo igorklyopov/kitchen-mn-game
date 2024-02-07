@@ -14,6 +14,7 @@ const charactersConversationData = {
       {
         key: 'give_chocolate',
         content: 'дать шоколадку',
+        classNames: ['button'],
         onClick: function () {
           console.log('дать шоколадку');
           this.chooseMessage(2);
@@ -29,6 +30,7 @@ const charactersConversationData = {
       {
         key: 'call_bohdan',
         content: 'позвать Богдана',
+        classNames: ['button'],
         onClick: function () {
           console.log('позвать Богдана');
 
@@ -45,6 +47,7 @@ const charactersConversationData = {
         key: 'continue',
         content: 'продолжить',
         attributes: [{ disabled: true }],
+        classNames: ['button'],
         onClick: function () {
           console.log('продолжить');
 

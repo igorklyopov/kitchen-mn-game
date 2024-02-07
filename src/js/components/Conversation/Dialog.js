@@ -49,37 +49,40 @@ class Dialog {
   }
 
   _makeButtonsEls(buttonsData = []) {
-    return buttonsData.map(({ key, content, onClick, attributes }) => {
-      if (!key || String(key).trim().length < 1) {
-        throw new Error('add unique key attribute to each button');
-      }
+    return buttonsData.map(
+      ({ key, content, onClick, attributes, classNames }) => {
+        if (!key || String(key).trim().length < 1) {
+          throw new Error('add unique key attribute to each button');
+        }
 
-      const buttonEl = document.createElement('button');
-      buttonEl.setAttribute('type', 'button');
-      buttonEl.setAttribute('data-key', key);
-      buttonEl.setAttribute('data-name', 'dialogButton');
-      if (attributes && attributes.length > 0) {
-        attributes.forEach((attribute) =>
-          buttonEl.setAttribute(
-            Object.keys(attribute)[0],
-            Object.values(attribute)[0],
-          ),
-        );
-      }
-      buttonEl.classList.add(this._elementsCommonClassName, 'dialog_button');
+        const buttonEl = document.createElement('button');
+        buttonEl.setAttribute('type', 'button');
+        buttonEl.setAttribute('data-key', key);
+        buttonEl.setAttribute('data-name', 'dialogButton');
+        if (attributes && attributes.length > 0) {
+          attributes.forEach((attribute) =>
+            buttonEl.setAttribute(
+              Object.keys(attribute)[0],
+              Object.values(attribute)[0],
+            ),
+          );
+        }
+        buttonEl.classList.add(this._elementsCommonClassName, 'dialog_button');
+        if (classNames && classNames.length > 0) {
+          buttonEl.classList.add(...classNames);
+        }
+        if (content) buttonEl.innerHTML = content;
+        buttonEl.addEventListener('click', onClick.bind(this));
 
-      if (content) buttonEl.innerHTML = content;
-      buttonEl.addEventListener('click', onClick.bind(this));
-
-      return buttonEl;
-    });
+        return buttonEl;
+      },
+    );
   }
 
   _addButtons() {
     const buttonsWrapRef = this._refs.find(
       (ref) => ref.dataset.name === 'buttonsWrap' ?? ref,
     );
-    if (buttonsWrapRef.innerHTML !== '') return;
 
     const buttonsEls = this._makeButtonsEls(this._buttonsData);
 
@@ -147,7 +150,6 @@ class Dialog {
 
     if (this._text !== currentMessage.text) {
       this._revealingText.stop();
-      this.removeText();
       this._text = currentMessage.text;
       this._revealingText.setText(currentMessage.text);
       this._revealingText.init();
