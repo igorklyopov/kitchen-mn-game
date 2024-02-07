@@ -199,10 +199,7 @@ events.on(CONVERSATION_START, 'game', (characterName) => {
 
   // gameLoop.pause();
 }); // for test
-characterConversation.setContent(charactersConversationData.lida.messages);
-characterConversation.setButtons(charactersConversationData.lida.buttons);
-characterConversation.chooseMessage(1);
-characterConversation.open();
+
 events.on(CONVERSATION_END, 'game', () => {
   // gameLoop.start();
 }); // for test
