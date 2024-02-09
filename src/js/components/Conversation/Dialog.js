@@ -4,7 +4,7 @@ const DEFAULT_DIALOG_CLOSE_BUTTON = {
   key: 'close',
   content: 'close',
   attributes: [],
-  // classNames: [],
+  classNames: [],
   onClick: function () {
     this.close();
   },

@@ -5,24 +5,33 @@ import { Vector2 } from './components/Vector2.js';
 import { GameLoop } from './components/GameLoop.js';
 import { InputHandler } from './components/InputHandler.js';
 import { GameObject } from './components/GameObject.js';
-import { Character } from './components/Character.js';
 import { Camera } from './components/Camera.js';
-import { gridCells } from './utils/gridCells.js';
 import { refs } from './data/refs.js';
 import {
   GAME_CANVAS_WIDTH,
   GAME_CANVAS_HEIGHT,
   GAME_MAP_WIDTH,
   GAME_MAP_HEIGHT,
-  HERO_POSITION_DEFAULT,
   GAME_LOOP_FPS_DEFAULT,
   DEV_MODE,
   EVENTS_NAMES,
+  DIRECTIONS_NAMES,
 } from '../js/data/constants.js';
 import { assetsData } from './data/assetsData.js';
 import { findAssetByName } from './utils/findAssetByName.js';
 import { collisionBoundaries } from './helpers/collisionBoundaries.js';
 // import { GridHelper } from './helpers/GridHelper.js';
+
+import { hero } from './components/characters/hero.js';
+import { lida } from './components/characters/female/lida.js';
+import { nata1 } from './components/characters/female/nata1.js';
+import { nata2 } from './components/characters/female/nata2.js';
+import { tanya } from './components/characters/female/tanya.js';
+import { bohdan } from './components/characters/male/bohdan.js';
+import { roma } from './components/characters/male/roma.js';
+import { worker1 } from './components/characters/male/worker1.js';
+import { worker2 } from './components/characters/male/worker2.js';
+
 import { lidaActions } from './data/characters/actions.js';
 import { charactersConversationData } from './data/characters/charactersConversationData.js';
 import { events } from './components/Events.js';
@@ -42,7 +51,7 @@ const mainScene = new GameObject({
   position: new Vector2({ x: 0, y: 0 }),
 });
 
-// Build up the scene by adding  ground and hero
+// Build up the scene by adding  ground
 const gameMapSpriteData = findAssetByName(assetsData, 'gameMap');
 const gameMapSprite = new Sprite({
   name: 'gameMapSprite',
@@ -51,59 +60,42 @@ const gameMapSprite = new Sprite({
 });
 mainScene.addChild(gameMapSprite);
 
-const heroSpriteData = findAssetByName(assetsData, 'hero');
-
-const hero = new Character({
-  name: 'hero',
-  isPlayerControlled: true,
-  imageSrc: heroSpriteData.src,
-  frameX: heroSpriteData.animations.standUp.frameX,
-  frameY: heroSpriteData.animations.standUp.frameY,
-  frameSize: heroSpriteData.frameSize,
-  frameXMaxNumber: heroSpriteData.maxNumberOfFramesAlongX,
-  frameYNumber: heroSpriteData.numberOfFramesAlongY,
-  animations: heroSpriteData.animations,
-  position: {
-    x: gridCells(HERO_POSITION_DEFAULT.x),
-    y: gridCells(HERO_POSITION_DEFAULT.y),
-  },
-});
-
+// hero
 mainScene.addChild(hero);
-console.log(hero);
+// console.log(hero);
 
-const lidaSpriteData = findAssetByName(assetsData, 'lida');
-
-const lida = new Character({
-  name: 'lida',
-  imageSrc: lidaSpriteData.src,
-  frameX: lidaSpriteData.animations.standRight.frameX,
-  frameY: lidaSpriteData.animations.standRight.frameY,
-  frameSize: lidaSpriteData.frameSize,
-  frameXMaxNumber: lidaSpriteData.maxNumberOfFramesAlongX,
-  frameYNumber: lidaSpriteData.numberOfFramesAlongY,
-  animations: lidaSpriteData.animations,
-  position: {
-    x: gridCells(44), // 15
-    y: gridCells(6), // 53
-  },
-});
+// lida
 lida.setActions(lidaActions); // for test
 lida.isAutoActionPlay = true;
-
 mainScene.addChild(lida);
-console.log(lida);
+// console.log(lida);
 
+// nata1
+mainScene.addChild(nata1);
+
+// nata2
+mainScene.addChild(nata2);
+
+// tanya
+mainScene.addChild(tanya);
+
+// bohdan
+mainScene.addChild(bohdan);
+
+// roma
+mainScene.addChild(roma);
+
+// worker1
+mainScene.addChild(worker1);
+
+// worker2
+mainScene.addChild(worker2);
+
+// camera
 const camera = new Camera(hero.position);
 mainScene.addChild(camera);
 
 // Add an InputHandler class to the main scene
-const DIRECTIONS_NAMES = {
-  UP: 'UP',
-  DOWN: 'DOWN',
-  LEFT: 'LEFT',
-  RIGHT: 'RIGHT',
-};
 const { UP, DOWN, LEFT, RIGHT } = DIRECTIONS_NAMES;
 const heroKeyMap = {
   [UP]: ['KeyW', 'Numpad8'],
@@ -115,7 +107,6 @@ const heroKeyMap = {
 const input = new InputHandler();
 input.setKeyMap(heroKeyMap);
 input.setDirectionsNames(DIRECTIONS_NAMES);
-
 mainScene.input = input;
 
 // Add gridHelper for test
@@ -203,7 +194,7 @@ events.on(CONVERSATION_START, 'game', (characterName) => {
 events.on(CONVERSATION_END, 'game', () => {
   // gameLoop.start();
 }); // for test
-console.log(events);
+// console.log(events);
 
 /// ////////// make action waypoints list (for test) ////////////////////
 const lidaPathData = [

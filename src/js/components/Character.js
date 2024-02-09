@@ -418,7 +418,9 @@ class Character extends GameObject {
       if (isRectanglesCollide(thisProps, collisionObjectProps)) {
         if (this.isSpaceInFrontFree) {
           this.isSpaceInFrontFree = false;
-          events.emit(CONVERSATION_START, this.name);
+          if (this.actions.data.length > 0) {
+            events.emit(CONVERSATION_START, this.name);
+          }
         }
       } else {
         if (!this.isSpaceInFrontFree) this.isSpaceInFrontFree = true;
