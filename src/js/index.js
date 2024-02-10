@@ -33,7 +33,11 @@ import { roma } from './components/characters/male/roma.js';
 import { worker1 } from './components/characters/male/worker1.js';
 import { worker2 } from './components/characters/male/worker2.js';
 
-import { lidaActions, nata1Actions } from './data/characters/actions.js';
+import {
+  ninaActions,
+  lidaActions,
+  nata1Actions,
+} from './data/characters/actions.js';
 import { charactersConversationData } from './data/characters/charactersConversationData.js';
 import { events } from './components/Events.js';
 import { Dialog } from './components/Conversation/Dialog.js';
@@ -65,7 +69,7 @@ mainScene.addChild(gameMapSprite);
 mainScene.addChild(hero);
 
 // nina
-// nina.setActions(ninaActions);
+nina.setActions(ninaActions);
 nina.isAutoActionPlay = true;
 mainScene.addChild(nina);
 
@@ -176,25 +180,24 @@ characterConversation.setOnComplete(() => {
 events.on(CONVERSATION_START, 'game', (characterName) => {
   // for test
   console.log('CONVERSATION_START');
+
   if (activeCharacter !== characterName) activeCharacter = characterName;
+  characterConversation.setContent(
+    charactersConversationData[characterName].messages,
+  );
+  characterConversation.setButtons(
+    charactersConversationData[characterName].buttons,
+  );
   switch (characterName) {
+    case 'nina':
+      characterConversation.chooseMessage(1);
+      break;
+
     case 'lida':
-      characterConversation.setContent(
-        charactersConversationData[characterName].messages,
-      );
-      characterConversation.setButtons(
-        charactersConversationData[characterName].buttons,
-      );
       characterConversation.chooseMessage(1);
       break;
 
     case 'nata1':
-      characterConversation.setContent(
-        charactersConversationData[characterName].messages,
-      );
-      characterConversation.setButtons(
-        charactersConversationData[characterName].buttons,
-      );
       characterConversation.chooseMessage(1);
       break;
 
@@ -213,99 +216,79 @@ events.on(CONVERSATION_END, 'game', () => {
 // console.log(events);
 
 /// ////////// make action waypoints list (for test) ////////////////////
-const lidaPathData = [
+const pathData = [
   {
-    x: 704,
-    y: 95,
+    x: 143.666666666667,
+    y: 639.333333333333,
   },
   {
-    x: 912,
-    y: 96,
+    x: 143.333333333333,
+    y: 607.333333333333,
   },
   {
-    x: 912,
-    y: 144,
+    x: 255.666666666667,
+    y: 608,
   },
   {
-    x: 1040,
-    y: 144,
+    x: 255.666666666667,
+    y: 638.333333333333,
   },
   {
-    x: 1040,
-    y: 96,
+    x: 592.333333333333,
+    y: 640,
   },
   {
-    x: 1136,
-    y: 96,
+    x: 592.666666666667,
+    y: 385.333333333333,
   },
   {
-    x: 1136,
-    y: 320,
+    x: 544,
+    y: 384.666666666667,
   },
   {
-    x: 1312,
-    y: 320,
+    x: 544.333333333333,
+    y: 288.333333333333,
   },
   {
-    x: 1312,
-    y: 751,
+    x: 607.666666666667,
+    y: 288,
   },
   {
-    x: 1041,
-    y: 752,
+    x: 607.666666666667,
+    y: 303.666666666667,
   },
   {
-    x: 1041,
-    y: 240,
+    x: 816,
+    y: 303.333333333333,
   },
   {
-    x: 897,
-    y: 239,
+    x: 815.5,
+    y: 255.166666666667,
   },
   {
-    x: 897,
-    y: 144,
+    x: 1199.5,
+    y: 254.166666666667,
   },
   {
-    x: 768,
-    y: 144,
+    x: 1201,
+    y: 111.166666666667,
   },
   {
-    x: 768,
-    y: 255,
+    x: 1232,
+    y: 111.166666666667,
   },
   {
-    x: 848,
-    y: 256,
-  },
-  {
-    x: 848,
-    y: 319,
-  },
-  {
-    x: 736,
-    y: 319,
-  },
-  {
-    x: 736,
-    y: 128,
-  },
-  {
-    x: 704,
-    y: 128,
-  },
-  {
-    x: 704,
-    y: 95,
+    x: 1232,
+    y: 189.666666666667,
   },
 ];
 const makeActionsWaypointsList = (pathData) => {
   const actionWaypointsList = [];
 
-  for (let i = 0; i < lidaPathData.length; i += 1) {
+  for (let i = 0; i < pathData.length; i += 1) {
     if (i !== 0) {
-      const prevCoord = lidaPathData[i - 1];
-      const currCoord = lidaPathData[i];
+      const prevCoord = pathData[i - 1];
+      const currCoord = pathData[i];
       const distanceToTravelX = currCoord.x - prevCoord.x;
       const distanceToTravelY = currCoord.y - prevCoord.y;
 
@@ -319,4 +302,4 @@ const makeActionsWaypointsList = (pathData) => {
   return actionWaypointsList;
 };
 
-console.log(makeActionsWaypointsList(lidaPathData));
+console.log(makeActionsWaypointsList(pathData));

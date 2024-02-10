@@ -1,5 +1,5 @@
 // for test
-const data2 = {
+const testData2 = {
   repeat: true,
   data: [
     { action: 'STAND', direction: 'UP', time: 3000 },
@@ -10,7 +10,54 @@ const data2 = {
     { action: 'WALK', direction: 'DOWN', distance: 60 },
   ],
 };
-
+const ninaActions = {
+  repeat: true, // определяет, повторять ли комплекс действий сначала при достижении конца списка действий
+  reverse: true, // определяет, производить ли действия в обратном порядке согласно списка при достижении конца списка действий
+  data: [
+    { action: 'STAND', direction: 'DOWN', time: 25000 },
+    { action: 'WALK', direction: 'UP', distance: 32 },
+    { action: 'WALK', direction: 'RIGHT', distance: 112 },
+    { action: 'WALK', direction: 'DOWN', distance: 32 },
+    { action: 'WALK', direction: 'RIGHT', distance: 337 },
+    { action: 'WALK', direction: 'UP', distance: 255 },
+    { action: 'STAND', direction: 'RIGHT', time: 5000 },
+    { action: 'WALK', direction: 'LEFT', distance: 49 },
+    { action: 'STAND', direction: 'LEFT', time: 5000 },
+    { action: 'WALK', direction: 'UP', distance: 96 },
+    { action: 'STAND', direction: 'UP', time: 5000 },
+    { action: 'WALK', direction: 'RIGHT', distance: 64 },
+    { action: 'WALK', direction: 'DOWN', distance: 16 },
+    { action: 'WALK', direction: 'RIGHT', distance: 208 },
+    { action: 'WALK', direction: 'UP', distance: 48 },
+    { action: 'WALK', direction: 'RIGHT', distance: 384 },
+    { action: 'WALK', direction: 'UP', distance: 143 },
+    { action: 'WALK', direction: 'RIGHT', distance: 32 },
+    { action: 'STAND', direction: 'RIGHT', time: 5000 },
+    { action: 'WALK', direction: 'DOWN', distance: 79 },
+    { action: 'STAND', direction: 'RIGHT', time: 5000 },
+    { action: 'STAND', direction: 'UP', time: 1000 },
+    // REVERSE
+    { action: 'WALK', direction: 'UP', distance: 79 },
+    { action: 'STAND', direction: 'RIGHT', time: 5000 },
+    { action: 'WALK', direction: 'LEFT', distance: 32 },
+    { action: 'WALK', direction: 'DOWN', distance: 143 },
+    { action: 'WALK', direction: 'LEFT', distance: 384 },
+    { action: 'WALK', direction: 'DOWN', distance: 48 },
+    { action: 'WALK', direction: 'LEFT', distance: 208 },
+    { action: 'WALK', direction: 'UP', distance: 16 },
+    { action: 'WALK', direction: 'LEFT', distance: 64 },
+    { action: 'STAND', direction: 'UP', time: 5000 },
+    { action: 'WALK', direction: 'DOWN', distance: 96 },
+    { action: 'STAND', direction: 'LEFT', time: 5000 },
+    { action: 'WALK', direction: 'RIGHT', distance: 49 },
+    { action: 'STAND', direction: 'RIGHT', time: 5000 },
+    { action: 'WALK', direction: 'DOWN', distance: 255 },
+    { action: 'WALK', direction: 'LEFT', distance: 337 },
+    { action: 'WALK', direction: 'UP', distance: 32 },
+    { action: 'WALK', direction: 'LEFT', distance: 112 },
+    { action: 'WALK', direction: 'DOWN', distance: 32 },
+  ],
+};
 const lidaActions = {
   repeat: true,
   data: [
@@ -61,4 +108,4 @@ const nata1Actions = {
   ],
 };
 
-export { data2, lidaActions, nata1Actions };
+export { testData2, ninaActions, lidaActions, nata1Actions };

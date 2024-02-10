@@ -253,7 +253,7 @@ class Character extends GameObject {
   }
 
   generateAction(delta = 0) {
-    const { data, repeat } = this.actions;
+    const { data, repeat, reverse } = this.actions;
     const timeToNextAction = data[this.actionDataIndex]?.time;
     const destination = data[this.actionDataIndex]?.destination;
     const isArrivedToDestinationPosition =
@@ -284,6 +284,9 @@ class Character extends GameObject {
       repeat &&
       isArrivedToDestinationPosition
     ) {
+      if (reverse) {
+        // data.reverse(); // TODO
+      }
       this.resetActionDataIndex();
     }
 

@@ -1,4 +1,28 @@
 const charactersConversationData = {
+  nina: {
+    messages: [
+      {
+        id: 1,
+        text: 'Все на овощи!',
+      },
+      {
+        id: 2,
+        text: 'Машина приехала - на разгрузку!',
+      },
+    ],
+    buttons: [
+      {
+        key: 'continue',
+        content: 'Ок',
+        classNames: ['button'],
+        onClick: function () {
+          console.log('Ок');
+
+          this.close();
+        },
+      },
+    ],
+  },
   lida: {
     messages: [
       {
