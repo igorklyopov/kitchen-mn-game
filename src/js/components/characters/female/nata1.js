@@ -16,7 +16,7 @@ const nata1 = new Character({
   animations: nata1SpriteData.animations,
   position: {
     x: gridCells(27),
-    y: gridCells(17),
+    y: gridCells(15),
   },
 });
 

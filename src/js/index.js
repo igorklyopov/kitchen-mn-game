@@ -32,7 +32,7 @@ import { roma } from './components/characters/male/roma.js';
 import { worker1 } from './components/characters/male/worker1.js';
 import { worker2 } from './components/characters/male/worker2.js';
 
-import { lidaActions } from './data/characters/actions.js';
+import { lidaActions, nata1Actions } from './data/characters/actions.js';
 import { charactersConversationData } from './data/characters/charactersConversationData.js';
 import { events } from './components/Events.js';
 import { Dialog } from './components/Conversation/Dialog.js';
@@ -65,12 +65,14 @@ mainScene.addChild(hero);
 // console.log(hero);
 
 // lida
-lida.setActions(lidaActions); // for test
+lida.setActions(lidaActions);
 lida.isAutoActionPlay = true;
 mainScene.addChild(lida);
 // console.log(lida);
 
 // nata1
+nata1.setActions(nata1Actions);
+nata1.isAutoActionPlay = true;
 mainScene.addChild(nata1);
 
 // nata2
@@ -173,6 +175,16 @@ events.on(CONVERSATION_START, 'game', (characterName) => {
   if (activeCharacter !== characterName) activeCharacter = characterName;
   switch (characterName) {
     case 'lida':
+      characterConversation.setContent(
+        charactersConversationData[characterName].messages,
+      );
+      characterConversation.setButtons(
+        charactersConversationData[characterName].buttons,
+      );
+      characterConversation.chooseMessage(1);
+      break;
+
+    case 'nata1':
       characterConversation.setContent(
         charactersConversationData[characterName].messages,
       );

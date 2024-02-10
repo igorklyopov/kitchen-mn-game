@@ -38,5 +38,27 @@ const lidaActions = {
     { action: 'STAND', direction: 'RIGHT', time: 1000 },
   ],
 };
+const nata1Actions = {
+  repeat: true,
+  data: [
+    { action: 'STAND', direction: 'UP', time: 3000 },
+    { action: 'WALK', direction: 'RIGHT', distance: 32 },
+    { action: 'STAND', direction: 'UP', time: 3000 },
+    { action: 'WALK', direction: 'RIGHT', distance: 32 },
+    { action: 'STAND', direction: 'UP', time: 3000 },
+    { action: 'WALK', direction: 'RIGHT', distance: 32 },
+    { action: 'STAND', direction: 'UP', time: 3000 },
+    { action: 'WALK', direction: 'RIGHT', distance: 32 },
+    { action: 'STAND', direction: 'UP', time: 3000 },
 
-export { data2, lidaActions };
+    { action: 'WALK', direction: 'LEFT', distance: 32 },
+    { action: 'STAND', direction: 'UP', time: 3000 },
+    { action: 'WALK', direction: 'LEFT', distance: 32 },
+    { action: 'STAND', direction: 'UP', time: 3000 },
+    { action: 'WALK', direction: 'LEFT', distance: 32 },
+    { action: 'STAND', direction: 'UP', time: 3000 },
+    { action: 'WALK', direction: 'LEFT', distance: 32 },
+  ],
+};
+
+export { data2, lidaActions, nata1Actions };

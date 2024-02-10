@@ -56,6 +56,26 @@ const charactersConversationData = {
       },
     ],
   },
+  nata1: {
+    messages: [
+      {
+        id: 1,
+        text: 'Забираем кашу!',
+      },
+    ],
+    buttons: [
+      {
+        key: 'continue',
+        content: 'продолжить',
+        classNames: ['button'],
+        onClick: function () {
+          console.log('продолжить');
+
+          this.close();
+        },
+      },
+    ],
+  },
 };
 
 export { charactersConversationData };
