@@ -23,6 +23,7 @@ import { collisionBoundaries } from './helpers/collisionBoundaries.js';
 // import { GridHelper } from './helpers/GridHelper.js';
 
 import { hero } from './components/characters/hero.js';
+import { nina } from './components/characters/female/nina.js';
 import { lida } from './components/characters/female/lida.js';
 import { nata1 } from './components/characters/female/nata1.js';
 import { nata2 } from './components/characters/female/nata2.js';
@@ -62,13 +63,16 @@ mainScene.addChild(gameMapSprite);
 
 // hero
 mainScene.addChild(hero);
-// console.log(hero);
+
+// nina
+// nina.setActions(ninaActions);
+nina.isAutoActionPlay = true;
+mainScene.addChild(nina);
 
 // lida
 lida.setActions(lidaActions);
 lida.isAutoActionPlay = true;
 mainScene.addChild(lida);
-// console.log(lida);
 
 // nata1
 nata1.setActions(nata1Actions);
