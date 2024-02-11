@@ -1,7 +1,7 @@
 import '../styles/style.css';
 
 import { Sprite } from './components/Sprite.js';
-import { Vector2 } from './components/Vector2.js';
+// import { Vector2 } from './components/Vector2.js';
 import { GameLoop } from './components/GameLoop.js';
 import { InputHandler } from './components/InputHandler.js';
 import { GameObject } from './components/GameObject.js';
@@ -16,6 +16,7 @@ import {
   DEV_MODE,
   EVENTS_NAMES,
   DIRECTIONS_NAMES,
+  HERO_KEY_MAP,
 } from '../js/data/constants.js';
 import { assetsData } from './data/assetsData.js';
 import { findAssetByName } from './utils/findAssetByName.js';
@@ -42,178 +43,186 @@ import { charactersConversationData } from './data/characters/charactersConversa
 import { events } from './components/Events.js';
 import { Dialog } from './components/Conversation/Dialog.js';
 
-const { CONVERSATION_START, CONVERSATION_END } = EVENTS_NAMES;
+const { CONVERSATION_START, CONVERSATION_END, GO_TO } = EVENTS_NAMES;
 
-// Grabbing the canvas to draw to
-const canvas = refs.gameCanvas;
-canvas.width = GAME_CANVAS_WIDTH;
-canvas.height = GAME_CANVAS_HEIGHT;
-const ctx = canvas.getContext('2d');
+window.addEventListener('load', init);
 
-// Establish the root scene
-const mainScene = new GameObject({
-  name: 'mainScene',
-  position: new Vector2({ x: 0, y: 0 }),
-});
+function init() {
+  // ====== init function ======>
 
-// Build up the scene by adding  ground
-const gameMapSpriteData = findAssetByName(assetsData, 'gameMap');
-const gameMapSprite = new Sprite({
-  name: 'gameMapSprite',
-  imageSrc: gameMapSpriteData.src,
-  frameSize: { width: GAME_MAP_WIDTH, height: GAME_MAP_HEIGHT },
-});
-mainScene.addChild(gameMapSprite);
+  // Grabbing the canvas to draw to
+  const canvas = refs.gameCanvas;
+  canvas.width = GAME_CANVAS_WIDTH * 3; // for test (* 1.2 for mobile?)
+  canvas.height = GAME_CANVAS_HEIGHT * 3; // for test
+  const ctx = canvas.getContext('2d');
 
-// hero
-mainScene.addChild(hero);
+  // Establish the root scene
+  const mainScene = new GameObject({
+    name: 'mainScene',
+  });
 
-// nina
-nina.setActions(ninaActions);
-nina.isAutoActionPlay = true;
-mainScene.addChild(nina);
+  // Build up the scene by adding  ground
+  const gameMapSpriteData = findAssetByName(assetsData, 'gameMap');
+  const gameMapSprite = new Sprite({
+    name: 'gameMapSprite',
+    imageSrc: gameMapSpriteData.src,
+    frameSize: { width: GAME_MAP_WIDTH, height: GAME_MAP_HEIGHT },
+    // position: new Vector2({ x: 0, y: 500 }),
+  });
+  mainScene.addChild(gameMapSprite);
 
-// lida
-lida.setActions(lidaActions);
-lida.isAutoActionPlay = true;
-mainScene.addChild(lida);
+  // hero
+  mainScene.addChild(hero);
 
-// nata1
-nata1.setActions(nata1Actions);
-nata1.isAutoActionPlay = true;
-mainScene.addChild(nata1);
+  // nina
+  nina.setActions(ninaActions);
+  nina.isAutoActionPlay = true;
+  mainScene.addChild(nina);
 
-// nata2
-mainScene.addChild(nata2);
+  // lida
+  lida.setActions(lidaActions);
+  lida.isAutoActionPlay = true;
+  mainScene.addChild(lida);
 
-// tanya
-mainScene.addChild(tanya);
+  // nata1
+  nata1.setActions(nata1Actions);
+  nata1.isAutoActionPlay = true;
+  mainScene.addChild(nata1);
 
-// bohdan
-mainScene.addChild(bohdan);
+  // nata2
+  mainScene.addChild(nata2);
 
-// roma
-mainScene.addChild(roma);
+  // tanya
+  mainScene.addChild(tanya);
 
-// worker1
-mainScene.addChild(worker1);
+  // bohdan
+  mainScene.addChild(bohdan);
 
-// worker2
-mainScene.addChild(worker2);
+  // roma
+  mainScene.addChild(roma);
 
-// camera
-const camera = new Camera(hero.position);
-mainScene.addChild(camera);
+  // worker1
+  mainScene.addChild(worker1);
 
-// Add an InputHandler class to the main scene
-const { UP, DOWN, LEFT, RIGHT } = DIRECTIONS_NAMES;
-const heroKeyMap = {
-  [UP]: ['KeyW', 'Numpad8'],
-  [DOWN]: ['KeyS', 'Numpad2'],
-  [LEFT]: ['KeyA', 'Numpad4'],
-  [RIGHT]: ['KeyD', 'Numpad6'],
-  SHOOT: ['KeyQ'], // for test
-};
-const input = new InputHandler();
-input.setKeyMap(heroKeyMap);
-input.setDirectionsNames(DIRECTIONS_NAMES);
-mainScene.input = input;
+  // worker2
+  mainScene.addChild(worker2);
 
-// Add gridHelper for test
-// const gridHelper = new GridHelper({
-//   size: { width: GAME_MAP_WIDTH, height: GAME_MAP_HEIGHT },
-//   cellSize: { width: 16, height: 16 },
-//   color: 'rgba(244,8,222,1)',
-//   canvas,
-// });
+  // camera
+  const camera = new Camera(hero.position);
+  mainScene.addChild(camera);
 
-// Establish update and draw loops
-const update = (delta) => {
-  mainScene.stepEntry(delta, mainScene);
-};
-const draw = () => {
-  // Clear anything stale
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // Add an InputHandler class to the main scene
+  const input = new InputHandler();
+  input.setKeyMap(HERO_KEY_MAP);
+  input.setDirectionsNames(DIRECTIONS_NAMES);
+  mainScene.input = input;
 
-  // Activate camera
-  camera.track();
+  // Add gridHelper for test
+  // const gridHelper = new GridHelper({
+  //   size: { width: GAME_MAP_WIDTH, height: GAME_MAP_HEIGHT },
+  //   cellSize: { width: 16, height: 16 },
+  //   color: 'rgba(244,8,222,1)',
+  //   canvas,
+  // });
 
-  // Save the current state (for camera offset)
-  ctx.save();
+  // Establish update and draw loops
+  const update = (delta) => {
+    mainScene.stepEntry(delta, mainScene);
+  };
+  const draw = () => {
+    // Clear anything stale
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Offset by camera position
-  ctx.translate(camera.position.x, camera.position.y);
+    // Activate camera
+    camera.track();
 
-  // Draw objects in the mounted scene
-  mainScene.draw(ctx, 0, 0);
+    // Save the current state (for camera offset)
+    ctx.save();
 
-  // for test
-  if (DEV_MODE) {
-    // gridHelper.draw();
-    collisionBoundaries.forEach((boundary) => boundary.draw(ctx));
-  }
+    // Offset by camera position
+    ctx.translate(camera.position.x, camera.position.y);
 
-  // Restore to original state
-  ctx.restore();
+    // Draw objects in the mounted scene
+    mainScene.draw(ctx, 0, 0);
 
-  // Draw anything above the game world
-  // =====
-};
+    // for test
+    if (DEV_MODE) {
+      // gridHelper.draw();
+      collisionBoundaries.forEach((boundary) => boundary.draw(ctx));
+    }
 
-// Start the game!
-const gameLoop = new GameLoop({
-  update,
-  render: draw,
-  fps: GAME_LOOP_FPS_DEFAULT,
-});
-gameLoop.start();
+    // Restore to original state
+    ctx.restore();
 
+    // Draw anything above the game world
+    // =====
+  };
+
+  // Start the game!
+  const gameLoop = new GameLoop({
+    update,
+    render: draw,
+    fps: GAME_LOOP_FPS_DEFAULT,
+  });
+  gameLoop.start();
+
+  // ====== make character conversation ======>
+  let activeCharacter = '';
+  const characterConversation = new Dialog(refs.dialog);
+
+  characterConversation.setOnComplete(() => {
+    console.log(`conversation with ${activeCharacter} is complete!`); // for test
+    events.emit(CONVERSATION_END, activeCharacter);
+  });
+
+  events.on(CONVERSATION_START, 'game', (characterName) => {
+    // for test
+    console.log('CONVERSATION_START');
+
+    if (activeCharacter !== characterName) activeCharacter = characterName;
+    characterConversation.setContent(
+      charactersConversationData[characterName].messages,
+    );
+    characterConversation.setButtons(
+      charactersConversationData[characterName].buttons,
+    );
+    switch (characterName) {
+      case 'nina':
+        characterConversation.chooseMessage(1);
+        break;
+
+      case 'lida':
+        characterConversation.chooseMessage(1);
+        break;
+
+      case 'nata1':
+        characterConversation.chooseMessage(1);
+        break;
+
+      default:
+        break;
+    }
+
+    characterConversation.open();
+
+    gameLoop.pause();
+  }); // for test
+
+  events.on(CONVERSATION_END, 'game', () => {
+    gameLoop.start();
+  }); // for test
+
+  events.on(GO_TO, 'game', (position) => {
+    hero.position.x = position.x;
+    hero.position.y = position.y;
+  });
+  // console.log(events);
+
+  // <====== END make character conversation ======
+
+  // <====== END init function ======
+}
 /// ////////// DRAFTS ////////////////////
-
-/// /////////// make character conversation ////////////
-let activeCharacter = '';
-const characterConversation = new Dialog(refs.dialog);
-characterConversation.setOnComplete(() => {
-  console.log(`conversation with ${activeCharacter} is complete!`); // for test
-  events.emit(CONVERSATION_END, activeCharacter);
-});
-events.on(CONVERSATION_START, 'game', (characterName) => {
-  // for test
-  console.log('CONVERSATION_START');
-
-  if (activeCharacter !== characterName) activeCharacter = characterName;
-  characterConversation.setContent(
-    charactersConversationData[characterName].messages,
-  );
-  characterConversation.setButtons(
-    charactersConversationData[characterName].buttons,
-  );
-  switch (characterName) {
-    case 'nina':
-      characterConversation.chooseMessage(1);
-      break;
-
-    case 'lida':
-      characterConversation.chooseMessage(1);
-      break;
-
-    case 'nata1':
-      characterConversation.chooseMessage(1);
-      break;
-
-    default:
-      break;
-  }
-
-  characterConversation.open();
-
-  // gameLoop.pause();
-}); // for test
-
-events.on(CONVERSATION_END, 'game', () => {
-  // gameLoop.start();
-}); // for test
-// console.log(events);
 
 /// ////////// make action waypoints list (for test) ////////////////////
 const pathData = [

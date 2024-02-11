@@ -48,6 +48,10 @@ class Dialog {
     return this._opened;
   }
 
+  get currentMessageId() {
+    return this._currentMessageId;
+  }
+
   _makeButtonsEls(buttonsData = []) {
     return buttonsData.map(
       ({ key, content, onClick, attributes, classNames }) => {

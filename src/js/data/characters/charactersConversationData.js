@@ -1,3 +1,9 @@
+import { events } from '../../components/Events';
+import { EVENTS_NAMES } from '../constants';
+import { gridCells } from '../../utils/gridCells';
+
+const { GO_TO } = EVENTS_NAMES;
+
 const charactersConversationData = {
   nina: {
     messages: [
@@ -16,7 +22,21 @@ const charactersConversationData = {
         content: 'Ок',
         classNames: ['button'],
         onClick: function () {
-          console.log('Ок');
+          switch (this.currentMessageId) {
+            case 1:
+              events.emit(GO_TO, {
+                x: gridCells(54),
+                y: gridCells(48),
+              });
+              break;
+
+            case 2:
+              console.log('на разгрузку!');
+              break;
+
+            default:
+              break;
+          }
 
           this.close();
         },

@@ -34,7 +34,7 @@ const ninaActions = {
     { action: 'WALK', direction: 'RIGHT', distance: 32 },
     { action: 'STAND', direction: 'RIGHT', time: 5000 },
     { action: 'WALK', direction: 'DOWN', distance: 79 },
-    { action: 'STAND', direction: 'RIGHT', time: 5000 },
+    { action: 'STAND', direction: 'RIGHT', time: 10000 },
     { action: 'STAND', direction: 'UP', time: 1000 },
     // REVERSE
     { action: 'WALK', direction: 'UP', distance: 79 },
